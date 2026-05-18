@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+
+        <div class="auth-logo">
+            <a href="/">OsceAI</a>
+        </div>
+
+        <div class="auth-card">
+            <h2>Welcome back</h2>
+            <p class="auth-subtitle">Login to continue your OSCE practice</p>
+
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="auth-error">{{ messages[0] }}</div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="/login">
+                <div class="form-group">
+                    <label>Email address</label>
+                    <input type="email" name="email"
+                           placeholder="your@email.com" required/>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password"
+                           placeholder="Enter your password" required/>
+                </div>
+                <button type="submit" class="btn auth-btn">
+                    Login →
+                </button>
+            </form>
+
+            <div class="auth-divider">
+                <span>or</span>
+            </div>
+
+            <a href="/guest" class="btn-guest">
+                Continue as Guest
+            </a>
+
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="/register">Register here</a>
+            </p>
+        </div>
+
+    </div>
+</body>
+</html>
