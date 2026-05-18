@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI - Examiner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="exam-container">
+
+        <div class="exam-header">
+            <h2>OsceAI — AI Examiner</h2>
+            <p>Answer each question based on your history taking session</p>
+            <div class="case-badge-large" id="caseLabel"></div>
+        </div>
+
+        <div id="loadingState" class="loading-panel">
+            <p>Loading examiner questions...</p>
+        </div>
+
+        <div id="examBody" class="exam-body" style="display:none;">
+
+            <div class="question-panel" id="questionPanel">
+
+                <div class="question-number" id="questionNumber">
+                    Question 1
+                </div>
+
+                <div class="question-text" id="questionText"></div>
+
+                <div class="answer-input-area">
+                    <textarea id="answerInput"
+                              placeholder="Type your answer or use the mic button..."
+                              rows="5"></textarea>
+
+                    <div class="answer-controls">
+                        <button class="btn-mic-exam" id="examMicBtn" onclick="toggleExamMic()">
+                            🎤 Speak Answer
+                        </button>
+                        <span id="micStatus" class="mic-status"></span>
+                    </div>
+                </div>
+
+                <div class="answer-buttons">
+                    <button class="btn" id="submitBtn" onclick="submitAnswer()">
+                        Submit Answer →
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="submitted-panel" id="submittedPanel" style="display:none;">
+                <div class="submitted-message">
+                    ✅ Answer recorded — moving to next question
+                </div>
+            </div>
+
+        </div>
+
+        <div class="exam-progress" id="examProgress" style="display:none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <span id="progressText">Question 1 of 5</span>
+        </div>
+
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const caseId = params.get("case_id") ||
+                       sessionStorage.getItem("caseId") ||
+                       "abdominal_1";
+        const caseLabel = sessionStorage.getItem("caseLabel") || "Clinical Case";
+
+        document.getElementById("caseLabel").textContent =
+            decodeURIComponent(caseLabel);
+
+        let questions = [];
+        let currentIndex = 0;
+        let allAnswers = [];
+        let allResults = [];
+        let examRecognition = null;
+        let examRecording = false;
+
+        async function loadQuestions() {
+            try {
+                const res = await fetch(`/get_questions?case_id=${caseId}`);
+                const data = await res.json();
+                questions = data.questions;
+                document.getElementById("loadingState").style.display = "none";
+                document.getElementById("examBody").style.display = "block";
+                document.getElementById("examProgress").style.display = "flex";
+                showQuestion();
+            } catch (err) {
+                document.getElementById("loadingState").innerHTML =
+                    "<p>Error loading questions. Please try again.</p>";
+            }
+        }
+
+        function showQuestion() {
+            if (currentIndex >= questions.length) {
+                goToSummary();
+                return;
+            }
+
+            const q = questions[currentIndex];
+            document.getElementById("questionNumber").textContent =
+                `Question ${currentIndex + 1} of ${questions.length}`;
+            document.getElementById("questionText").textContent = q.question;
+            document.getElementById("answerInput").value = "";
+            document.getElementById("questionPanel").style.display = "block";
+            document.getElementById("submittedPanel").style.display = "none";
+            document.getElementById("submitBtn").textContent = "Submit Answer →";
+            document.getElementById("submitBtn").disabled = false;
+            document.getElementById("micStatus").textContent = "";
+            updateProgress();
+        }
+
+        async function submitAnswer() {
+            const answer = document.getElementById("answerInput").value.trim();
+            if (!answer) {
+                alert("Please type or speak your answer before submitting!");
+                return;
+            }
+
+            document.getElementById("submitBtn").textContent = "Evaluating...";
+            document.getElementById("submitBtn").disabled = true;
+
+            try {
+                const res = await fetch("/evaluate_viva", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        answer: answer,
+                        question_index: currentIndex,
+                        case_id: caseId
+                    })
+                });
+
+                const data = await res.json();
+                allAnswers.push(answer);
+                allResults.push(data);
+
+                document.getElementById("questionPanel").style.display = "none";
+                document.getElementById("submittedPanel").style.display = "block";
+
+                setTimeout(() => {
+                    currentIndex++;
+                    if (currentIndex >= questions.length) {
+                        goToSummary();
+                    } else {
+                        showQuestion();
+                    }
+                }, 1000);
+
+            } catch (err) {
+                alert("Error submitting answer. Please try again.");
+                document.getElementById("submitBtn").textContent = "Submit Answer →";
+                document.getElementById("submitBtn").disabled = false;
+            }
+        }
+
+        function toggleExamMic() {
+            if (!('webkitSpeechRecognition' in window ||
+                  'SpeechRecognition' in window)) {
+                alert("Voice input not supported. Please use Chrome.");
+                return;
+            }
+
+            if (examRecording) {
+                examRecognition.stop();
+                examRecording = false;
+                document.getElementById("examMicBtn").textContent = "🎤 Speak Answer";
+                document.getElementById("examMicBtn").classList.remove("recording");
+                document.getElementById("micStatus").textContent = "";
+            } else {
+                examRecognition = new (window.SpeechRecognition ||
+                                       window.webkitSpeechRecognition)();
+                examRecognition.lang = "en-US";
+                examRecognition.continuous = true;
+                examRecognition.interimResults = true;
+
+                examRecognition.onstart = function() {
+                    document.getElementById("micStatus").textContent =
+                        "🔴 Recording... speak your answer";
+                };
+
+                examRecognition.onresult = function(event) {
+                    let transcript = "";
+                    for (let i = 0; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    document.getElementById("answerInput").value = transcript;
+                };
+
+                examRecognition.onend = function() {
+                    examRecording = false;
+                    document.getElementById("examMicBtn").textContent =
+                        "🎤 Speak Answer";
+                    document.getElementById("examMicBtn").classList.remove("recording");
+                    document.getElementById("micStatus").textContent =
+                        "✅ Recording stopped — review your answer above";
+                };
+
+                examRecognition.onerror = function(event) {
+                    console.error("Mic error:", event.error);
+                    examRecording = false;
+                    document.getElementById("examMicBtn").textContent =
+                        "🎤 Speak Answer";
+                    document.getElementById("examMicBtn").classList.remove("recording");
+                    document.getElementById("micStatus").textContent = "";
+                };
+
+                examRecognition.start();
+                examRecording = true;
+                document.getElementById("examMicBtn").textContent = "⏹ Stop Recording";
+                document.getElementById("examMicBtn").classList.add("recording");
+            }
+        }
+
+        function goToSummary() {
+            const vivaTotal = allResults.reduce((sum, r) =>
+                sum + r.marks_achieved, 0);
+
+            sessionStorage.setItem("vivaScores",
+                JSON.stringify(allResults.map(r => r.marks_achieved)));
+            sessionStorage.setItem("vivaPointResults",
+                JSON.stringify(allResults.map(r => r.point_results)));
+            sessionStorage.setItem("vivaTotal", vivaTotal);
+            sessionStorage.setItem("vivaQuestions", JSON.stringify(questions));
+            sessionStorage.setItem("vivaAnswers", JSON.stringify(allAnswers));
+
+            window.location.href = `/feedback?case_id=${caseId}`;
+        }
+
+        function updateProgress() {
+            const pct = Math.round((currentIndex / questions.length) * 100);
+            document.getElementById("progressFill").style.width = pct + "%";
+            document.getElementById("progressText").textContent =
+                `Question ${currentIndex + 1} of ${questions.length}`;
+        }
+
+        loadQuestions();
+    </script>
+</body>
+</html>

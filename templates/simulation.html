@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI - Simulation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="sim-container">
+
+        <div class="sim-header">
+            <h2>OsceAI — Virtual Patient Simulation</h2>
+            <div class="header-right">
+                <span id="caseLabel" class="case-badge">No case selected</span>
+                <a href="/" class="btn-secondary">Home</a>
+            </div>
+        </div>
+
+        <!-- Case Selection Panel -->
+        <div id="caseSelection" class="case-selection-panel">
+            <h3>Select Your Case</h3>
+            <p>Choose a clinical case to begin your simulation. Once started you cannot change the case.</p>
+
+            <div class="case-grid">
+
+                <div class="case-category">
+                    <h4>🫁 Abdominal Pain</h4>
+                    <button class="case-btn" onclick="selectCase('abdominal_1', 'Abdominal 1 — Epigastric Pain (Sarah, 34)')">
+                        Case 1 — Epigastric Pain<br>
+                        <small>Sarah, 34 — Emergency Department</small>
+                    </button>
+                    <button class="case-btn" onclick="selectCase('abdominal_2', 'Abdominal 2 — Crampy Pain (Margaret, 59)')">
+                        Case 2 — Crampy Abdominal Pain<br>
+                        <small>Margaret, 59 — Surgical Assessment</small>
+                    </button>
+                    <button class="case-btn" onclick="selectCase('abdominal_3', 'Abdominal 3 — Epigastric Burning (James, 52)')">
+                        Case 3 — Epigastric Burning<br>
+                        <small>James, 52 — General Practice</small>
+                    </button>
+                </div>
+
+                <div class="case-category">
+                    <h4>❤️ Chest Pain</h4>
+                    <button class="case-btn" onclick="selectCase('chest_1', 'Chest 1 — Severe Chest Pain (John, 55)')">
+                        Case 1 — Severe Central Chest Pain<br>
+                        <small>John, 55 — Emergency Department</small>
+                    </button>
+                    <button class="case-btn" onclick="selectCase('chest_2', 'Chest 2 — Exertional Chest Pain (Michael, 55)')">
+                        Case 2 — Exertional Chest Pain<br>
+                        <small>Michael, 55 — General Practice</small>
+                    </button>
+                    <button class="case-btn" onclick="selectCase('chest_3', 'Chest 3 — Left Sided Chest Pain (Robert, 50)')">
+                        Case 3 — Left Sided Chest Pain<br>
+                        <small>Robert, 50 — Emergency Department</small>
+                    </button>
+                </div>
+
+                <div class="case-category">
+                    <h4>😮 Cough</h4>
+                    <button class="case-btn" onclick="selectCase('cough_1', 'Cough 1 — Persistent Cough (Emma, 24)')">
+                        Case 1 — Persistent Cough<br>
+                        <small>Emma, 24 — General Practice</small>
+                    </button>
+                    <button class="case-btn" onclick="selectCase('cough_2', 'Cough 2 — Cough with Breathlessness (George, 64)')">
+                        Case 2 — Cough with Breathlessness<br>
+                        <small>George, 64 — General Practice</small>
+                    </button>
+                    <button class="case-btn" onclick="selectCase('cough_3', 'Cough 3 — Productive Cough (Thomas, 56)')">
+                        Case 3 — Productive Cough<br>
+                        <small>Thomas, 56 — General Practice</small>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Simulation Panel -->
+        <div id="simulationPanel" class="sim-body" style="display:none;">
+
+            <div class="chat-panel">
+                <div class="chat-box" id="chatBox">
+                    <div class="message patient">
+                        Hello, I am your patient today. Please go ahead and ask me about my symptoms.
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <input type="text" id="userInput"
+                           placeholder="Type your question or use the mic..."
+                           onkeypress="handleEnter(event)"/>
+                    <button class="btn-mic" id="micBtn" onclick="toggleMic()">🎤</button>
+                    <button class="btn-send" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+
+            <div class="image-panel">
+                <h3>Anatomy Reference</h3>
+                <div id="anatomyDisplay">
+                    <p>Relevant anatomy will appear here based on patient symptoms.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div id="simFooter" class="sim-footer" style="display:none;">
+            <button class="btn" onclick="endSession()">
+                End Session & Proceed to Examiner →
+            </button>
+            <a href="/" class="btn-secondary">Back to Home</a>
+        </div>
+
+    </div>
+
+    <script src="{{ url_for('static', filename='js/recorder.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,1443 @@
+{
+  "abdominal_1": {
+    "patient_name": "Sarah",
+    "age": 34,
+    "gender": "female",
+    "description": "Patient presenting to emergency department with acute epigastric pain, likely acute pancreatitis",
+    "symptoms": "Epigastric pain that started suddenly 90 minutes ago, sharp and gripping, severity 11 out of 10, radiates through to the back, constant and worsening, worse on deep inspiration and movement, relieved slightly by leaning forward, associated nausea and fever, feeling breathless even when sitting down, bowels opened normally this morning, 3kg intentional weight loss over last 4 weeks due to new fitness regime",
+    "negative_features": "No jaundice, no dysphagia, no reflux, no change in bowel habits, no blood in stool, no confusion, no recent travel, no night sweats",
+    "past_medical_history": "Gallstones a few months ago but this pain is worse, gestational diabetes during both pregnancies but resolved",
+    "drug_history": "Combined oral contraceptive pill Gedarel 30/150, no known drug allergies",
+    "family_history": "Mother had gallstones and type 2 diabetes",
+    "social_history": "Lives with husband and two children aged 5 and 1, full-time mother, non-smoker, drinks 2 bottles of wine on weekends only, recently started running and new diet",
+    "ice": {
+      "ideas": "I don't know what's going on, maybe a stomach bug?",
+      "concerns": "Just the pain",
+      "expectations": "I want the pain to stop. Please help me!"
+    },
+    "correct_diagnosis": "Acute pancreatitis",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they'd like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Site: asks where the pain is", "keywords": ["where", "location", "whereabouts", "which part", "point to"]},
+    {"item": "Onset: clarifies when and whether sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset"]},
+    {"item": "Character: asks patient to describe how pain feels", "keywords": ["describe", "what does it feel", "character", "type of pain", "what kind", "how does it feel"]},
+    {"item": "Radiation: asks if pain moves anywhere else", "keywords": ["spread", "move", "radiate", "anywhere else", "go anywhere", "radiation"]},
+    {"item": "Associated symptoms: asks about other symptoms", "keywords": ["other symptoms", "anything else", "associated", "alongside", "as well"]},
+    {"item": "Time course: asks how pain changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course"]},
+    {"item": "Exacerbating or relieving factors", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when"]},
+    {"item": "Severity: asks on scale of 0-10", "keywords": ["scale", "out of 10", "how bad", "severity", "rate the pain", "score"]},
+    {"item": "Jaundice/pruritus", "keywords": ["yellow", "jaundice", "itch", "pruritus", "skin colour", "eyes yellow"]},
+    {"item": "Dysphagia/odynophagia", "keywords": ["swallow", "swallowing", "dysphagia", "difficulty eating", "pain swallowing"]},
+    {"item": "Bowel habits/haematochezia/melaena", "keywords": ["bowel", "stool", "blood in stool", "diarrhoea", "constipation", "melaena", "black stool", "bowel habits"]},
+    {"item": "Weight loss", "keywords": ["weight", "lost weight", "weight loss", "lighter", "clothes fitting"]},
+    {"item": "Dyspnoea", "keywords": ["breathless", "short of breath", "breathing", "dyspnoea", "breath"]},
+    {"item": "Reflux", "keywords": ["reflux", "heartburn", "acid", "burning in chest", "indigestion"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systems_review": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "chest", "urinary", "neuro", "systems review"]}
+  ],
+  "travel_history": [
+    {"item": "Takes travel history if relevant", "keywords": ["travel", "abroad", "been anywhere", "overseas", "holiday", "trip"]}
+  ],
+  "past_medical_history": [
+    {"item": "Screens for conditions increasing GI disease risk", "keywords": ["medical history", "medical conditions", "past history", "previous conditions", "ever been diagnosed"]},
+    {"item": "Asks about pre-existing gastrointestinal disease", "keywords": ["stomach problems", "bowel problems", "GI", "gastrointestinal", "gut", "crohn", "colitis", "ulcer"]},
+    {"item": "Asks about other diagnoses and surgical history", "keywords": ["surgery", "operations", "surgical", "hospital before", "other conditions", "anything else medically"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of gastrointestinal disease", "keywords": ["family history", "parents", "siblings", "family", "runs in the family", "relatives"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Asks about exercise and diet", "keywords": ["exercise", "diet", "active", "physical activity", "what do you eat", "nutrition"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises salient points and asks if anything missed", "keywords": ["to summarise", "anything i missed", "anything else", "summary", "recap", "missed anything"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+  },
+  "viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Observations and vital signs",
+        "keywords": ["observations", "vital signs", "vitals", "blood pressure", "heart rate", "temperature", "oxygen", "sats", "RR", "BP", "HR"]
+      },
+      {
+        "point": "Abdominal examination",
+        "keywords": ["abdominal exam", "abdomen", "palpate", "abdominal examination", "examine the abdomen", "abdominal"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "Describe some appropriate further investigations for this patient.",
+    "marking_points": [
+      {
+        "point": "Bloods including FBC, U&Es, LFTs, CRP, amylase",
+        "keywords": ["bloods", "blood test", "FBC", "amylase", "lipase", "CRP", "LFTs", "U&E", "urea", "full blood count"]
+      },
+      {
+        "point": "ECG",
+        "keywords": ["ECG", "electrocardiogram", "heart tracing"]
+      },
+      {
+        "point": "Urinalysis",
+        "keywords": ["urine", "urinalysis", "urine dip", "urine test", "hCG"]
+      },
+      {
+        "point": "Abdominal ultrasound scan",
+        "keywords": ["ultrasound", "USS", "scan", "abdominal scan", "abdominal ultrasound"]
+      }
+    ],
+    "max_marks": 4
+  },
+  {
+    "question": "What is your differential diagnosis? Please give your most likely diagnosis and two other possibilities.",
+    "marking_points": [
+      {
+        "point": "Most likely — Acute pancreatitis",
+        "keywords": ["pancreatitis", "acute pancreatitis"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential 1",
+        "keywords": ["cholecystitis", "cholangitis", "gallbladder", "ectopic", "aortic", "peptic ulcer", "ulcer", "myocardial", "heart attack", "MI"]
+      },
+      {
+        "point": "Any reasonable differential 2",
+        "keywords": ["cholecystitis", "cholangitis", "gallbladder", "ectopic", "aortic", "peptic ulcer", "ulcer", "myocardial", "heart attack", "MI"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "Describe the management of acute pancreatitis.",
+    "marking_points": [
+      {
+        "point": "Hospital admission",
+        "keywords": ["admit", "hospital admission", "hospitalise", "inpatient"]
+      },
+      {
+        "point": "ABCDE approach",
+        "keywords": ["ABCDE", "airway", "breathing", "circulation", "systematic approach"]
+      },
+      {
+        "point": "IV fluid resuscitation",
+        "keywords": ["IV fluids", "fluids", "drip", "hartmann", "crystalloid", "fluid resuscitation", "rehydration"]
+      },
+      {
+        "point": "Analgesia and anti-emetics",
+        "keywords": ["pain relief", "analgesia", "morphine", "opioid", "anti-emetic", "antiemetic", "nausea", "painkiller"]
+      },
+      {
+        "point": "Monitoring including urine output and NEWS score",
+        "keywords": ["monitor", "monitoring", "urine output", "NEWS", "observations", "fluid balance"]
+      },
+      {
+        "point": "Early enteral nutritional support",
+        "keywords": ["nutrition", "nutritional support", "enteral", "feeding", "nil by mouth", "NBM", "eat"]
+      },
+      {
+        "point": "Identify and treat underlying cause",
+        "keywords": ["underlying cause", "gallstones", "alcohol", "cause", "treat the cause"]
+      }
+    ],
+    "max_marks": 7
+  },
+  {
+    "question": "What is the definitive management for gallstone pancreatitis?",
+    "marking_points": [
+      {
+        "point": "Urgent ERCP and laparoscopic cholecystectomy before discharge",
+        "keywords": ["ERCP", "cholecystectomy", "laparoscopic", "gallbladder removal", "definitive"]
+      }
+    ],
+    "max_marks": 1
+  }
+]
+  },
+
+  "abdominal_2": {
+    "patient_name": "Margaret",
+    "age": 59,
+    "gender": "female",
+    "description": "Patient presenting to surgical assessment unit with severe crampy abdominal pain, likely bowel obstruction secondary to Crohn's disease flare",
+    "symptoms": "Severe crampy abdominal pain since 3am, woken up by it, pain comes and goes every 5 minutes, generalised around centre and lower abdomen, severity 10 out of 10, gradually worsening over past 2 days starting as bloating, 5 episodes of vomiting this morning with bright green then dark brown offensive smelling vomit, abdomen feels rock hard and distended, one episode of diarrhoea with blood in last 48 hours, still passing some wind, tried paracetamol and ibuprofen but vomited them up",
+    "negative_features": "No fever, no joint pain, no numbness or tingling in legs, no blood in vomit, no chest pain, no left arm pain",
+    "past_medical_history": "Crohn's disease flaring recently treated with prednisolone and azathioprine, last menstrual period 9 years ago, 2 caesarean sections 25 and 27 years ago",
+    "drug_history": "Prednisolone, azathioprine, hormone replacement therapy with oestrogen patch and Mirena coil, no known drug allergies",
+    "family_history": "Grandmother had Crohn's disease, everyone else at home is well",
+    "social_history": "Lives at home with husband, 2 sons live in London, never smoked, drinks less than half a bottle of wine a week, no recreational drugs, plays tennis once a week and enjoys long walks with dog, works as head teacher which is stressful",
+    "ice": {
+      "ideas": "I'm worried it is something to do with my Crohn's disease",
+      "concerns": "I have a friend with Crohn's who has a stoma and I'm very worried I will need one now",
+      "expectations": "I would like some pain relief and something to stop me feeling so sick"
+    },
+    "correct_diagnosis": "Bowel obstruction secondary to Crohn's disease flare",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they'd like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Site: asks where the symptom is", "keywords": ["where", "location", "whereabouts", "which part", "point to"]},
+    {"item": "Onset: clarifies when and if sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset"]},
+    {"item": "Character: asks patient to describe how symptom feels", "keywords": ["describe", "what does it feel", "character", "type of pain", "what kind", "how does it feel"]},
+    {"item": "Radiation: asks if symptom moves anywhere else", "keywords": ["spread", "move", "radiate", "anywhere else", "go anywhere", "radiation"]},
+    {"item": "Associated symptoms: identifies change in bowel habit distension and vomiting", "keywords": ["vomiting", "sick", "bowel", "distension", "bloated", "other symptoms", "anything else"]},
+    {"item": "Time course: asks how symptom changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course"]},
+    {"item": "Exacerbating or relieving factors", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when"]},
+    {"item": "Severity: asks on scale of 0-10", "keywords": ["scale", "out of 10", "how bad", "severity", "rate the pain", "score"]},
+    {"item": "Identifies bilious vomiting progressing to vomiting faecal matter", "keywords": ["vomit", "sick", "green", "brown", "faecal", "feculent", "colour of vomit", "what colour"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systems_review": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "chest", "urinary", "neuro", "systems review"]}
+  ],
+  "past_medical_history": [
+    {"item": "Screens for conditions increasing risk of small bowel obstruction such as Crohn's disease", "keywords": ["crohn", "bowel disease", "IBD", "inflammatory bowel", "medical history", "past history", "previous conditions"]},
+    {"item": "Asks if patient has any medical conditions", "keywords": ["medical conditions", "diagnosed with", "health problems", "illnesses", "conditions"]},
+    {"item": "Asks about relevant surgical procedures", "keywords": ["surgery", "operations", "surgical", "hospital before", "procedures", "caesarean", "section"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of inflammatory bowel disease or bowel cancer", "keywords": ["family history", "parents", "siblings", "family", "relatives", "crohn", "bowel cancer", "IBD", "runs in family"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Asks about diet and exercise", "keywords": ["exercise", "diet", "active", "physical activity", "what do you eat", "nutrition"]},
+    {"item": "Asks about occupation", "keywords": ["work", "job", "occupation", "employed", "career", "profession"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises salient points and asks if anything missed", "keywords": ["to summarise", "anything i missed", "anything else", "summary", "recap", "missed anything"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+  },
+  "viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Abdominal examination",
+        "keywords": ["abdominal exam", "abdomen", "palpate", "abdominal examination", "examine the abdomen", "abdominal", "distension", "bowel sounds"]
+      }
+    ],
+    "max_marks": 1
+  },
+  {
+    "question": "Describe some appropriate further investigations for this patient.",
+    "marking_points": [
+      {
+        "point": "Blood tests including FBC, U&Es, LFTs, CRP, Group and Save",
+        "keywords": ["bloods", "blood test", "FBC", "CRP", "LFTs", "U&E", "urea", "full blood count", "group and save", "cross match"]
+      },
+      {
+        "point": "Abdominal X-ray",
+        "keywords": ["xray", "x-ray", "abdominal xray", "AXR", "plain film", "radiograph"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "What is your differential diagnosis? Please give your most likely diagnosis and one other possibility.",
+    "marking_points": [
+      {
+        "point": "Most likely — Small bowel obstruction",
+        "keywords": ["small bowel obstruction", "bowel obstruction", "SBO", "obstruction"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential",
+        "keywords": ["large bowel obstruction", "large bowel", "volvulus", "hernia", "crohn", "IBD"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "Describe the management of small bowel obstruction.",
+    "marking_points": [
+      {
+        "point": "NG tube decompression",
+        "keywords": ["NG tube", "nasogastric", "decompression", "ng", "nasogastric tube"]
+      },
+      {
+        "point": "Fluid resuscitation",
+        "keywords": ["IV fluids", "fluids", "drip", "fluid resuscitation", "rehydration", "crystalloid"]
+      },
+      {
+        "point": "Nil by mouth",
+        "keywords": ["nil by mouth", "NBM", "nothing by mouth", "fasting", "not eat"]
+      },
+      {
+        "point": "Correct electrolyte disturbances",
+        "keywords": ["electrolytes", "electrolyte", "potassium", "sodium", "correct electrolyte"]
+      },
+      {
+        "point": "Possible surgical intervention if failure to improve",
+        "keywords": ["surgery", "surgical", "operation", "bowel resection", "laparotomy", "surgical intervention"]
+      }
+    ],
+    "max_marks": 5
+  }
+]
+  },
+
+  "abdominal_3": {
+    "patient_name": "James",
+    "age": 52,
+    "gender": "male",
+    "description": "Patient presenting to general practice with intermittent epigastric pain, likely GERD or peptic ulcer disease",
+    "symptoms": "Intermittent burning pain in epigastric region for 4 months, severity 5 to 6 out of 10, occurring 2 to 3 times daily, worst in evenings after dinner and when lying down, associated bloating belching and acid reflux with horrible taste in mouth, worse after meals when lying down and when using NSAIDs, antacids helped initially but no longer working, ibuprofen and paracetamol made it worse, mornings are usually fine",
+    "negative_features": "No jaundice, no ulcers, no vomiting, no blood in vomit, no dysphagia, no difficulty swallowing, no abdominal distension, no constipation or diarrhoea, no blood in stool, no melaena, no PR bleeding, no shortness of breath, no palpitations",
+    "past_medical_history": "Hypertension well controlled on medication, no history of heart disease or angina, no abdominal disease, no previous surgeries",
+    "drug_history": "Ramipril 2.5mg daily, occasional over the counter paracetamol which has not helped, no allergies",
+    "family_history": "Father has stable angina, mother has Alzheimer's disease in nursing home, no family history of gastrointestinal disease",
+    "social_history": "Lives in semi-detached home with wife and 2 children, full-time solicitor with very stressful job trying to become partner, infrequent smoker a few cigarettes a week when stressed, drinks alcohol a few times a week about one bottle of wine over the weekend, not exercising, poor diet snacking at work and big meals late at night, drinks a lot of caffeine, no recreational drugs",
+    "ice": {
+      "ideas": "I'm worried it could be pain from my heart",
+      "concerns": "I've put on weight recently and work is stressful, worried it could be angina like my dad",
+      "expectations": "I was hoping you could do a blood test or a scan to check there is nothing wrong with my heart"
+    },
+    "correct_diagnosis": "Gastro-oesophageal reflux disease (GERD) or peptic ulcer disease",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they'd like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Asks where the pain is", "keywords": ["where", "location", "whereabouts", "which part", "point to"]},
+    {"item": "Clarifies when symptom started and if sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset"]},
+    {"item": "Asks patient to describe how the pain feels", "keywords": ["describe", "what does it feel", "character", "type of pain", "what kind", "how does it feel"]},
+    {"item": "Asks if the pain moves anywhere else", "keywords": ["spread", "move", "radiate", "anywhere else", "go anywhere", "radiation"]},
+    {"item": "Asks if there are any other associated symptoms", "keywords": ["other symptoms", "anything else", "associated", "alongside", "as well"]},
+    {"item": "Asks how the pain has changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course"]},
+    {"item": "Asks if anything makes the pain worse or better", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when"]},
+    {"item": "Asks how severe the pain is on a scale of 0-10", "keywords": ["scale", "out of 10", "how bad", "severity", "rate the pain", "score"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systemic_enquiry": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "chest", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "past_medical_history": [
+    {"item": "Asks if patient has any medical conditions", "keywords": ["medical conditions", "diagnosed with", "health problems", "illnesses", "conditions"]},
+    {"item": "Screens for conditions increasing risk of GERD", "keywords": ["hiatus hernia", "obesity", "diabetes", "scleroderma", "reflux before", "stomach problems", "past history"]},
+    {"item": "Asks if patient has previously undergone surgeries or procedures", "keywords": ["surgery", "operations", "surgical", "hospital before", "procedures", "operation"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks about medications that may affect GI system", "keywords": ["ibuprofen", "aspirin", "NSAIDs", "anti-inflammatory", "steroids", "effect on stomach", "GI side effects"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of abdominal disease", "keywords": ["family history", "parents", "siblings", "family", "relatives", "stomach cancer", "bowel cancer", "abdominal", "runs in family"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Asks about occupation", "keywords": ["work", "job", "occupation", "employed", "career", "profession"]},
+    {"item": "Asks about diet and exercise", "keywords": ["exercise", "diet", "active", "physical activity", "what do you eat", "nutrition", "caffeine", "spicy", "food"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises the key points", "keywords": ["to summarise", "anything i missed", "anything else", "summary", "recap", "missed anything", "key points"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+},
+"viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Abdominal examination",
+        "keywords": ["abdominal exam", "abdomen", "palpate", "abdominal examination", "examine abdomen"]
+      },
+      {
+        "point": "Basic observations and vital signs",
+        "keywords": ["observations", "vital signs", "vitals", "blood pressure", "heart rate", "temperature", "oxygen", "sats", "BP", "HR"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "What are the most appropriate investigations for this patient?",
+    "marking_points": [
+      {
+        "point": "ECG to exclude cardiac cause",
+        "keywords": ["ECG", "electrocardiogram", "heart tracing", "cardiac"]
+      },
+      {
+        "point": "Bloods including FBC, U&Es, LFTs, CRP, amylase",
+        "keywords": ["bloods", "blood test", "FBC", "amylase", "CRP", "LFTs", "U&E", "full blood count"]
+      },
+      {
+        "point": "Ultrasound abdomen or endoscopy",
+        "keywords": ["ultrasound", "USS", "endoscopy", "gastroscopy", "OGD", "scope", "camera", "abdominal scan"]
+      },
+      {
+        "point": "Helicobacter pylori test",
+        "keywords": ["helicobacter", "H pylori", "breath test", "stool antigen", "urea breath test", "pylori"]
+      }
+    ],
+    "max_marks": 4
+  },
+  {
+    "question": "What are the differential diagnoses and which is most likely?",
+    "marking_points": [
+      {
+        "point": "Most likely — Gastro-oesophageal reflux disease (GERD)",
+        "keywords": ["GERD", "GORD", "reflux", "gastro oesophageal", "gastroesophageal", "acid reflux"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential",
+        "keywords": ["peptic ulcer", "ulcer", "PUD", "gastritis", "pancreatitis", "cholecystitis", "angina", "cardiac"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "What is the most appropriate management for this patient?",
+    "marking_points": [
+      {
+        "point": "Conservative — lifestyle changes including reducing coffee alcohol stopping smoking smaller meals avoid eating before bedtime avoid triggers",
+        "keywords": ["lifestyle", "diet", "coffee", "alcohol", "smoking", "smaller meals", "bedtime", "triggers", "spicy", "weight loss", "conservative"]
+      },
+      {
+        "point": "Medical — proton pump inhibitors such as omeprazole or lansoprazole",
+        "keywords": ["PPI", "proton pump", "omeprazole", "lansoprazole", "pantoprazole", "acid suppression"]
+      },
+      {
+        "point": "Medical — H2RA therapy if PPI inadequate",
+        "keywords": ["H2RA", "H2 receptor", "ranitidine", "famotidine", "H2 antagonist", "if PPI"]
+      },
+      {
+        "point": "Surgical — laparoscopic fundoplication if not wishing to remain on long term PPI",
+        "keywords": ["fundoplication", "laparoscopic", "surgical", "surgery", "operation", "long term PPI"]
+      }
+    ],
+    "max_marks": 4
+  }
+]
+  },
+
+  "chest_1": {
+    "patient_name": "John",
+    "age": 55,
+    "gender": "male",
+    "description": "Patient presenting to emergency department with severe central chest pain, likely aortic dissection",
+    "symptoms": "Severe central chest pain that came on suddenly 4 hours ago at work, sharp and fierce ripping pain in the centre, severity 7 out of 10, radiates straight through to between the shoulder blades, started at maximal intensity within seconds and has not eased off, nothing makes it better or worse, breathing in does not change it, not better lying flat or leaning forward",
+    "negative_features": "No chest or back trauma, no sweating, no shortness of breath, no palpitations, no syncope, no abdominal pain, no rashes, no cough, no haemoptysis, no nausea or vomiting, no fever, no reflux or heartburn, no recent travel",
+    "past_medical_history": "Hypertension poorly controlled, keeps changing tablets and misses doses when busy, no history of heart disease or angina, no previous surgeries",
+    "drug_history": "Losartan 100mg daily, amlodipine 10mg daily, indapamide 2.5mg daily, occasional ibuprofen and paracetamol for work injuries, amlodipine causes slight ankle swelling, no known allergies",
+    "family_history": "Father died of dementia aged 80, mother died of stroke aged 77, no family history of cardiovascular disease",
+    "social_history": "Lives in rented house with partner, self-employed builder working on building sites since leaving school, ex-smoker with 10 pack year history quit 5 years ago, minimal alcohol one or two pints a month, active at work but no formal exercise, poor diet at work mostly takeaways but trying to cook fresh meals at home with partner, previous cocaine use once or twice in late twenties but nothing since, drives a van for work",
+    "ice": {
+      "ideas": "I'm worried it could be a heart attack",
+      "concerns": "My friend died of a heart attack at 58 and he had bad chest pains too",
+      "expectations": "I want to know what this is. If it is a heart attack do I need a stent or something like that?"
+    },
+    "correct_diagnosis": "Aortic dissection",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they would like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed with taking a history", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Asks where the pain is", "keywords": ["where", "location", "whereabouts", "which part", "point to"]},
+    {"item": "Clarifies when pain started and if sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset"]},
+    {"item": "Asks patient to describe how the pain feels", "keywords": ["describe", "what does it feel", "character", "type of pain", "what kind", "how does it feel"]},
+    {"item": "Asks if the pain moves anywhere else", "keywords": ["spread", "move", "radiate", "anywhere else", "go anywhere", "radiation", "back", "shoulder"]},
+    {"item": "Asks if there are any other associated symptoms", "keywords": ["other symptoms", "anything else", "associated", "alongside", "as well", "sweating", "nausea", "breathless"]},
+    {"item": "Asks how the pain has changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course"]},
+    {"item": "Asks if anything makes the pain worse or better", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when"]},
+    {"item": "Asks how severe the pain is on a scale of 0-10", "keywords": ["scale", "out of 10", "how bad", "severity", "rate the pain", "score"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systemic_enquiry": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "chest", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "past_medical_history": [
+    {"item": "Asks if patient has any medical conditions", "keywords": ["medical conditions", "diagnosed with", "health problems", "illnesses", "conditions"]},
+    {"item": "Asks about pre-existing cardiovascular disease", "keywords": ["heart disease", "cardiovascular", "heart attack", "angina", "hypertension", "blood pressure", "stroke", "heart problems"]},
+    {"item": "Asks if patient has previously undergone surgeries or procedures", "keywords": ["surgery", "operations", "surgical", "hospital before", "procedures", "operation"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of cardiovascular or respiratory disease", "keywords": ["family history", "parents", "heart", "cardiovascular", "blood pressure", "hypertension", "aortic", "relatives", "family"]},
+    {"item": "Asks about family history of any relevant medical conditions", "keywords": ["family history", "conditions", "medical", "runs in family", "father", "mother", "siblings"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Asks about occupation", "keywords": ["work", "job", "occupation", "employed", "career", "profession"]},
+    {"item": "Asks about diet and exercise", "keywords": ["exercise", "diet", "active", "physical activity", "what do you eat", "nutrition"]},
+    {"item": "Asks if patient drives", "keywords": ["drive", "driving", "car", "license", "driver"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises the key points", "keywords": ["to summarise", "summary", "recap", "key points", "summarise"]},
+    {"item": "Asks patient if they have any questions or concerns not addressed", "keywords": ["any questions", "anything else", "concerns", "not addressed", "anything i missed", "anything you want to ask"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+},
+"viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Cardiovascular examination",
+        "keywords": ["cardiovascular exam", "heart exam", "cardiac exam", "cardiovascular", "heart sounds", "pulse", "blood pressure both arms"]
+      },
+      {
+        "point": "Respiratory examination",
+        "keywords": ["respiratory exam", "chest exam", "lung exam", "respiratory", "breath sounds", "auscultate chest"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "What are the differential diagnoses and which is most likely?",
+    "marking_points": [
+      {
+        "point": "Most likely — Aortic dissection",
+        "keywords": ["aortic dissection", "dissection", "aorta"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential",
+        "keywords": ["acute coronary syndrome", "ACS", "heart attack", "MI", "pneumothorax", "musculoskeletal", "pericarditis", "pulmonary embolism", "PE"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "What are the most appropriate investigations for this patient?",
+    "marking_points": [
+      {
+        "point": "ECG to check for ischaemia",
+        "keywords": ["ECG", "electrocardiogram", "heart tracing", "ischaemia"]
+      },
+      {
+        "point": "Bloods including FBC, U&Es, troponin, D-dimer, coagulation profile",
+        "keywords": ["bloods", "blood test", "FBC", "troponin", "D-dimer", "coagulation", "U&E", "full blood count"]
+      },
+      {
+        "point": "Blood gas to check lactate levels",
+        "keywords": ["blood gas", "ABG", "arterial blood gas", "lactate", "gas"]
+      },
+      {
+        "point": "Chest X-ray",
+        "keywords": ["chest xray", "chest x-ray", "CXR", "chest radiograph", "plain film chest"]
+      },
+      {
+        "point": "CT angiogram of the aorta",
+        "keywords": ["CT angiogram", "CT aorta", "CTA", "CT scan aorta", "angiogram", "CT chest"]
+      }
+    ],
+    "max_marks": 5
+  },
+  {
+    "question": "Describe the initial management of a confirmed aortic dissection.",
+    "marking_points": [
+      {
+        "point": "ABCDE assessment",
+        "keywords": ["ABCDE", "airway", "breathing", "circulation", "systematic approach", "ABCDE assessment"]
+      },
+      {
+        "point": "Analgesia with intravenous opiates",
+        "keywords": ["analgesia", "pain relief", "morphine", "opiates", "opioids", "IV analgesia", "intravenous analgesia"]
+      },
+      {
+        "point": "Control of blood pressure with IV labetalol",
+        "keywords": ["blood pressure", "BP control", "labetalol", "antihypertensive", "lower blood pressure", "BP management"]
+      },
+      {
+        "point": "Liaise urgently with cardiothoracic team",
+        "keywords": ["cardiothoracic", "cardiac surgery", "surgical team", "refer", "liaise", "specialist", "urgent referral"]
+      }
+    ],
+    "max_marks": 4
+  },
+  {
+    "question": "Describe the surgical management of aortic dissection.",
+    "marking_points": [
+      {
+        "point": "Type A dissections require open surgery to prevent aortic rupture",
+        "keywords": ["type A", "type a dissection", "open surgery", "surgical repair", "aortic rupture", "ascending"]
+      },
+      {
+        "point": "Type B dissections are usually managed medically with endovascular intervention for complicated cases",
+        "keywords": ["type B", "type b dissection", "medical management", "endovascular", "TEVAR", "descending", "complicated"]
+      }
+    ],
+    "max_marks": 2
+  }
+]
+  },
+
+  "chest_2": {
+    "patient_name": "Michael",
+    "age": 55,
+    "gender": "male",
+    "description": "Patient presenting to general practice with recurring chest pain on exertion, likely stable angina",
+    "symptoms": "Central chest pain occurring a couple of times per week for the last 3 months, tight feeling like a band squeezing across the chest, severity 5 out of 10, radiates into neck on both sides and sometimes left arm, associated shortness of breath at the same time as chest pain, pain is not worse on deep breathing, each episode lasts a few minutes, comes on suddenly during physical exertion at work especially carrying heavy things up stairs, goes away completely with rest within a few minutes",
+    "negative_features": "No syncope or collapse, no palpitations, no breathlessness when lying flat, no waking up gasping at night, no cough, no blood in sputum, no reflux, no weight loss, otherwise well in himself",
+    "past_medical_history": "Hypertension diagnosed aged 50 on medication, high cholesterol diagnosed shortly after hypertension",
+    "drug_history": "Ramipril, amlodipine, atorvastatin which he does not take because his cousin had shoulder aches from it and he cannot afford that with his physical job, allergic to penicillin which gives him diarrhoea",
+    "family_history": "Younger brother had heart attack aged 50 treated with a stent, father died of heart attack aged 75 and had hypertension and high cholesterol, two brothers and father had type 2 diabetes, mother had a stroke aged 70",
+    "social_history": "Lives with wife and two daughters studying A-levels so stressful household, builder mostly on big commercial jobs, stopped smoking 3 months ago when chest pains started previously smoked 20 a day for 30 years, shares a few bottles of wine a week with wife, no illicit drugs, physically active at work on feet all day, diet could be better toast for breakfast sandwich for lunch and home cooked dinner with snacks, BMI 30 borderline overweight",
+    "ice": {
+      "ideas": "I thought it was a pulled muscle at first but it has been going on too long",
+      "concerns": "I'm worried it is something serious like a heart attack",
+      "expectations": "I hope you can give me the all clear so I can get back to work"
+    },
+    "correct_diagnosis": "Stable angina",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they'd like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed with history taking", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Site: asks where the pain is", "keywords": ["where", "location", "whereabouts", "which part", "point to"]},
+    {"item": "Onset: clarifies when pain started and if sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset"]},
+    {"item": "Character: asks patient to describe how the pain feels", "keywords": ["describe", "what does it feel", "character", "type of pain", "what kind", "how does it feel"]},
+    {"item": "Radiation: asks if the pain moves anywhere else", "keywords": ["spread", "move", "radiate", "anywhere else", "go anywhere", "radiation", "arm", "jaw", "neck"]},
+    {"item": "Associated symptoms: asks if there are any other associated symptoms", "keywords": ["other symptoms", "anything else", "associated", "alongside", "as well", "sweating", "nausea", "breathless", "short of breath"]},
+    {"item": "Time course: asks how the pain has changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course", "frequency"]},
+    {"item": "Exacerbating or relieving factors: asks if anything makes pain worse or better", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when", "exertion", "rest"]},
+    {"item": "Severity: asks how severe the pain is on a scale of 0-10", "keywords": ["scale", "out of 10", "how bad", "severity", "rate the pain", "score"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systems_review": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "past_medical_history": [
+    {"item": "Screens for conditions associated with chest pain", "keywords": ["heart disease", "cardiovascular", "hypertension", "blood pressure", "diabetes", "cholesterol", "previous heart attack", "angina", "chest problems"]},
+    {"item": "Asks about other medical diagnoses and previous surgical history", "keywords": ["surgery", "operations", "surgical", "hospital before", "procedures", "other conditions", "diagnoses"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks if patient experiencing any side effects from medication", "keywords": ["side effects", "problems with medication", "tolerating", "issues with tablets", "any effects"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of cardiovascular or thromboembolic disease", "keywords": ["family history", "parents", "heart", "cardiovascular", "blood pressure", "hypertension", "clot", "DVT", "PE", "thrombo", "relatives", "family"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Asks about diet and exercise", "keywords": ["exercise", "diet", "active", "physical activity", "what do you eat", "nutrition", "weight"]},
+    {"item": "Asks about occupation", "keywords": ["work", "job", "occupation", "employed", "career", "profession", "builder"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises salient points and asks if anything missed", "keywords": ["to summarise", "anything i missed", "anything else", "summary", "recap", "missed anything", "key points"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+},
+"viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Cardiovascular examination",
+        "keywords": ["cardiovascular exam", "heart exam", "cardiac exam", "cardiovascular", "heart sounds", "pulse", "blood pressure"]
+      },
+      {
+        "point": "Vital signs",
+        "keywords": ["vital signs", "vitals", "observations", "blood pressure", "heart rate", "temperature", "oxygen", "sats", "BP", "HR"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "Describe some appropriate further investigations for this patient.",
+    "marking_points": [
+      {
+        "point": "12-lead ECG",
+        "keywords": ["ECG", "12 lead", "electrocardiogram", "heart tracing"]
+      },
+      {
+        "point": "Bloods including FBC, U&Es, LFTs, lipid profile, HbA1c",
+        "keywords": ["bloods", "blood test", "FBC", "U&E", "LFTs", "lipid profile", "cholesterol", "HbA1c", "full blood count"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "What is your differential diagnosis? Please give your most likely diagnosis and two other possibilities.",
+    "marking_points": [
+      {
+        "point": "Most likely — Stable angina",
+        "keywords": ["stable angina", "angina"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential 1",
+        "keywords": ["acute coronary syndrome", "ACS", "heart attack", "MI", "musculoskeletal", "GERD", "reflux", "pericarditis", "costochondritis"]
+      },
+      {
+        "point": "Any reasonable differential 2",
+        "keywords": ["acute coronary syndrome", "ACS", "heart attack", "MI", "musculoskeletal", "GERD", "reflux", "pericarditis", "costochondritis"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "What medication should be offered for rapid symptom relief of angina?",
+    "marking_points": [
+      {
+        "point": "GTN spray or tablets",
+        "keywords": ["GTN", "glyceryl trinitrate", "nitrate", "spray", "angina spray", "sublingual"]
+      }
+    ],
+    "max_marks": 1
+  },
+  {
+    "question": "Describe how the patient should use GTN spray.",
+    "marking_points": [
+      {
+        "point": "Stop activity and take one dose of GTN when attack occurs",
+        "keywords": ["stop", "rest", "one dose", "first dose", "sit down", "take GTN"]
+      },
+      {
+        "point": "Must sit down due to risk of lightheadedness and hypotension",
+        "keywords": ["sit down", "sit", "lightheaded", "dizzy", "hypotension", "low blood pressure", "faint"]
+      },
+      {
+        "point": "Take second dose after five minutes if pain not eased",
+        "keywords": ["second dose", "five minutes", "5 minutes", "repeat", "another dose", "if not better"]
+      },
+      {
+        "point": "Call ambulance if pain not eased five minutes after second dose or if pain intensifies or patient unwell",
+        "keywords": ["ambulance", "999", "call for help", "emergency", "10 minutes", "not eased", "intensifies", "unwell", "worse"]
+      }
+    ],
+    "max_marks": 4
+  }
+]
+  },
+  "chest_3": {
+    "patient_name": "Robert",
+    "age": 50,
+    "gender": "male",
+    "description": "Patient presenting to emergency department with severe left sided chest pain, likely ST-elevation myocardial infarction (STEMI)",
+    "symptoms": "Left sided chest pain that came on suddenly out of nowhere, woke him up at 6am and wife called ambulance immediately, heavy tight pressing feeling against the chest, severity 9 out of 10, constant and has not changed since it started, radiates up into neck and jaw and down left arm, associated nausea but not vomited yet, feeling clammy and sweaty, nothing makes it better or worse, does not worsen when sitting standing or lying down, not worse on deep breathing",
+    "negative_features": "No shortness of breath, no syncope or collapse, no fatigue, no palpitations, no previous episodes like this",
+    "past_medical_history": "Hypertension diagnosed about a year ago on medication, high cholesterol trying to improve diet with more fruit and vegetables",
+    "drug_history": "Ramipril, atorvastatin, no known drug allergies",
+    "family_history": "Sister had heart attack aged 50 treated with a stent, father died of heart attack aged 51, mother died of stroke aged 60",
+    "social_history": "Lives with wife and teenage son, engineer mostly doing project management now, shares a bottle of wine every evening with wife, non-smoker, no illicit drugs, diet is coffee for breakfast sandwich with 4 slices of bread for lunch and often fish for dinner, walks to work when weather is ok about 40 minutes each way",
+    "ice": {
+      "ideas": "I think I'm having a heart attack",
+      "concerns": "I'm concerned I won't make it",
+      "expectations": "I need something for the pain"
+    },
+    "correct_diagnosis": "ST-elevation myocardial infarction (STEMI)",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they'd like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed with history taking", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Site: asks where the pain is", "keywords": ["where", "location", "whereabouts", "which part", "point to"]},
+    {"item": "Onset: clarifies when pain started and if sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset"]},
+    {"item": "Character: asks patient to describe how the pain feels", "keywords": ["describe", "what does it feel", "character", "type of pain", "what kind", "how does it feel"]},
+    {"item": "Radiation: asks if the pain moves anywhere else", "keywords": ["spread", "move", "radiate", "anywhere else", "go anywhere", "radiation", "arm", "jaw", "neck"]},
+    {"item": "Associated symptoms: asks if there are any other associated symptoms", "keywords": ["other symptoms", "anything else", "associated", "alongside", "as well", "sweating", "nausea", "breathless", "clammy"]},
+    {"item": "Time course: asks how the pain has changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course"]},
+    {"item": "Exacerbating or relieving factors: asks if anything makes pain worse or better", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when"]},
+    {"item": "Severity: asks how severe the pain is on a scale of 0-10", "keywords": ["scale", "out of 10", "how bad", "severity", "rate the pain", "score"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systems_review": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "past_medical_history": [
+    {"item": "Screens for conditions associated with chest pain", "keywords": ["heart disease", "cardiovascular", "hypertension", "blood pressure", "diabetes", "cholesterol", "previous heart attack", "angina", "chest problems"]},
+    {"item": "Asks about other medical diagnoses and previous surgical history", "keywords": ["surgery", "operations", "surgical", "hospital before", "procedures", "other conditions", "diagnoses"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks if patient experiencing any side effects from medication", "keywords": ["side effects", "problems with medication", "tolerating", "issues with tablets", "any effects"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of cardiovascular or thromboembolic disease", "keywords": ["family history", "parents", "heart", "cardiovascular", "blood pressure", "hypertension", "clot", "DVT", "PE", "thrombo", "relatives", "family", "heart attack"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Asks about diet and exercise", "keywords": ["exercise", "diet", "active", "physical activity", "what do you eat", "nutrition", "weight"]},
+    {"item": "Asks about occupation", "keywords": ["work", "job", "occupation", "employed", "career", "profession"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises salient points and asks if anything missed", "keywords": ["to summarise", "anything i missed", "anything else", "summary", "recap", "missed anything", "key points"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+},
+"viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Cardiovascular examination",
+        "keywords": ["cardiovascular exam", "heart exam", "cardiac exam", "cardiovascular", "heart sounds", "pulse", "blood pressure", "CRT", "JVP"]
+      }
+    ],
+    "max_marks": 1
+  },
+  {
+    "question": "Describe some appropriate further investigations for this patient.",
+    "marking_points": [
+      {
+        "point": "12-lead ECG",
+        "keywords": ["ECG", "12 lead", "electrocardiogram", "heart tracing", "ST elevation"]
+      },
+      {
+        "point": "Bloods including FBC, U&Es, CRP, LFTs, glucose, troponin, coagulation screen",
+        "keywords": ["bloods", "blood test", "FBC", "troponin", "CRP", "LFTs", "U&E", "glucose", "coagulation", "full blood count"]
+      },
+      {
+        "point": "Imaging including CXR, echo, or coronary angiography",
+        "keywords": ["chest xray", "CXR", "echo", "echocardiogram", "angiography", "coronary angiogram", "imaging"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "What is your differential diagnosis? Please give your most likely diagnosis and two other possibilities.",
+    "marking_points": [
+      {
+        "point": "Most likely — STEMI",
+        "keywords": ["STEMI", "ST elevation", "myocardial infarction", "heart attack", "MI"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential 1",
+        "keywords": ["NSTEMI", "unstable angina", "aortic dissection", "pericarditis", "pulmonary embolism", "PE", "pneumothorax"]
+      },
+      {
+        "point": "Any reasonable differential 2",
+        "keywords": ["NSTEMI", "unstable angina", "aortic dissection", "pericarditis", "pulmonary embolism", "PE", "pneumothorax"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "Name 4 medications that should be used in the immediate management of this patient.",
+    "marking_points": [
+      {
+        "point": "Morphine",
+        "keywords": ["morphine", "opioid", "opiate", "IV morphine"]
+      },
+      {
+        "point": "Nitrates such as GTN spray",
+        "keywords": ["GTN", "nitrate", "glyceryl trinitrate", "spray", "nitro"]
+      },
+      {
+        "point": "Aspirin 300mg",
+        "keywords": ["aspirin", "300mg", "antiplatelet", "aspirin 300"]
+      },
+      {
+        "point": "Prasugrel 60mg or clopidogrel 300mg",
+        "keywords": ["prasugrel", "clopidogrel", "60mg", "300mg", "P2Y12", "antiplatelet", "ticagrelor"]
+      }
+    ],
+    "max_marks": 4
+  },
+  {
+    "question": "What is the current gold standard treatment option for this patient?",
+    "marking_points": [
+      {
+        "point": "Primary percutaneous coronary intervention (PCI) to open the vessel as quickly as possible",
+        "keywords": ["PCI", "percutaneous coronary intervention", "angioplasty", "stent", "primary PCI", "PPCI", "balloon", "open the vessel"]
+      }
+    ],
+    "max_marks": 1
+  }
+]
+  },
+  "cough_1": {
+    "patient_name": "Emma",
+    "age": 24,
+    "gender": "female",
+    "description": "Patient presenting to general practice with 4 week history of persistent cough following lower respiratory tract infection, likely post-infective cough",
+    "symptoms": "Persistent non-productive cough for 4 weeks throughout the day at home and at work, started 4 weeks ago with lower respiratory tract infection symptoms including productive cough with horrible phlegm and fever, treated with oral penicillin 2 weeks ago and felt much better since but cough has not fully resolved, antibiotics helped but cough still lingering, COVID-19 negative on 2 PCR tests, feels well in herself otherwise apart from the cough",
+    "negative_features": "No haemoptysis, no chest pain, no breathlessness, no wheeze, no post-nasal drip, no heartburn or reflux, no hoarseness, no weight loss, no current fever, no night sweats, no specific symptoms of systemic disease, no recent overseas travel",
+    "past_medical_history": "No history of pre-existing respiratory disease, childhood immunisations up to date, has had 3 COVID vaccinations, no surgical history",
+    "drug_history": "No regular prescribed medication, tried Benylin cough syrup from supermarket which did not help much, no known allergies",
+    "family_history": "Father has hypertension on medication, no other significant family history",
+    "social_history": "Lives with parents, works as a waitress in a bar, occasional social smoker 2 to 3 cigarettes on a night out once a week since age 18, moderate alcohol goes out once a week with friends and drinks about a bottle and a half of wine, tried cannabis once did not like it, parents have a cat at home",
+    "ice": {
+      "ideas": "I don't think I have cleared the infection, could you give me some more antibiotics please",
+      "concerns": "It is a bit embarrassing at work because I am coughing all the time and people think I have COVID but all my tests have been negative",
+      "expectations": "Maybe I need some antibiotics in case it is an infection which has not gone away"
+    },
+    "correct_diagnosis": "Post-infective cough following resolved lower respiratory tract infection",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they would like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed with taking a history", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Onset: clarifies when cough started and if sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset", "started"]},
+    {"item": "Character: asks patient to describe how the cough feels", "keywords": ["describe", "what does it feel", "character", "type of cough", "what kind", "dry", "wet", "productive"]},
+    {"item": "Associated symptoms: asks if there are any other associated symptoms", "keywords": ["other symptoms", "anything else", "associated", "alongside", "as well", "fever", "temperature", "phlegm", "sputum"]},
+    {"item": "Time course: asks how the cough has changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course", "improving"]},
+    {"item": "Exacerbating or relieving factors: asks if anything makes cough worse or better", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when", "triggers"]},
+    {"item": "Shortness of breath", "keywords": ["breathless", "short of breath", "breathing", "dyspnoea", "breath", "out of breath"]},
+    {"item": "Haemoptysis", "keywords": ["blood", "coughing blood", "haemoptysis", "blood in sputum", "blood in phlegm", "bloody"]},
+    {"item": "Wheeze", "keywords": ["wheeze", "wheezing", "whistling", "tight chest", "asthma"]},
+    {"item": "Chest pain", "keywords": ["chest pain", "chest tightness", "pain in chest", "chest discomfort", "pleuritic"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "systems_review": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "travel_history": [
+    {"item": "Takes a travel history", "keywords": ["travel", "abroad", "been anywhere", "overseas", "holiday", "trip", "recently travelled"]}
+  ],
+  "past_medical_history": [
+    {"item": "Screens for conditions increasing risk of respiratory disease", "keywords": ["asthma", "COPD", "respiratory", "lung disease", "chest problems", "breathing problems", "medical history", "past history"]},
+    {"item": "Asks about other medical diagnoses and previous surgical history", "keywords": ["surgery", "operations", "surgical", "hospital before", "procedures", "other conditions", "diagnoses"]},
+    {"item": "Asks about previous immunisations against respiratory disease", "keywords": ["vaccination", "vaccine", "immunisation", "flu jab", "pneumonia vaccine", "covid vaccine", "jabs"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter", "cough syrup"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy", "penicillin"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of respiratory disease", "keywords": ["family history", "parents", "respiratory", "lung", "asthma", "COPD", "chest", "relatives", "family", "runs in family"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Gathers details about occupation", "keywords": ["work", "job", "occupation", "employed", "career", "profession", "waitress", "bar"]},
+    {"item": "Asks about pets and hobbies associated with respiratory disease", "keywords": ["pets", "animals", "cat", "dog", "bird", "hobbies", "exposure", "dust", "mould"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises salient points and asks if anything missed", "keywords": ["to summarise", "anything i missed", "anything else", "summary", "recap", "missed anything", "key points"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+},
+"viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Respiratory examination",
+        "keywords": ["respiratory exam", "chest exam", "lung exam", "respiratory", "breath sounds", "auscultate", "percussion", "chest examination"]
+      }
+    ],
+    "max_marks": 1
+  },
+  {
+    "question": "What is your differential diagnosis? Please give your most likely diagnosis and one other possibility.",
+    "marking_points": [
+      {
+        "point": "Most likely — Post-infectious cough",
+        "keywords": ["post infectious", "post infective", "post viral", "lingering cough", "resolving infection", "after infection"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential",
+        "keywords": ["lower respiratory tract infection", "LRTI", "chest infection", "pneumonia", "asthma", "GERD", "reflux", "post nasal drip"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "What is the most likely diagnosis?",
+    "marking_points": [
+      {
+        "point": "Post-infectious cough",
+        "keywords": ["post infectious", "post infective", "post viral", "lingering cough", "resolving infection", "after infection"],
+        "required": true
+      }
+    ],
+    "max_marks": 1
+  },
+  {
+    "question": "What advice should be given to this patient?",
+    "marking_points": [
+      {
+        "point": "Post-infectious cough is usually self-limiting but may last up to 8 weeks",
+        "keywords": ["self limiting", "self-limiting", "8 weeks", "eight weeks", "resolve on its own", "get better on its own", "natural", "time"]
+      },
+      {
+        "point": "If not improving after 8 weeks attend for re-review",
+        "keywords": ["8 weeks", "eight weeks", "review", "re-review", "come back", "return", "not improving", "follow up", "if not better"]
+      }
+    ],
+    "max_marks": 2
+  }
+]
+  },
+  "cough_2": {
+    "patient_name": "George",
+    "age": 64,
+    "gender": "male",
+    "description": "Patient presenting to general practice with 5 month history of persistent cough, breathlessness and haemoptysis, likely lung cancer given red flag symptoms and smoking history",
+    "symptoms": "Persistent cough for 5 months starting suddenly, initially thought it was an infection as husband was also unwell, cough started with small amount of green phlegm for a few days but no phlegm since, cough is becoming more frequent throughout the day, nothing triggers it and nothing makes it go away, noticed small amount of bright red blood on tissue last week which is what prompted the visit today, feeling fatigued and worn out after activities that previously were fine, trousers are falling down suggesting unintentional weight loss but no weighing scale at home, breathlessness on exertion only over the last few weeks, used to be very fit but now gets short of breath walking up stairs quickly or running, breathlessness is stable and not getting considerably worse, no change overnight or in the morning",
+    "negative_features": "No chest pain, no wheeze, no breathlessness at rest or at night, no hoarseness, no voice changes, no changes to appetite, no difficulty swallowing, no urinary or bowel symptoms, no fever, no recent travel, no bird or animal exposure",
+    "past_medical_history": "Hypertension on medication, hypercholesterolaemia on statin, complete vaccination history including annual flu vaccine, due pneumonia vaccine at 65",
+    "drug_history": "Amlodipine 5mg daily for blood pressure, atorvastatin 20mg nightly for cholesterol, penicillin allergy causing anaphylaxis to amoxicillin so needs alternative antibiotics",
+    "family_history": "Both parents have hypertension on similar medication, father has Alzheimer's disease living in nursing home, wants to visit father but worried about spreading infection",
+    "social_history": "Lives with husband in owned house, main carer for mother who lives alone since father moved to nursing home, breathlessness making it harder to care for mother, retired architect for 40 years with potential asbestos exposure in buildings being demolished only mention if directly asked, drinks one bottle of wine on weekends, ex-smoker with 20 pack year history smoked 20 a day through twenties and thirties quit on fortieth birthday, no recreational drugs, used to walk a lot but now struggles to walk up hills without breathlessness, no recent travel, no bird or animal exposure",
+    "ice": {
+      "ideas": "I think it is the cold lingering, I have read that people can feel breathless and tired for up to 6 months after a bad cold",
+      "concerns": "I want to know how much longer this will go on, I want to get back to doing the things I used to enjoy",
+      "expectations": "Can you give me some antibiotics to help clear the infection quicker?"
+    },
+    "correct_diagnosis": "Lung cancer — red flags include haemoptysis, unintentional weight loss, fatigue, persistent cough over 3 weeks, smoking history and asbestos exposure",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they would like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed with taking a history", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint_cough": [
+    {"item": "Asks when cough started and if sudden or gradual", "keywords": ["when did", "how long", "start", "began", "sudden", "gradual", "onset", "started"]},
+    {"item": "Asks patient to describe cough and changes over time", "keywords": ["describe", "what does it feel", "character", "type of cough", "changed", "over time", "dry", "wet"]},
+    {"item": "Asks about specific characteristics including productive or non-productive sputum colour and volume", "keywords": ["productive", "phlegm", "sputum", "colour", "green", "yellow", "blood", "volume", "amount", "mucus"]},
+    {"item": "Asks about other symptoms associated with cough including infective symptoms and shortness of breath", "keywords": ["other symptoms", "anything else", "associated", "fever", "temperature", "breathless", "short of breath", "infective", "unwell"]},
+    {"item": "Identifies red flags including night sweats hoarseness pleuritic chest pain and leg swelling", "keywords": ["night sweats", "sweats", "hoarseness", "voice", "chest pain", "pleuritic", "leg swelling", "swollen leg", "red flag"]},
+    {"item": "Screens for other key respiratory symptoms including wheeze chest pain and systemic symptoms", "keywords": ["wheeze", "wheezing", "chest pain", "systemic", "respiratory symptoms", "breathing", "tight chest"]},
+    {"item": "Directly asks about haemoptysis", "keywords": ["blood", "coughing blood", "haemoptysis", "blood in sputum", "blood in phlegm", "bloody"]},
+    {"item": "Directly asks about weight loss", "keywords": ["weight", "lost weight", "weight loss", "lighter", "clothes fitting", "losing weight"]},
+    {"item": "Directly asks about fatigue", "keywords": ["tired", "fatigue", "exhausted", "energy", "worn out", "fatigued"]},
+    {"item": "Clarifies how cough changed over time or throughout the day", "keywords": ["getting worse", "getting better", "changed", "over time", "morning", "night", "throughout the day", "time course"]},
+    {"item": "Asks if patient has experienced repeated episodes of cough", "keywords": ["before", "previous", "repeated", "episodes", "recurrent", "again", "happened before"]},
+    {"item": "Asks if anything makes cough better or worse", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when", "triggers"]}
+  ],
+  "history_of_complaint_dyspnoea": [
+    {"item": "Clarifies when dyspnoea started and if sudden or gradual", "keywords": ["when did breathless", "how long breathless", "breathless start", "dyspnoea onset", "short of breath start"]},
+    {"item": "Asks if dyspnoea occurs on exertion or at rest", "keywords": ["exertion", "exercise", "walking", "at rest", "resting", "when active", "on exertion"]},
+    {"item": "Asks how dyspnoea changed over time and identifies diurnal variation or PND", "keywords": ["getting worse", "changed", "night", "waking", "paroxysmal", "nocturnal", "morning", "throughout day", "variation"]},
+    {"item": "Asks if anything makes dyspnoea better or worse and identifies triggers", "keywords": ["makes breathless worse", "makes breathless better", "triggers", "relieves breathless", "aggravates", "helps breathless"]},
+    {"item": "Establishes severity and how it affects activities", "keywords": ["how bad", "severity", "affecting", "activities", "daily life", "walking", "stairs", "limiting", "impact"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systemic_enquiry": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "past_medical_history": [
+    {"item": "Asks if patient has any medical conditions", "keywords": ["medical conditions", "diagnosed with", "health problems", "illnesses", "conditions"]},
+    {"item": "Asks about pre-existing respiratory disease", "keywords": ["asthma", "COPD", "respiratory", "lung disease", "chest problems", "breathing problems", "previous lung"]},
+    {"item": "Asks about immunisations against respiratory disease", "keywords": ["vaccination", "vaccine", "immunisation", "flu jab", "pneumonia vaccine", "covid vaccine", "jabs"]},
+    {"item": "Asks if patient has previously undergone surgeries or procedures", "keywords": ["surgery", "operations", "surgical", "hospital before", "procedures", "operation"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy", "penicillin", "anaphylaxis"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of respiratory disease", "keywords": ["family history", "parents", "respiratory", "lung", "asthma", "COPD", "chest", "relatives", "family", "cancer", "runs in family"]},
+    {"item": "Asks about family history of any relevant medical conditions", "keywords": ["family history", "conditions", "medical", "runs in family", "father", "mother", "siblings", "relevant"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker", "ex smoker", "quit"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine"]},
+    {"item": "Asks about exercise", "keywords": ["exercise", "active", "physical activity", "walking", "gym", "sport", "fitness"]},
+    {"item": "Asks about current and previous occupations including exposure to pulmonary irritants or asbestos", "keywords": ["work", "job", "occupation", "employed", "career", "profession", "asbestos", "dust", "chemicals", "fumes", "hazardous", "exposure", "previous job"]},
+    {"item": "Asks about pets and hobbies associated with respiratory disease", "keywords": ["pets", "animals", "cat", "dog", "bird", "hobbies", "exposure", "dust", "mould", "pigeons"]},
+    {"item": "Asks about recent travel", "keywords": ["travel", "abroad", "been anywhere", "overseas", "holiday", "trip", "recently travelled"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises the key points", "keywords": ["to summarise", "summary", "recap", "key points", "summarise"]},
+    {"item": "Asks patient if they have any questions or concerns not addressed", "keywords": ["any questions", "anything else", "concerns", "not addressed", "anything i missed", "anything you want to ask"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+},
+"viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Respiratory examination",
+        "keywords": ["respiratory exam", "chest exam", "lung exam", "respiratory", "breath sounds", "auscultate", "percussion", "finger clubbing", "chest examination"]
+      },
+      {
+        "point": "Observations and vital signs",
+        "keywords": ["observations", "vital signs", "vitals", "blood pressure", "heart rate", "temperature", "oxygen", "sats", "BP", "HR", "RR"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "Describe some appropriate further investigations for this patient.",
+    "marking_points": [
+      {
+        "point": "Bedside — sputum culture or early morning sputum for acid-fast bacilli",
+        "keywords": ["sputum", "sputum culture", "acid fast bacilli", "AFB", "TB", "tuberculosis", "sputum sample"]
+      },
+      {
+        "point": "Bloods including FBC, U&Es, LFTs, bone profile",
+        "keywords": ["bloods", "blood test", "FBC", "U&E", "LFTs", "bone profile", "full blood count", "liver function", "electrolytes"]
+      },
+      {
+        "point": "Imaging — chest X-ray and CT thorax abdomen pelvis for staging",
+        "keywords": ["chest xray", "CXR", "CT", "CT scan", "CT thorax", "CT chest", "staging", "imaging", "radiograph"]
+      },
+      {
+        "point": "Bronchoscopy and biopsy or endobronchial ultrasound or PET-CT",
+        "keywords": ["bronchoscopy", "biopsy", "EBUS", "endobronchial", "PET", "PET-CT", "tissue diagnosis", "histology"]
+      }
+    ],
+    "max_marks": 4
+  },
+  {
+    "question": "What are the differential diagnoses and which is most likely?",
+    "marking_points": [
+      {
+        "point": "Most likely — Lung cancer",
+        "keywords": ["lung cancer", "malignancy", "cancer", "carcinoma", "tumour", "neoplasm"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential 1",
+        "keywords": ["pneumonia", "tuberculosis", "TB", "sarcoidosis", "COPD", "pulmonary fibrosis", "infection", "metastasis"]
+      },
+      {
+        "point": "Any reasonable differential 2",
+        "keywords": ["pneumonia", "tuberculosis", "TB", "sarcoidosis", "COPD", "pulmonary fibrosis", "infection", "metastasis"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "What is the most appropriate management for lung cancer?",
+    "marking_points": [
+      {
+        "point": "Conservative — supportive therapies and palliative care",
+        "keywords": ["supportive", "palliative", "physiotherapy", "occupational therapy", "symptom management", "conservative"]
+      },
+      {
+        "point": "Medical — chemotherapy immunotherapy or radiotherapy",
+        "keywords": ["chemotherapy", "chemo", "immunotherapy", "radiotherapy", "radiation", "medical treatment", "oncology"]
+      },
+      {
+        "point": "Surgical — surgical resection",
+        "keywords": ["surgery", "surgical resection", "lobectomy", "pneumonectomy", "resection", "remove tumour", "surgical"]
+      }
+    ],
+    "max_marks": 3
+  }
+]
+  },
+  "cough_3": {
+    "patient_name": "Thomas",
+    "age": 56,
+    "gender": "male",
+    "description": "Patient presenting to general practice with several months of productive cough, breathlessness, pleuritic chest pain, weight loss and night sweats, likely pneumonia or serious respiratory infection",
+    "symptoms": "Productive chesty cough for several months, started as dry cough and progressed to bringing up green and yellow phlegm, no bursts or coughing fits, bloody phlegm noticed in last couple of weeks only if directly asked, shorter of breath than usual needing to take a break climbing the hill to his house, pleuritic chest pain with sharp pain when coughing heavily or taking a deep breath, family have commented he looks thin and he has had to tighten his belt suggesting unintentional weight loss, reduced appetite lately, feels warm and sometimes very hot and sweaty overnight with night sweats, generally feels quite unwell and not himself",
+    "negative_features": "No urinary symptoms, no nasal blockage or runny nose, no wheeze, no confusion or neurological symptoms, no joint pain, no rashes or skin changes, no recent travel, no unwell contacts",
+    "past_medical_history": "Type 2 diabetes diagnosed a few years ago, asthma with several courses of steroids this year including one hospital admission treated with nebulisers, fully vaccinated against flu and covid",
+    "drug_history": "Metformin 1g twice daily, gliclazide 80mg once daily, salbutamol blue reliever inhaler as needed which does not help much with current cough, budesonide 200 micrograms preventer inhaler once daily, prednisolone 30mg taken 3 courses in last 12 months, paracetamol to help feel better and bring down temperature, no known allergies",
+    "family_history": "Father has asthma, mother has hypertension but otherwise in good health",
+    "social_history": "Lives with wife, senior healthcare assistant working on gastroenterology ward at a hospital, one to two beers a week, non-smoker never smoked, tried LSD in younger years but nothing recently",
+    "ice": {
+      "ideas": "I don't know what the cause is, isn't that your job",
+      "concerns": "I'm worried it could be something serious like lung cancer",
+      "expectations": "I'm expecting to be told to come back if I'm no better in a few weeks, that's what you usually tell me"
+    },
+    "correct_diagnosis": "Pneumonia — key features include productive cough with green sputum, haemoptysis, pleuritic chest pain, night sweats, weight loss, fever and immunocompromised state from diabetes and steroids",
+    "checklist": {
+  "opening_consultation": [
+    {"item": "Washes hands and dons PPE if appropriate", "keywords": ["wash", "hands", "ppe", "sanitize", "clean hands"]},
+    {"item": "Introduces themselves including name and role", "keywords": ["my name", "i am", "i'm", "doctor", "student", "introduce"]},
+    {"item": "Confirms patient's name and date of birth", "keywords": ["your name", "date of birth", "dob", "confirm your name"]},
+    {"item": "Explains they'd like to take a history", "keywords": ["take a history", "ask you some questions", "talk to you about"]},
+    {"item": "Gains consent to proceed with history taking", "keywords": ["is that okay", "do you mind", "consent", "that alright", "okay with you"]}
+  ],
+  "presenting_complaint": [
+    {"item": "Uses open questioning to explore presenting complaint", "keywords": ["what brings you", "tell me about", "how can i help", "what seems to be", "what's been going on"]}
+  ],
+  "history_of_complaint": [
+    {"item": "Character: establishes that the cough feels chesty", "keywords": ["describe", "chesty", "chest", "what does it feel", "character", "type of cough", "what kind", "how does it feel", "chesty cough"]},
+    {"item": "Timing: clarifies when cough started and if getting worse", "keywords": ["when did", "how long", "start", "began", "getting worse", "started", "onset", "timing"]},
+    {"item": "Sputum: establishes colour smell and amount", "keywords": ["phlegm", "sputum", "colour", "green", "yellow", "smell", "amount", "volume", "mucus", "coughing up"]},
+    {"item": "Haemoptysis: asks about presence of blood in sputum", "keywords": ["blood", "coughing blood", "haemoptysis", "blood in sputum", "blood in phlegm", "bloody"]},
+    {"item": "Chest pain", "keywords": ["chest pain", "chest tightness", "pain in chest", "chest discomfort", "pleuritic", "sharp pain chest"]},
+    {"item": "Dyspnoea", "keywords": ["breathless", "short of breath", "breathing", "dyspnoea", "breath", "out of breath"]},
+    {"item": "Fevers and rigors", "keywords": ["fever", "temperature", "hot", "chills", "rigors", "shivering", "sweating", "pyrexia"]},
+    {"item": "Muscle aches", "keywords": ["muscle", "aches", "myalgia", "body aches", "joints", "pain in muscles", "aching"]},
+    {"item": "Urinary symptoms", "keywords": ["urine", "urinary", "passing water", "peeing", "urination", "frequency", "dysuria"]},
+    {"item": "Weight loss", "keywords": ["weight", "lost weight", "weight loss", "lighter", "clothes fitting", "losing weight", "appetite"]},
+    {"item": "Neurological symptoms", "keywords": ["confusion", "memory", "headache", "weakness", "neurological", "dizzy", "fitting", "seizure"]},
+    {"item": "Time course: asks how symptoms changed over time", "keywords": ["getting worse", "getting better", "changed", "over time", "constant", "comes and goes", "time course", "improving"]},
+    {"item": "Exacerbating or relieving factors", "keywords": ["makes it worse", "makes it better", "aggravate", "relieve", "anything help", "worse when", "better when", "triggers"]},
+    {"item": "Explores ICE", "keywords": ["think it could be", "worried about", "concerns", "expecting", "hoping for", "what do you think", "ideas"]},
+    {"item": "Summarises presenting complaint", "keywords": ["so to summarise", "so what you're saying", "let me summarise", "just to confirm", "recap"]}
+  ],
+  "systems_review": [
+    {"item": "Screens for relevant symptoms in other body systems", "keywords": ["any other symptoms", "other systems", "urinary", "neuro", "systems review", "other problems"]}
+  ],
+  "past_medical_history": [
+    {"item": "Asks about respiratory conditions", "keywords": ["asthma", "COPD", "respiratory", "lung disease", "chest problems", "breathing problems", "previous lung", "respiratory conditions"]},
+    {"item": "Asks about recent hospital admissions or surgical procedures", "keywords": ["hospital", "admitted", "admission", "surgery", "operations", "surgical", "procedures", "recent hospital"]}
+  ],
+  "drug_history": [
+    {"item": "Asks about prescribed medications and OTC remedies", "keywords": ["medication", "tablets", "pills", "medicines", "taking anything", "prescribed", "over the counter"]},
+    {"item": "Asks about allergies and reaction type", "keywords": ["allergies", "allergic", "reaction", "allergy"]},
+    {"item": "Asks about immunisations against respiratory diseases", "keywords": ["vaccination", "vaccine", "immunisation", "flu jab", "pneumonia vaccine", "covid vaccine", "jabs", "influenza", "pneumococcus"]}
+  ],
+  "family_history": [
+    {"item": "Asks about family history of respiratory conditions and malignancy", "keywords": ["family history", "parents", "respiratory", "lung", "asthma", "COPD", "chest", "relatives", "family", "cancer", "malignancy", "runs in family"]}
+  ],
+  "social_history": [
+    {"item": "Explores general social context", "keywords": ["live with", "who do you live", "accommodation", "home situation", "social", "care needs", "daily living"]},
+    {"item": "Takes smoking history", "keywords": ["smoke", "smoking", "cigarettes", "tobacco", "pack", "smoker", "never smoked"]},
+    {"item": "Takes alcohol history", "keywords": ["alcohol", "drink", "drinking", "units", "wine", "beer", "spirits"]},
+    {"item": "Asks about recreational drug use", "keywords": ["recreational drugs", "drugs", "substances", "cannabis", "cocaine", "LSD"]},
+    {"item": "Asks about occupation", "keywords": ["work", "job", "occupation", "employed", "career", "profession", "healthcare", "hospital", "ward"]},
+    {"item": "Asks about recent travel to areas of high TB prevalence", "keywords": ["travel", "abroad", "been anywhere", "overseas", "holiday", "trip", "TB", "tuberculosis", "high risk area", "recently travelled"]}
+  ],
+  "closing_consultation": [
+    {"item": "Summarises salient points and asks if anything missed", "keywords": ["to summarise", "anything i missed", "anything else", "summary", "recap", "missed anything", "key points"]},
+    {"item": "Thanks the patient for their time", "keywords": ["thank you", "thanks", "appreciate your time", "thank you for"]},
+    {"item": "Disposes PPE and washes hands", "keywords": ["wash hands", "dispose", "ppe", "gloves off", "sanitize"]}
+  ],
+  "communication_skills": [
+    {"item": "Active listening", "keywords": ["i see", "i understand", "go on", "tell me more", "okay", "right", "yes", "i hear you"]},
+    {"item": "Summarising", "keywords": ["so to summarise", "so what you're telling me", "let me just summarise", "if i understand correctly"]},
+    {"item": "Signposting", "keywords": ["now i'd like to", "i'm going to ask", "next i'd like", "moving on", "i'd like to ask about"]}
+  ]
+},
+"viva_questions": [
+  {
+    "question": "What further clinical examinations or assessments would you like to perform?",
+    "marking_points": [
+      {
+        "point": "Respiratory system examination",
+        "keywords": ["respiratory exam", "chest exam", "lung exam", "respiratory", "breath sounds", "auscultate", "percussion", "crackles", "lymph nodes", "chest examination"]
+      },
+      {
+        "point": "Vital signs and observations",
+        "keywords": ["vital signs", "vitals", "observations", "blood pressure", "heart rate", "temperature", "oxygen", "sats", "BP", "HR", "RR", "respiratory rate"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "Describe some appropriate further investigations for this patient.",
+    "marking_points": [
+      {
+        "point": "Bloods including FBC, U&E, CRP, viral screen, consider BNP",
+        "keywords": ["bloods", "blood test", "FBC", "U&E", "CRP", "viral screen", "HIV", "hepatitis", "BNP", "full blood count", "inflammatory markers"]
+      },
+      {
+        "point": "Chest X-ray",
+        "keywords": ["chest xray", "CXR", "chest x-ray", "radiograph", "chest film", "imaging"]
+      },
+      {
+        "point": "Sputum microscopy culture and sensitivities with early morning samples",
+        "keywords": ["sputum", "sputum culture", "microscopy", "culture", "sensitivities", "early morning", "MC&S", "sputum sample", "microbiology"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "What is your differential diagnosis? Please give your most likely diagnosis and two other possibilities.",
+    "marking_points": [
+      {
+        "point": "Most likely — Primary tuberculosis",
+        "keywords": ["tuberculosis", "TB", "primary TB", "mycobacterium"],
+        "required": true
+      },
+      {
+        "point": "Any reasonable differential 1",
+        "keywords": ["lung cancer", "malignancy", "cancer", "pneumonia", "community acquired pneumonia", "CAP", "sarcoidosis"]
+      },
+      {
+        "point": "Any reasonable differential 2",
+        "keywords": ["lung cancer", "malignancy", "cancer", "pneumonia", "community acquired pneumonia", "CAP", "sarcoidosis"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "What measures should be taken to reduce the transmission of TB?",
+    "marking_points": [
+      {
+        "point": "TB is a notifiable disease",
+        "keywords": ["notifiable", "notify", "public health", "notifiable disease", "report"]
+      },
+      {
+        "point": "Screening should be offered to close contacts",
+        "keywords": ["screening", "contacts", "close contacts", "contact tracing", "screen contacts", "test contacts"]
+      },
+      {
+        "point": "Inpatients with suspected TB should be managed in single room or negative pressure room",
+        "keywords": ["single room", "isolation", "negative pressure", "isolate", "separate room", "side room"]
+      }
+    ],
+    "max_marks": 3
+  },
+  {
+    "question": "What is the treatment course for active TB without CNS involvement?",
+    "marking_points": [
+      {
+        "point": "Antibiotic therapy with isoniazid rifampicin pyrazinamide and ethambutol for two months",
+        "keywords": ["isoniazid", "rifampicin", "pyrazinamide", "ethambutol", "RIPE", "four drugs", "two months", "2 months", "initial phase"]
+      },
+      {
+        "point": "Followed by isoniazid and rifampicin for a further four months",
+        "keywords": ["isoniazid", "rifampicin", "four months", "4 months", "continuation phase", "two drugs", "six months total"]
+      }
+    ],
+    "max_marks": 2
+  },
+  {
+    "question": "Name two factors that should be monitored during antibiotic treatment of TB.",
+    "marking_points": [
+      {
+        "point": "Liver function due to rifampicin and isoniazid hepatotoxicity",
+        "keywords": ["liver function", "LFTs", "liver", "hepatotoxicity", "liver tests", "liver function tests"]
+      },
+      {
+        "point": "Visual acuity due to ethambutol causing visual disturbances",
+        "keywords": ["visual acuity", "vision", "eyesight", "ethambutol", "visual", "eyes", "visual disturbances", "optic neuritis"]
+      }
+    ],
+    "max_marks": 2
+  }
+]
+  }
+}

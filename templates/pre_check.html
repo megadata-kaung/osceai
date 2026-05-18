@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI - Pre Simulation Check</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="check-container">
+
+        <div class="check-header">
+            <h2>Before You Begin</h2>
+            <p>Please confirm the following before starting your simulation</p>
+            <div class="case-badge-large" id="caseLabel"></div>
+        </div>
+
+        <div class="check-body">
+
+            <div class="check-section">
+                <h3>🧼 Infection Control</h3>
+                <label class="check-item">
+                    <input type="checkbox" id="check1" onchange="updateButton()">
+                    <span>I have washed my hands and used appropriate hand sanitiser</span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" id="check2" onchange="updateButton()">
+                    <span>I have donned appropriate PPE (gloves, apron if required)</span>
+                </label>
+            </div>
+
+            <div class="check-section">
+                <h3>📋 Preparation</h3>
+                <label class="check-item">
+                    <input type="checkbox" id="check3" onchange="updateButton()">
+                    <span>I understand this is a history taking simulation</span>
+                </label>
+                <label class="check-item">
+                    <input type="checkbox" id="check4" onchange="updateButton()">
+                    <span>I am ready to introduce myself and begin the consultation</span>
+                </label>
+            </div>
+
+            <div class="check-note">
+                <p>⚠️ These items cannot be assessed digitally and are based on your self declaration. Please answer honestly.</p>
+            </div>
+
+            <button class="btn" id="startBtn" onclick="startSimulation()" disabled>
+                All confirmed — Start Simulation →
+            </button>
+
+        </div>
+
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const caseId = params.get("case_id");
+        const caseLabel = params.get("case_label");
+
+        document.getElementById("caseLabel").textContent = caseLabel;
+
+        function updateButton() {
+            const allChecked =
+                document.getElementById("check1").checked &&
+                document.getElementById("check2").checked &&
+                document.getElementById("check3").checked &&
+                document.getElementById("check4").checked;
+            document.getElementById("startBtn").disabled = !allChecked;
+        }
+
+        function startSimulation() {
+            const preChecks = {
+                washed_hands: true,
+                donned_ppe: true,
+                understood_task: true,
+                ready_to_begin: true
+            };
+            sessionStorage.setItem("preChecks", JSON.stringify(preChecks));
+            sessionStorage.setItem("caseId", caseId);
+            sessionStorage.setItem("caseLabel", caseLabel);
+            window.location.href = `/simulation?case_id=${caseId}&case_label=${encodeURIComponent(caseLabel)}`;
+        }
+    </script>
+</body>
+</html>
