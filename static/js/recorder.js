@@ -12,6 +12,60 @@ let practiceTimerSeconds = 0;
 let practiceTimerRunning = false;
 let voiceSpeedMultiplier = 1.0;
 
+const osceProgressKey = "osceCaseProgress";
+
+function saveOsceProgress() {
+    if (!selectedCaseId) return;
+
+    const notesEl = document.getElementById("studentNotes");
+
+    sessionStorage.setItem(osceProgressKey, JSON.stringify({
+        caseId: selectedCaseId,
+        caseLabel: sessionStorage.getItem("caseLabel") || "",
+        conversation: conversationHistory,
+        notes: notesEl ? notesEl.value : "",
+        timerSeconds: practiceTimerSeconds,
+        timerRunning: practiceTimerRunning,
+        tab: currentTab
+    }));
+
+    sessionStorage.setItem("conversation", JSON.stringify(conversationHistory));
+    sessionStorage.setItem("caseId", selectedCaseId);
+}
+
+function restoreOsceProgress() {
+    const saved = sessionStorage.getItem(osceProgressKey);
+    if (!saved || !selectedCaseId) return;
+
+    const data = JSON.parse(saved);
+    if (data.caseId !== selectedCaseId) return;
+
+    conversationHistory = data.conversation || [];
+    practiceTimerSeconds = data.timerSeconds || 0;
+    currentTab = data.tab || "chat";
+
+    const chatBox = document.getElementById("chatBox");
+    if (chatBox) {
+        chatBox.innerHTML = `
+            <div class="message patient">
+                Hello, I am your patient today.
+                Please go ahead and ask me about my symptoms.
+            </div>`;
+        conversationHistory.forEach(msg => {
+            addMessage(
+                msg.content,
+                msg.role === "user" ? "student" : "patient"
+            );
+        });
+    }
+
+    const notesEl = document.getElementById("studentNotes");
+    if (notesEl) notesEl.value = data.notes || "";
+
+    updatePracticeTimerDisplay();
+    switchTab(currentTab);
+}
+
 async function loadPatientVoiceProfile() {
     if (!selectedCaseId) return;
     try {
@@ -31,17 +85,20 @@ async function loadPatientInfo() {
             `/get_full_case_info?case_id=${selectedCaseId}`
         );
         const data = await res.json();
+
         const name = document.getElementById("infoName");
         const age = document.getElementById("infoAge");
         const gender = document.getElementById("infoGender");
         const location = document.getElementById("infoLocation");
         const complaint = document.getElementById("infoComplaint");
-        if (name) name.textContent = data.patient_name || "—";
-        if (age) age.textContent = data.age || "—";
-        if (gender) gender.textContent =
-            data.gender === "female" ? "Female" : "Male";
-        if (location) location.textContent = data.location || "—";
-        if (complaint) complaint.textContent = data.complaint || "—";
+
+        if (name) name.textContent = data.patient_name || "-";
+        if (age) age.textContent = data.age || "-";
+        if (gender) {
+            gender.textContent = data.gender === "female" ? "Female" : "Male";
+        }
+        if (location) location.textContent = data.location || "-";
+        if (complaint) complaint.textContent = data.complaint || "-";
     } catch (err) {
         console.error("Could not load patient info:", err);
     }
@@ -56,7 +113,9 @@ function selectCase(caseId, caseLabel) {
 function sendMessage() {
     const input = document.getElementById("userInput");
     const message = input.value.trim();
+
     if (!message) return;
+
     if (!selectedCaseId) {
         alert("Please select a case first!");
         return;
@@ -65,6 +124,7 @@ function sendMessage() {
     addMessage(message, "student");
     input.value = "";
     conversationHistory.push({ role: "user", content: message });
+    saveOsceProgress();
 
     const sendBtn = document.querySelector(".btn-send");
     if (sendBtn) {
@@ -84,10 +144,13 @@ function sendMessage() {
     .then(data => {
         addMessage(data.response, "patient");
         speakResponse(data.response);
+
         conversationHistory.push({
             role: "assistant",
             content: data.response
         });
+        saveOsceProgress();
+
         if (sendBtn) {
             sendBtn.textContent = "Send";
             sendBtn.disabled = false;
@@ -99,6 +162,7 @@ function sendMessage() {
             "patient"
         );
         console.error("Error:", error);
+
         if (sendBtn) {
             sendBtn.textContent = "Send";
             sendBtn.disabled = false;
@@ -109,6 +173,7 @@ function sendMessage() {
 function addMessage(text, sender) {
     const chatBox = document.getElementById("chatBox");
     if (!chatBox) return;
+
     const div = document.createElement("div");
     div.className = `message ${sender}`;
     div.textContent = text;
@@ -116,27 +181,38 @@ function addMessage(text, sender) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// ── Updated voice settings with speed multiplier ──
 function getVoiceSettings() {
-    let rate, pitch;
+    let rate;
+    let pitch;
 
     if (patientGender === "female") {
-        if (patientAge < 30) { rate = 1.1; pitch = 1.2; }
-        else if (patientAge <= 50) { rate = 1.0; pitch = 1.05; }
-        else { rate = 0.9; pitch = 0.95; }
+        if (patientAge < 30) {
+            rate = 1.1;
+            pitch = 1.2;
+        } else if (patientAge <= 50) {
+            rate = 1.0;
+            pitch = 1.05;
+        } else {
+            rate = 0.9;
+            pitch = 0.95;
+        }
     } else {
-        if (patientAge < 30) { rate = 1.05; pitch = 1.0; }
-        else if (patientAge <= 50) { rate = 0.95; pitch = 0.9; }
-        else { rate = 0.88; pitch = 0.82; }
+        if (patientAge < 30) {
+            rate = 1.05;
+            pitch = 1.0;
+        } else if (patientAge <= 50) {
+            rate = 0.95;
+            pitch = 0.9;
+        } else {
+            rate = 0.88;
+            pitch = 0.82;
+        }
     }
 
-    // Apply speed multiplier — clamp between 0.5 and 1.8
     rate = Math.max(0.5, Math.min(1.8, rate * voiceSpeedMultiplier));
-
     return { rate, pitch };
 }
 
-// ── Voice always respects patient gender ──
 function getBestVoice(gender) {
     const voices = window.speechSynthesis.getVoices();
     if (!voices || voices.length === 0) return null;
@@ -146,6 +222,7 @@ function getBestVoice(gender) {
         "victoria", "moira", "fiona", "kate", "susan",
         "google uk english female", "google us english"
     ];
+
     const maleKeywords = [
         "male", "man", "david", "daniel", "mark",
         "alex", "fred", "thomas", "google uk english male"
@@ -171,12 +248,16 @@ function getBestVoice(gender) {
 
 function speakResponse(text) {
     window.speechSynthesis.cancel();
+
     const settings = getVoiceSettings();
     const utterance = new SpeechSynthesisUtterance(text);
+
     utterance.rate = settings.rate;
     utterance.pitch = settings.pitch;
     utterance.lang = "en-GB";
+
     const voices = window.speechSynthesis.getVoices();
+
     if (voices.length === 0) {
         window.speechSynthesis.onvoiceschanged = function() {
             const voice = getBestVoice(patientGender);
@@ -190,18 +271,23 @@ function speakResponse(text) {
     }
 }
 
-// ── Voice speed control ──
 function setVoiceSpeed(speed, btn) {
     if (speed === "slow") voiceSpeedMultiplier = 0.82;
     else if (speed === "normal") voiceSpeedMultiplier = 1.0;
     else if (speed === "fast") voiceSpeedMultiplier = 1.2;
 
-    // Update active button
-    document.querySelectorAll(".voice-speed-btn").forEach(b =>
-        b.classList.remove("active"));
+    document.querySelectorAll(".voice-speed-pill, .voice-speed-btn")
+        .forEach(b => b.classList.remove("active"));
+
     btn.classList.add("active");
 
-    // Save preference
+    const hint = document.getElementById("voiceSpeedHint");
+    if (hint) {
+        if (speed === "slow") hint.textContent = "Slower speech";
+        else if (speed === "normal") hint.textContent = "Normal speed";
+        else if (speed === "fast") hint.textContent = "Faster speech";
+    }
+
     sessionStorage.setItem("voiceSpeed", speed);
 }
 
@@ -212,22 +298,30 @@ function loadVoicePreferences() {
     else if (savedSpeed === "normal") voiceSpeedMultiplier = 1.0;
     else if (savedSpeed === "fast") voiceSpeedMultiplier = 1.2;
 
-    // Highlight correct button
-    document.querySelectorAll(".voice-speed-btn").forEach(btn => {
-        btn.classList.remove("active");
-        const btnText = btn.textContent.toLowerCase();
-        if (btnText.includes(savedSpeed)) {
-            btn.classList.add("active");
-        }
-    });
+    document.querySelectorAll(".voice-speed-pill, .voice-speed-btn")
+        .forEach(btn => {
+            btn.classList.remove("active");
+            const btnText = btn.textContent.toLowerCase().trim();
+            if (btnText.includes(savedSpeed)) {
+                btn.classList.add("active");
+            }
+        });
+
+    const hint = document.getElementById("voiceSpeedHint");
+    if (hint) {
+        if (savedSpeed === "slow") hint.textContent = "Slower speech";
+        else if (savedSpeed === "normal") hint.textContent = "Normal speed";
+        else if (savedSpeed === "fast") hint.textContent = "Faster speech";
+    }
 }
 
 function toggleMic() {
-    if (!('webkitSpeechRecognition' in window ||
-          'SpeechRecognition' in window)) {
+    if (!("webkitSpeechRecognition" in window ||
+          "SpeechRecognition" in window)) {
         alert("Voice input not supported. Please use Chrome.");
         return;
     }
+
     if (isRecording) {
         recognition.stop();
         isRecording = false;
@@ -235,22 +329,27 @@ function toggleMic() {
     } else {
         recognition = new (window.SpeechRecognition ||
                            window.webkitSpeechRecognition)();
+
         recognition.lang = "en-US";
         recognition.continuous = false;
         recognition.interimResults = false;
+
         recognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
             document.getElementById("userInput").value = transcript;
         };
+
         recognition.onend = function() {
             isRecording = false;
             document.getElementById("micBtn").classList.remove("recording");
         };
+
         recognition.onerror = function(event) {
             console.error("Mic error:", event.error);
             isRecording = false;
             document.getElementById("micBtn").classList.remove("recording");
         };
+
         recognition.start();
         isRecording = true;
         document.getElementById("micBtn").classList.add("recording");
@@ -266,18 +365,20 @@ function endSession() {
         alert("Please select a case first!");
         return;
     }
-    sessionStorage.setItem("conversation",
-        JSON.stringify(conversationHistory));
-    sessionStorage.setItem("caseId", selectedCaseId);
+
+    saveOsceProgress();
+
     const caseLabel = document.getElementById("caseLabel");
     if (caseLabel) {
         sessionStorage.setItem("caseLabel", caseLabel.textContent);
     }
+
     window.location.href = `/post_check?case_id=${selectedCaseId}`;
 }
 
 function switchTab(tab) {
     currentTab = tab;
+
     const chatPanel = document.getElementById("chatPanel");
     const avatarPanel = document.getElementById("avatarPanel");
     const tabChat = document.getElementById("tabChat");
@@ -295,20 +396,24 @@ function switchTab(tab) {
         if (tabAvatar) tabAvatar.classList.add("active");
         loadAvatar();
     }
+
+    saveOsceProgress();
 }
 
 async function loadAvatar() {
     if (!selectedCaseId) return;
+
     try {
-        const res = await fetch(
-            `/get_case_info?case_id=${selectedCaseId}`
-        );
+        const res = await fetch(`/get_case_info?case_id=${selectedCaseId}`);
         const data = await res.json();
+
         const img = document.getElementById("avatarImg");
         const nameTag = document.getElementById("avatarNameTag");
+
         if (img) {
             img.src = `/static/images/avatars/${selectedCaseId}.svg`;
         }
+
         if (nameTag) {
             nameTag.textContent = `${data.patient_name}, ${data.age}`;
         }
@@ -320,21 +425,25 @@ async function loadAvatar() {
 function sendAvatarMessage() {
     const input = document.getElementById("avatarInput");
     const message = input.value.trim();
+
     if (!message) return;
     if (!selectedCaseId) return;
 
     input.value = "";
+
     const speechBubble = document.getElementById("avatarSpeech");
     const statusEl = document.getElementById("avatarStatus");
     const wrapper = document.getElementById("avatarWrapper");
 
     if (speechBubble) speechBubble.textContent = "...";
+
     if (statusEl) {
         statusEl.textContent = "Thinking...";
         statusEl.className = "avatar-status";
     }
 
     conversationHistory.push({ role: "user", content: message });
+    saveOsceProgress();
 
     fetch("/chat", {
         method: "POST",
@@ -350,10 +459,12 @@ function sendAvatarMessage() {
         addMessage(data.response, "patient");
 
         if (speechBubble) speechBubble.textContent = data.response;
+
         if (statusEl) {
             statusEl.textContent = "Speaking...";
             statusEl.className = "avatar-status talking";
         }
+
         if (wrapper) wrapper.classList.add("avatar-talking");
 
         conversationHistory.push({
@@ -361,6 +472,7 @@ function sendAvatarMessage() {
             content: data.response
         });
 
+        saveOsceProgress();
         speakResponse(data.response);
 
         setTimeout(() => {
@@ -373,7 +485,9 @@ function sendAvatarMessage() {
     })
     .catch(err => {
         console.error(err);
-        if (statusEl) statusEl.textContent = "Error — please try again";
+
+        if (statusEl) statusEl.textContent = "Error - please try again";
+
         if (speechBubble) {
             speechBubble.textContent =
                 "Something went wrong. Please try again.";
@@ -386,11 +500,12 @@ function handleAvatarEnter(event) {
 }
 
 function toggleAvatarMic() {
-    if (!('webkitSpeechRecognition' in window ||
-          'SpeechRecognition' in window)) {
+    if (!("webkitSpeechRecognition" in window ||
+          "SpeechRecognition" in window)) {
         alert("Please use Chrome for voice input.");
         return;
     }
+
     if (avatarRecording) {
         avatarRecognition.stop();
         avatarRecording = false;
@@ -398,19 +513,23 @@ function toggleAvatarMic() {
             .classList.remove("recording");
     } else {
         avatarRecognition = new (window.SpeechRecognition ||
-                                  window.webkitSpeechRecognition)();
+                                 window.webkitSpeechRecognition)();
+
         avatarRecognition.lang = "en-US";
         avatarRecognition.continuous = false;
         avatarRecognition.interimResults = false;
+
         avatarRecognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
             document.getElementById("avatarInput").value = transcript;
         };
+
         avatarRecognition.onend = function() {
             avatarRecording = false;
             document.getElementById("avatarMicBtn")
                 .classList.remove("recording");
         };
+
         avatarRecognition.start();
         avatarRecording = true;
         document.getElementById("avatarMicBtn").classList.add("recording");
@@ -418,36 +537,42 @@ function toggleAvatarMic() {
 }
 
 function togglePracticeTimer() {
+    const btn = document.getElementById("timerToggleBtn");
+
     if (practiceTimerRunning) {
         clearInterval(practiceTimerInterval);
         practiceTimerRunning = false;
-        const btn = document.getElementById("timerToggleBtn");
-        if (btn) btn.textContent = "▶ Start Timer";
+        if (btn) btn.textContent = "Start Timer";
     } else {
         practiceTimerRunning = true;
-        const btn = document.getElementById("timerToggleBtn");
-        if (btn) btn.textContent = "⏸ Pause Timer";
+        if (btn) btn.textContent = "Pause Timer";
+
         practiceTimerInterval = setInterval(() => {
             practiceTimerSeconds++;
             updatePracticeTimerDisplay();
+            saveOsceProgress();
         }, 1000);
     }
+
+    saveOsceProgress();
 }
 
 function updatePracticeTimerDisplay() {
     const mins = Math.floor(practiceTimerSeconds / 60);
     const secs = practiceTimerSeconds % 60;
+
     const display =
-        `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+        `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+
     const timerEl = document.getElementById("timerDisplay");
     if (timerEl) timerEl.textContent = display;
 
     const maxSeconds = 480;
-    const pct = Math.min(
-        (practiceTimerSeconds / maxSeconds) * 100, 100
-    );
+    const pct = Math.min((practiceTimerSeconds / maxSeconds) * 100, 100);
+
     const fill = document.getElementById("timerBarFill");
     if (!fill) return;
+
     fill.style.width = pct + "%";
 
     if (practiceTimerSeconds < 300) {
@@ -463,13 +588,14 @@ function updatePracticeTimerDisplay() {
 
     const labelEl = document.getElementById("timerLabel");
     if (practiceTimerSeconds === 480 && labelEl) {
-        labelEl.textContent = "⚠️ 8 minutes — wrap up!";
+        labelEl.textContent = "8 minutes - wrap up!";
     }
 }
 
 function clearNotes() {
     const notes = document.getElementById("studentNotes");
     if (notes) notes.value = "";
+    saveOsceProgress();
 }
 
 window.onload = async function() {
@@ -486,6 +612,7 @@ window.onload = async function() {
         const labelEl = document.getElementById("caseLabel");
         if (labelEl && caseLabel) {
             labelEl.textContent = decodeURIComponent(caseLabel);
+            sessionStorage.setItem("caseLabel", decodeURIComponent(caseLabel));
         }
 
         const caseSelection = document.getElementById("caseSelection");
@@ -503,51 +630,20 @@ window.onload = async function() {
         switchTab("chat");
         loadVoicePreferences();
 
-        const savedNotes = sessionStorage.getItem("candidateNotes");
+        restoreOsceProgress();
+
         const notesEl = document.getElementById("studentNotes");
-        if (savedNotes && notesEl) {
-            notesEl.value = savedNotes;
+        if (notesEl) {
+            notesEl.addEventListener("input", saveOsceProgress);
+        }
+
+        if (practiceTimerRunning) {
+            clearInterval(practiceTimerInterval);
+            practiceTimerInterval = setInterval(() => {
+                practiceTimerSeconds++;
+                updatePracticeTimerDisplay();
+                saveOsceProgress();
+            }, 1000);
         }
     }
 };
-function setVoiceSpeed(speed, btn) {
-    if (speed === "slow") voiceSpeedMultiplier = 0.82;
-    else if (speed === "normal") voiceSpeedMultiplier = 1.0;
-    else if (speed === "fast") voiceSpeedMultiplier = 1.2;
-
-    document.querySelectorAll(".voice-speed-pill").forEach(b =>
-        b.classList.remove("active"));
-    btn.classList.add("active");
-
-    const hint = document.getElementById("voiceSpeedHint");
-    if (hint) {
-        if (speed === "slow") hint.textContent = "🐢 Slower speech";
-        else if (speed === "normal") hint.textContent = "✓ Normal speed";
-        else if (speed === "fast") hint.textContent = "⚡ Faster speech";
-    }
-
-    sessionStorage.setItem("voiceSpeed", speed);
-}
-
-function loadVoicePreferences() {
-    const savedSpeed = sessionStorage.getItem("voiceSpeed") || "normal";
-
-    if (savedSpeed === "slow") voiceSpeedMultiplier = 0.82;
-    else if (savedSpeed === "normal") voiceSpeedMultiplier = 1.0;
-    else if (savedSpeed === "fast") voiceSpeedMultiplier = 1.2;
-
-    document.querySelectorAll(".voice-speed-pill").forEach(btn => {
-        btn.classList.remove("active");
-        const btnText = btn.textContent.toLowerCase().trim();
-        if (btnText === savedSpeed) {
-            btn.classList.add("active");
-        }
-    });
-
-    const hint = document.getElementById("voiceSpeedHint");
-    if (hint) {
-        if (savedSpeed === "slow") hint.textContent = "🐢 Slower speech";
-        else if (savedSpeed === "normal") hint.textContent = "✓ Normal speed";
-        else if (savedSpeed === "fast") hint.textContent = "⚡ Faster speech";
-    }
-}

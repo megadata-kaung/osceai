@@ -10,7 +10,6 @@
 
     <div class="dashboard-layout">
 
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">OsceAI</div>
             <nav class="sidebar-nav">
@@ -43,10 +42,8 @@
             </div>
         </aside>
 
-        <!-- Main -->
         <div class="dashboard-main">
 
-            <!-- Topbar -->
             <header class="dashboard-topbar">
                 <div class="topbar-left">
                     <div class="breadcrumb">
@@ -83,7 +80,6 @@
                 </div>
             </header>
 
-            <!-- Content -->
             <div class="dashboard-content">
                 <div style="max-width:800px; margin:0 auto;">
 
@@ -112,6 +108,7 @@
                                  id="questionText"></div>
                             <div class="answer-input-area">
                                 <textarea id="answerInput"
+                                          oninput="saveVivaProgress()"
                                           placeholder="Type your answer
                                           or use the mic button..."
                                           rows="5"></textarea>
@@ -175,6 +172,43 @@
         let examRecognition = null;
         let examRecording = false;
 
+        const vivaProgressKey = `osceVivaProgress-${caseId}`;
+
+        function saveVivaProgress() {
+            const input = document.getElementById("answerInput");
+
+            sessionStorage.setItem(vivaProgressKey, JSON.stringify({
+                currentIndex: currentIndex,
+                allAnswers: allAnswers,
+                allResults: allResults,
+                draftAnswer: input ? input.value : ""
+            }));
+        }
+
+        function restoreVivaProgress() {
+            const saved = sessionStorage.getItem(vivaProgressKey);
+            if (!saved) return;
+
+            const data = JSON.parse(saved);
+
+            currentIndex = data.currentIndex || 0;
+            allAnswers = data.allAnswers || [];
+            allResults = data.allResults || [];
+        }
+
+        function getSavedDraftAnswer() {
+            const saved = sessionStorage.getItem(vivaProgressKey);
+            if (!saved) return "";
+
+            const data = JSON.parse(saved);
+
+            if (data.currentIndex === currentIndex) {
+                return data.draftAnswer || "";
+            }
+
+            return "";
+        }
+
         async function loadTopbarUser() {
             try {
                 const res = await fetch("/get_current_user");
@@ -187,6 +221,7 @@
                 console.error(err);
             }
         }
+
         loadTopbarUser();
 
         async function loadQuestions() {
@@ -195,13 +230,17 @@
                     `/get_questions?case_id=${caseId}`
                 );
                 const data = await res.json();
+
                 questions = data.questions;
+                restoreVivaProgress();
+
                 document.getElementById("loadingState").style.display =
                     "none";
                 document.getElementById("examBody").style.display =
                     "block";
                 document.getElementById("examProgress").style.display =
                     "flex";
+
                 showQuestion();
             } catch (err) {
                 document.getElementById("loadingState").innerHTML =
@@ -214,12 +253,16 @@
                 goToSummary();
                 return;
             }
+
             const q = questions[currentIndex];
+
             document.getElementById("questionNumber").textContent =
                 `Question ${currentIndex + 1} of ${questions.length}`;
             document.getElementById("questionText").textContent =
                 q.question;
-            document.getElementById("answerInput").value = "";
+            document.getElementById("answerInput").value =
+                getSavedDraftAnswer();
+
             document.getElementById("questionPanel").style.display =
                 "block";
             document.getElementById("submittedPanel").style.display =
@@ -228,12 +271,15 @@
                 "Submit Answer →";
             document.getElementById("submitBtn").disabled = false;
             document.getElementById("micStatus").textContent = "";
+
             updateProgress();
+            saveVivaProgress();
         }
 
         async function submitAnswer() {
             const answer =
                 document.getElementById("answerInput").value.trim();
+
             if (!answer) {
                 alert("Please type or speak your answer before submitting!");
                 return;
@@ -253,9 +299,12 @@
                         case_id: caseId
                     })
                 });
+
                 const data = await res.json();
+
                 allAnswers.push(answer);
                 allResults.push(data);
+                saveVivaProgress();
 
                 document.getElementById("questionPanel").style.display =
                     "none";
@@ -264,6 +313,8 @@
 
                 setTimeout(() => {
                     currentIndex++;
+                    saveVivaProgress();
+
                     if (currentIndex >= questions.length) {
                         goToSummary();
                     } else {
@@ -273,6 +324,7 @@
 
             } catch (err) {
                 alert("Error submitting answer. Please try again.");
+
                 document.getElementById("submitBtn").textContent =
                     "Submit Answer →";
                 document.getElementById("submitBtn").disabled = false;
@@ -280,14 +332,16 @@
         }
 
         function toggleExamMic() {
-            if (!('webkitSpeechRecognition' in window ||
-                  'SpeechRecognition' in window)) {
+            if (!("webkitSpeechRecognition" in window ||
+                  "SpeechRecognition" in window)) {
                 alert("Voice input not supported. Please use Chrome.");
                 return;
             }
+
             if (examRecording) {
                 examRecognition.stop();
                 examRecording = false;
+
                 document.getElementById("examMicBtn").textContent =
                     "🎤 Speak Answer";
                 document.getElementById("examMicBtn")
@@ -296,23 +350,31 @@
             } else {
                 examRecognition = new (window.SpeechRecognition ||
                                        window.webkitSpeechRecognition)();
+
                 examRecognition.lang = "en-US";
                 examRecognition.continuous = true;
                 examRecognition.interimResults = true;
+
                 examRecognition.onstart = function() {
                     document.getElementById("micStatus").textContent =
                         "🔴 Recording... speak your answer";
                 };
+
                 examRecognition.onresult = function(event) {
                     let transcript = "";
+
                     for (let i = 0; i < event.results.length; i++) {
                         transcript += event.results[i][0].transcript;
                     }
+
                     document.getElementById("answerInput").value =
                         transcript;
+                    saveVivaProgress();
                 };
+
                 examRecognition.onend = function() {
                     examRecording = false;
+
                     document.getElementById("examMicBtn").textContent =
                         "🎤 Speak Answer";
                     document.getElementById("examMicBtn")
@@ -320,16 +382,20 @@
                     document.getElementById("micStatus").textContent =
                         "✅ Recording stopped";
                 };
-                examRecognition.onerror = function(event) {
+
+                examRecognition.onerror = function() {
                     examRecording = false;
+
                     document.getElementById("examMicBtn").textContent =
                         "🎤 Speak Answer";
                     document.getElementById("examMicBtn")
                         .classList.remove("recording");
                     document.getElementById("micStatus").textContent = "";
                 };
+
                 examRecognition.start();
                 examRecording = true;
+
                 document.getElementById("examMicBtn").textContent =
                     "⏹ Stop Recording";
                 document.getElementById("examMicBtn")
@@ -340,6 +406,7 @@
         function goToSummary() {
             const vivaTotal = allResults.reduce((sum, r) =>
                 sum + r.marks_achieved, 0);
+
             sessionStorage.setItem("vivaScores",
                 JSON.stringify(allResults.map(r => r.marks_achieved)));
             sessionStorage.setItem("vivaPointResults",
@@ -349,6 +416,10 @@
                 JSON.stringify(questions));
             sessionStorage.setItem("vivaAnswers",
                 JSON.stringify(allAnswers));
+
+            sessionStorage.removeItem(vivaProgressKey);
+            sessionStorage.removeItem("osceCaseProgress");
+
             window.location.href = `/feedback?case_id=${caseId}`;
         }
 
@@ -356,6 +427,7 @@
             const pct = Math.round(
                 (currentIndex / questions.length) * 100
             );
+
             document.getElementById("progressFill").style.width =
                 pct + "%";
             document.getElementById("progressText").textContent =

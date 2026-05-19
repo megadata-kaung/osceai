@@ -10,7 +10,6 @@
 
     <div class="dashboard-layout">
 
-        <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">OsceAI</div>
             <nav class="sidebar-nav">
@@ -43,10 +42,8 @@
             </div>
         </aside>
 
-        <!-- Main -->
         <div class="dashboard-main">
 
-            <!-- Topbar -->
             <header class="dashboard-topbar">
                 <div class="topbar-left">
                     <div class="breadcrumb">
@@ -83,7 +80,6 @@
                 </div>
             </header>
 
-            <!-- Content -->
             <div class="dashboard-content">
                 <div style="max-width:900px; margin:0 auto;">
 
@@ -101,7 +97,6 @@
 
                     <div id="resultsBody" style="display:none;">
 
-                        <!-- Overall Score -->
                         <div class="overall-score-card">
                             <h3>Overall Score</h3>
                             <div class="big-score" id="bigScore">0</div>
@@ -116,7 +111,6 @@
                                  class="correct-diagnosis"></div>
                         </div>
 
-                        <!-- Score Breakdown -->
                         <div class="score-breakdown-row">
                             <div class="score-mini-card">
                                 <h4>Checklist</h4>
@@ -141,7 +135,6 @@
                             </div>
                         </div>
 
-                        <!-- AI Feedback -->
                         <div class="feedback-section">
                             <h3>📝 Examiner Feedback</h3>
                             <div class="ai-feedback-box"
@@ -150,7 +143,6 @@
                             </div>
                         </div>
 
-                        <!-- Checklist Results -->
                         <div class="feedback-section">
                             <h3>✅ History Taking Checklist</h3>
                             <div id="checklistResults"></div>
@@ -161,13 +153,11 @@
                             <div id="prePostResults"></div>
                         </div>
 
-                        <!-- Viva Results -->
                         <div class="feedback-section">
                             <h3>🎓 Viva Question Results</h3>
                             <div id="vivaResults"></div>
                         </div>
 
-                        <!-- Footer -->
                         <div class="feedback-footer">
                             <a href="/dashboard?view=cases" class="btn">
                                 Try Another Case
@@ -222,18 +212,12 @@
             communication_skills: "Key communication skills"
         };
 
-        const gradeColors = {
-            "Excellent": "#1e8449",
-            "Pass": "#2c7be5",
-            "Borderline": "#f6a623",
-            "Fail": "#e74c3c"
-        };
-
         async function loadTopbarUser() {
             try {
                 const res = await fetch("/get_current_user");
                 const data = await res.json();
                 const name = data.name || "Student";
+
                 document.getElementById("topbarName").textContent = name;
                 document.getElementById("topbarAvatar").textContent =
                     name.charAt(0).toUpperCase();
@@ -244,7 +228,6 @@
 
         async function loadResults() {
             try {
-                // Step 1 — evaluate checklist
                 const checkRes = await fetch("/evaluate_checklist", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -255,9 +238,9 @@
                         post_checks: postChecks
                     })
                 });
+
                 const checkData = await checkRes.json();
 
-                // Step 2 — calculate scores
                 const vivaTotal = vivaScores.reduce((a, b) => a + b, 0);
                 const vivaPossible = vivaQuestions.reduce(
                     (a, q) => a + q.max_marks, 0);
@@ -269,12 +252,11 @@
                 const overallPossible =
                     vivaPossible + checkPossible + prePostPossible;
 
-                // Step 3 — generate AI feedback
                 const feedbackRes = await fetch("/generate_feedback", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                    case_id: caseId,
+                        case_id: caseId,
                         checklist_results: checkData,
                         viva_scores: vivaScores,
                         viva_questions: vivaQuestions,
@@ -284,9 +266,9 @@
                         total_possible: overallPossible
                     })
                 });
+
                 const feedbackData = await feedbackRes.json();
 
-                // Step 4 — render everything
                 document.getElementById("loadingState").style.display =
                     "none";
                 document.getElementById("resultsBody").style.display =
@@ -308,8 +290,17 @@
                 renderChecklistResults(checkData);
                 renderVivaResults();
 
+                sessionStorage.removeItem("osceCaseProgress");
+
+                Object.keys(sessionStorage).forEach(key => {
+                    if (key.startsWith("osceVivaProgress-")) {
+                        sessionStorage.removeItem(key);
+                    }
+                });
+
             } catch (err) {
                 console.error("Error loading results:", err);
+
                 document.getElementById("loadingState").innerHTML =
                     `<p>❌ Error generating results. Please try again.</p>
                      <a href="/dashboard" class="btn"
@@ -325,16 +316,21 @@
                 `out of ${possible}`;
 
             const pct = possible > 0 ? (total / possible) * 100 : 0;
-            let grade, gradeClass;
+            let grade;
+            let gradeClass;
 
             if (pct >= 80) {
-                grade = "🏆 Excellent"; gradeClass = "excellent";
+                grade = "🏆 Excellent";
+                gradeClass = "excellent";
             } else if (pct >= 65) {
-                grade = "✅ Pass"; gradeClass = "pass";
+                grade = "✅ Pass";
+                gradeClass = "pass";
             } else if (pct >= 50) {
-                grade = "⚠️ Borderline"; gradeClass = "borderline";
+                grade = "⚠️ Borderline";
+                gradeClass = "borderline";
             } else {
-                grade = "❌ Fail"; gradeClass = "fail";
+                grade = "❌ Fail";
+                gradeClass = "fail";
             }
 
             const impression = document.getElementById("globalImpression");
@@ -392,6 +388,7 @@
 
         function renderPrePostResults() {
             const container = document.getElementById("prePostResults");
+
             const items = [
                 ["Washed hands before consultation", preChecks.washed_hands],
                 ["Donned appropriate PPE", preChecks.donned_ppe],
@@ -403,7 +400,9 @@
                 ["Disposed of PPE appropriately", postChecks.disposed_ppe],
                 ["Washed hands after consultation", postChecks.washed_hands_after]
             ];
+
             container.innerHTML = "";
+
             items.forEach(([label, achieved]) => {
                 const div = document.createElement("div");
                 div.className =
@@ -419,6 +418,7 @@
         function renderChecklistResults(checkData) {
             const container =
                 document.getElementById("checklistResults");
+
             container.innerHTML = "";
 
             for (const [sectionKey, sectionData] of
