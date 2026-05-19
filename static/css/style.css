@@ -1410,3 +1410,576 @@ textarea:focus {
 .auth-switch a:hover {
     text-decoration: underline;
 }
+
+.case-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.case-btn:hover {
+    background: #e8f4fd;
+    border-color: #2c7be5;
+}
+
+.case-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #f0f4f8;
+    flex-shrink: 0;
+}
+
+.case-btn-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.case-btn-info strong {
+    font-size: 13px;
+    color: #333;
+}
+
+.case-btn-info small {
+    font-size: 11px;
+    color: #888;
+}
+
+.case-btn:hover .case-btn-info strong {
+    color: #2c7be5;
+}
+
+.sim-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+    background: #f0f4f8;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.sim-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #888;
+    border: none;
+    background: none;
+    transition: all 0.2s;
+}
+
+.sim-tab.active {
+    background: white;
+    color: #2c7be5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.avatar-panel {
+    flex: 2;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.avatar-wrapper {
+    width: 160px;
+    height: 200px;
+    margin-bottom: 12px;
+}
+
+.avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.avatar-talking {
+    animation: avatarBob 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes avatarBob {
+    from { transform: translateY(0px); }
+    to { transform: translateY(-6px); }
+}
+
+.avatar-name-tag {
+    background: #2c7be5;
+    color: white;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.avatar-speech-bubble {
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    max-width: 100%;
+    text-align: center;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.avatar-status {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 12px;
+}
+
+.avatar-status.talking {
+    color: #2c7be5;
+    font-weight: bold;
+}
+
+.avatar-input-area {
+    width: 100%;
+}
+
+/* ─────────────────────────────────────────
+   RIGHT PANEL
+───────────────────────────────────────── */
+
+.right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 220px;
+}
+
+.info-card, .timer-card, .notes-card {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.info-card h3, .timer-card h3, .notes-card h3 {
+    font-size: 14px;
+    color: #2c7be5;
+    margin-bottom: 12px;
+    font-weight: bold;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f0f4f8;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 6px 0;
+    border-bottom: 1px solid #f8f9fa;
+    gap: 8px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #888;
+    flex-shrink: 0;
+    font-weight: bold;
+}
+
+.info-value {
+    font-size: 12px;
+    color: #333;
+    text-align: right;
+    line-height: 1.4;
+}
+
+.timer-display {
+    font-size: 40px;
+    font-weight: bold;
+    color: #2c7be5;
+    text-align: center;
+    margin: 8px 0;
+    font-family: monospace;
+}
+
+.timer-bar-bg {
+    background: #f0f4f8;
+    border-radius: 4px;
+    height: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.timer-bar-fill {
+    height: 100%;
+    background: #2c7be5;
+    border-radius: 4px;
+    transition: width 1s linear, background 0.3s;
+    width: 0%;
+}
+
+.timer-label {
+    font-size: 12px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.btn-timer {
+    width: 100%;
+    padding: 10px;
+    background: #2c7be5;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.btn-timer:hover {
+    background: #1a5cbf;
+}
+
+.notes-card textarea {
+    width: 100%;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 13px;
+    resize: vertical;
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+}
+
+.notes-card textarea:focus {
+    border-color: #2c7be5;
+    outline: none;
+}
+
+.btn-clear-notes {
+    background: none;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: #888;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
+}
+
+.btn-clear-notes:hover {
+    background: #fdedec;
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+/* ─────────────────────────────────────────
+   MOCK EXAM
+───────────────────────────────────────── */
+
+.mock-container {
+    min-height: 100vh;
+    background: #f0f4f8;
+}
+
+.mock-setup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px 20px;
+}
+
+.mock-setup-card {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.mock-setup-card h2 {
+    font-size: 28px;
+    color: #2c7be5;
+    margin-bottom: 8px;
+}
+
+.mock-setup-card p {
+    color: #666;
+    margin-bottom: 24px;
+}
+
+.mock-setup-card h3 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.mock-rules {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.mock-rules h3 {
+    margin-bottom: 12px;
+}
+
+.rule-item {
+    font-size: 14px;
+    color: #555;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.rule-item:last-child {
+    border-bottom: none;
+}
+
+.case-count-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.case-count-btn {
+    padding: 16px 8px;
+    background: #f8f9fa;
+    border: 2px solid #eee;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    transition: all 0.2s;
+    line-height: 1.4;
+}
+
+.case-count-btn small {
+    display: block;
+    font-size: 11px;
+    color: #888;
+    font-weight: normal;
+    margin-top: 4px;
+}
+
+.case-count-btn:hover {
+    border-color: #2c7be5;
+    color: #2c7be5;
+    background: #e8f4fd;
+}
+
+.case-count-btn.selected {
+    border-color: #2c7be5;
+    background: #2c7be5;
+    color: white;
+}
+
+.case-count-btn.selected small {
+    color: rgba(255,255,255,0.8);
+}
+
+.mock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: white;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.mock-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mock-badge {
+    background: #e8f4fd;
+    color: #2c7be5;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.mock-case-counter {
+    font-size: 14px;
+    color: #666;
+}
+
+.mock-timer-display {
+    font-size: 36px;
+    font-weight: bold;
+    color: #2c7be5;
+    font-family: monospace;
+}
+
+.mock-phase-label {
+    background: #e8f4fd;
+    color: #2c7be5;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.mock-phase-label.viva {
+    background: #e9f7ef;
+    color: #1e8449;
+}
+
+.mock-timer-bar-bg {
+    height: 6px;
+    background: #f0f4f8;
+    width: 100%;
+}
+
+.mock-timer-bar-fill {
+    height: 100%;
+    background: #2c7be5;
+    transition: width 1s linear, background 0.3s;
+    width: 100%;
+}
+
+.mock-timer-bar-fill.viva {
+    background: #1e8449;
+}
+
+.mock-body {
+    display: flex;
+    gap: 20px;
+    padding: 20px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.mock-viva-body {
+    max-width: 800px;
+    margin: 24px auto;
+    padding: 0 24px;
+}
+
+.mock-transition {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #1a1a2e;
+}
+
+.transition-card {
+    text-align: center;
+    color: white;
+    padding: 40px;
+}
+
+.transition-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.transition-card h2 {
+    font-size: 32px;
+    color: white;
+    margin-bottom: 12px;
+}
+
+.transition-card p {
+    font-size: 18px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 24px;
+}
+
+.transition-countdown {
+    font-size: 80px;
+    font-weight: bold;
+    color: #2c7be5;
+    font-family: monospace;
+}
+.mock-cta-section {
+    padding: 40px 60px;
+    background: #f8f9fa;
+}
+
+.mock-cta-card {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 2px solid #e8f4fd;
+}
+
+.mock-cta-icon {
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.mock-cta-content {
+    flex: 1;
+}
+
+.mock-cta-content h3 {
+    font-size: 20px;
+    color: #1a1a2e;
+    margin-bottom: 6px;
+}
+
+.mock-cta-content p {
+    font-size: 15px;
+    color: #666;
+    margin: 0;
+}

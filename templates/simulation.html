@@ -23,68 +23,103 @@
             <p>Choose a clinical case to begin your simulation. Once started you cannot change the case.</p>
 
             <div class="case-grid">
-
                 <div class="case-category">
                     <h4>🫁 Abdominal Pain</h4>
                     <button class="case-btn" onclick="selectCase('abdominal_1', 'Abdominal 1 — Epigastric Pain (Sarah, 34)')">
-                        Case 1 — Epigastric Pain<br>
-                        <small>Sarah, 34 — Emergency Department</small>
+                        <img src="/static/images/avatars/abdominal_1.svg" class="case-avatar" alt="Sarah"/>
+                        <div class="case-btn-info">
+                            <strong>Case 1 — Epigastric Pain</strong>
+                            <small>Sarah, 34 — Emergency Department</small>
+                        </div>
                     </button>
                     <button class="case-btn" onclick="selectCase('abdominal_2', 'Abdominal 2 — Crampy Pain (Margaret, 59)')">
-                        Case 2 — Crampy Abdominal Pain<br>
-                        <small>Margaret, 59 — Surgical Assessment</small>
+                        <img src="/static/images/avatars/abdominal_2.svg" class="case-avatar" alt="Margaret"/>
+                        <div class="case-btn-info">
+                            <strong>Case 2 — Crampy Abdominal Pain</strong>
+                            <small>Margaret, 59 — Surgical Assessment</small>
+                        </div>
                     </button>
                     <button class="case-btn" onclick="selectCase('abdominal_3', 'Abdominal 3 — Epigastric Burning (James, 52)')">
-                        Case 3 — Epigastric Burning<br>
-                        <small>James, 52 — General Practice</small>
+                        <img src="/static/images/avatars/abdominal_3.svg" class="case-avatar" alt="James"/>
+                        <div class="case-btn-info">
+                            <strong>Case 3 — Epigastric Burning</strong>
+                            <small>James, 52 — General Practice</small>
+                        </div>
                     </button>
                 </div>
 
                 <div class="case-category">
                     <h4>❤️ Chest Pain</h4>
                     <button class="case-btn" onclick="selectCase('chest_1', 'Chest 1 — Severe Chest Pain (John, 55)')">
-                        Case 1 — Severe Central Chest Pain<br>
-                        <small>John, 55 — Emergency Department</small>
+                        <img src="/static/images/avatars/chest_1.svg" class="case-avatar" alt="John"/>
+                        <div class="case-btn-info">
+                            <strong>Case 1 — Severe Central Chest Pain</strong>
+                            <small>John, 55 — Emergency Department</small>
+                        </div>
                     </button>
                     <button class="case-btn" onclick="selectCase('chest_2', 'Chest 2 — Exertional Chest Pain (Michael, 55)')">
-                        Case 2 — Exertional Chest Pain<br>
-                        <small>Michael, 55 — General Practice</small>
+                        <img src="/static/images/avatars/chest_2.svg" class="case-avatar" alt="Michael"/>
+                        <div class="case-btn-info">
+                            <strong>Case 2 — Exertional Chest Pain</strong>
+                            <small>Michael, 55 — General Practice</small>
+                        </div>
                     </button>
                     <button class="case-btn" onclick="selectCase('chest_3', 'Chest 3 — Left Sided Chest Pain (Robert, 50)')">
-                        Case 3 — Left Sided Chest Pain<br>
-                        <small>Robert, 50 — Emergency Department</small>
+                        <img src="/static/images/avatars/chest_3.svg" class="case-avatar" alt="Robert"/>
+                        <div class="case-btn-info">
+                            <strong>Case 3 — Left Sided Chest Pain</strong>
+                            <small>Robert, 50 — Emergency Department</small>
+                        </div>
                     </button>
                 </div>
 
                 <div class="case-category">
                     <h4>😮 Cough</h4>
                     <button class="case-btn" onclick="selectCase('cough_1', 'Cough 1 — Persistent Cough (Emma, 24)')">
-                        Case 1 — Persistent Cough<br>
-                        <small>Emma, 24 — General Practice</small>
+                        <img src="/static/images/avatars/cough_1.svg" class="case-avatar" alt="Emma"/>
+                        <div class="case-btn-info">
+                            <strong>Case 1 — Persistent Cough</strong>
+                            <small>Emma, 24 — General Practice</small>
+                        </div>
                     </button>
                     <button class="case-btn" onclick="selectCase('cough_2', 'Cough 2 — Cough with Breathlessness (George, 64)')">
-                        Case 2 — Cough with Breathlessness<br>
-                        <small>George, 64 — General Practice</small>
+                        <img src="/static/images/avatars/cough_2.svg" class="case-avatar" alt="George"/>
+                        <div class="case-btn-info">
+                            <strong>Case 2 — Cough with Breathlessness</strong>
+                            <small>George, 64 — General Practice</small>
+                        </div>
                     </button>
                     <button class="case-btn" onclick="selectCase('cough_3', 'Cough 3 — Productive Cough (Thomas, 56)')">
-                        Case 3 — Productive Cough<br>
-                        <small>Thomas, 56 — General Practice</small>
+                        <img src="/static/images/avatars/cough_3.svg" class="case-avatar" alt="Thomas"/>
+                        <div class="case-btn-info">
+                            <strong>Case 3 — Productive Cough</strong>
+                            <small>Thomas, 56 — General Practice</small>
+                        </div>
                     </button>
                 </div>
-
             </div>
+        </div>
+
+        <!-- Tabs -->
+        <div id="simTabs" class="sim-tabs" style="display:none;">
+            <button class="sim-tab active" id="tabChat" onclick="switchTab('chat')">
+                💬 Chat Mode
+            </button>
+            <button class="sim-tab" id="tabAvatar" onclick="switchTab('avatar')">
+                🎭 Avatar Mode
+            </button>
         </div>
 
         <!-- Simulation Panel -->
         <div id="simulationPanel" class="sim-body" style="display:none;">
 
-            <div class="chat-panel">
+            <!-- Chat Panel -->
+            <div class="chat-panel" id="chatPanel">
                 <div class="chat-box" id="chatBox">
                     <div class="message patient">
                         Hello, I am your patient today. Please go ahead and ask me about my symptoms.
                     </div>
                 </div>
-
                 <div class="input-area">
                     <input type="text" id="userInput"
                            placeholder="Type your question or use the mic..."
@@ -94,11 +129,86 @@
                 </div>
             </div>
 
-            <div class="image-panel">
-                <h3>Anatomy Reference</h3>
-                <div id="anatomyDisplay">
-                    <p>Relevant anatomy will appear here based on patient symptoms.</p>
+            <!-- Avatar Panel -->
+            <div class="avatar-panel" id="avatarPanel" style="display:none;">
+                <div class="avatar-container">
+                    <div class="avatar-wrapper" id="avatarWrapper">
+                        <img id="avatarImg" src="" alt="Patient avatar"/>
+                    </div>
+                    <div class="avatar-name-tag" id="avatarNameTag">Patient</div>
+                    <div class="avatar-speech-bubble" id="avatarSpeech">
+                        Hello! Please go ahead and ask me about my symptoms.
+                    </div>
+                    <div class="avatar-status" id="avatarStatus">
+                        Waiting for your question...
+                    </div>
                 </div>
+                <div class="avatar-input-area">
+                    <div class="input-area">
+                        <input type="text" id="avatarInput"
+                               placeholder="Type your question or use the mic..."
+                               onkeypress="handleAvatarEnter(event)"/>
+                        <button class="btn-mic" id="avatarMicBtn"
+                                onclick="toggleAvatarMic()">🎤</button>
+                        <button class="btn-send"
+                                onclick="sendAvatarMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+
+                <!-- Patient Info Card -->
+                <div class="info-card" id="patientInfoCard">
+                    <h3>👤 Patient Info</h3>
+                    <div class="info-row">
+                        <span class="info-label">Name</span>
+                        <span class="info-value" id="infoName">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Age</span>
+                        <span class="info-value" id="infoAge">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Gender</span>
+                        <span class="info-value" id="infoGender">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Location</span>
+                        <span class="info-value" id="infoLocation">—</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Complaint</span>
+                        <span class="info-value" id="infoComplaint">—</span>
+                    </div>
+                </div>
+
+                <!-- Timer Card -->
+                <div class="timer-card" id="timerCard">
+                    <h3>⏱️ Timer</h3>
+                    <div class="timer-display" id="timerDisplay">00:00</div>
+                    <div class="timer-bar-bg">
+                        <div class="timer-bar-fill" id="timerBarFill"></div>
+                    </div>
+                    <div class="timer-label" id="timerLabel">Practice Mode</div>
+                    <button class="btn-timer" id="timerToggleBtn"
+                            onclick="togglePracticeTimer()">
+                        ▶ Start Timer
+                    </button>
+                </div>
+
+                <!-- Notepad -->
+                <div class="notes-card">
+                    <h3>📝 Notes</h3>
+                    <textarea id="studentNotes"
+                              placeholder="Type your notes here...&#10;&#10;e.g. Site: epigastric&#10;Onset: 90 mins ago&#10;Character: sharp..."
+                              rows="8"></textarea>
+                    <button class="btn-clear-notes" onclick="clearNotes()">
+                        Clear notes
+                    </button>
+                </div>
+
             </div>
 
         </div>

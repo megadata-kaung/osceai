@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Mock OSCE Exam</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="mock-container">
+
+        <!-- Setup Screen -->
+        <div id="mockSetup" class="mock-setup">
+            <div class="mock-setup-card">
+                <h2>🏥 Mock OSCE Exam</h2>
+                <p>Simulate a real OSCE exam with timed cases and automatic progression</p>
+
+                <div class="mock-rules">
+                    <h3>Exam Rules</h3>
+                    <div class="rule-item">⏱️ 8 minutes for history taking</div>
+                    <div class="rule-item">📋 3 minutes for viva questions</div>
+                    <div class="rule-item">⏸️ 20 second break between cases</div>
+                    <div class="rule-item">🔀 Cases selected randomly</div>
+                    <div class="rule-item">📊 Full results shown at end</div>
+                </div>
+
+                <h3>How many cases?</h3>
+                <div class="case-count-grid">
+                    <button class="case-count-btn" onclick="selectCaseCount(1)">
+                        1 Case<br><small>~11 mins</small>
+                    </button>
+                    <button class="case-count-btn" onclick="selectCaseCount(3)">
+                        3 Cases<br><small>~35 mins</small>
+                    </button>
+                    <button class="case-count-btn" onclick="selectCaseCount(5)">
+                        5 Cases<br><small>~58 mins</small>
+                    </button>
+                    <button class="case-count-btn" onclick="selectCaseCount(9)">
+                        All 9 Cases<br><small>~105 mins</small>
+                    </button>
+                </div>
+
+                <button class="btn" id="startMockBtn"
+                        onclick="startMockExam()" disabled>
+                    Start Mock Exam →
+                </button>
+                <a href="/" class="btn-secondary"
+                   style="display:block; text-align:center; margin-top:12px;">
+                    Back to Home
+                </a>
+            </div>
+        </div>
+
+        <!-- Exam Screen -->
+        <div id="mockExam" style="display:none;">
+
+            <!-- Exam Header -->
+            <div class="mock-header">
+                <div class="mock-header-left">
+                    <span class="mock-badge">🏥 Mock OSCE</span>
+                    <span id="mockCaseCounter" class="mock-case-counter">
+                        Case 1 of 3
+                    </span>
+                </div>
+                <div class="mock-timer-display" id="mockTimerDisplay">
+                    08:00
+                </div>
+                <div class="mock-header-right">
+                    <span id="mockPhaseLabel" class="mock-phase-label">
+                        History Taking
+                    </span>
+                </div>
+            </div>
+
+            <!-- Timer Bar -->
+            <div class="mock-timer-bar-bg">
+                <div class="mock-timer-bar-fill" id="mockTimerBarFill"></div>
+            </div>
+
+            <!-- Exam Body -->
+            <div class="mock-body">
+
+                <!-- Chat Panel -->
+                <div class="chat-panel" id="mockChatPanel">
+                    <div class="chat-box" id="mockChatBox">
+                        <div class="message patient">
+                            Hello, I am your patient today.
+                            Please go ahead and ask me about my symptoms.
+                        </div>
+                    </div>
+                    <div class="input-area" id="mockInputArea">
+                        <input type="text" id="mockUserInput"
+                               placeholder="Type your question or use the mic..."
+                               onkeypress="handleMockEnter(event)"/>
+                        <button class="btn-mic" id="mockMicBtn"
+                                onclick="toggleMockMic()">🎤</button>
+                        <button class="btn-send"
+                                onclick="sendMockMessage()">Send</button>
+                    </div>
+                </div>
+
+                <!-- Right Panel -->
+                <div class="right-panel">
+
+                    <!-- Patient Info -->
+                    <div class="info-card">
+                        <h3>👤 Patient Info</h3>
+                        <div class="info-row">
+                            <span class="info-label">Name</span>
+                            <span class="info-value" id="mockInfoName">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Age</span>
+                            <span class="info-value" id="mockInfoAge">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Location</span>
+                            <span class="info-value" id="mockInfoLocation">—</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Complaint</span>
+                            <span class="info-value" id="mockInfoComplaint">—</span>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="notes-card">
+                        <h3>📝 Notes</h3>
+                        <textarea id="mockNotes"
+                                  placeholder="Quick notes..."
+                                  rows="6"></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Transition Screen -->
+        <div id="mockTransition" style="display:none;" class="mock-transition">
+            <div class="transition-card">
+                <div class="transition-icon" id="transitionIcon">⏸️</div>
+                <h2 id="transitionTitle">History Taking Complete</h2>
+                <p id="transitionMessage">Moving to viva questions in 5 seconds...</p>
+                <div class="transition-countdown" id="transitionCountdown">5</div>
+            </div>
+        </div>
+
+        <!-- Viva Screen -->
+        <div id="mockViva" style="display:none;">
+
+            <div class="mock-header">
+                <div class="mock-header-left">
+                    <span class="mock-badge">🎓 Viva</span>
+                    <span id="mockVivaCaseCounter" class="mock-case-counter">
+                        Case 1 of 3
+                    </span>
+                </div>
+                <div class="mock-timer-display" id="mockVivaTimer">03:00</div>
+                <div class="mock-header-right">
+                    <span class="mock-phase-label viva">Viva Questions</span>
+                </div>
+            </div>
+
+            <div class="mock-timer-bar-bg">
+                <div class="mock-timer-bar-fill viva"
+                     id="mockVivaBarFill"></div>
+            </div>
+
+            <div class="mock-viva-body">
+                <div class="question-panel">
+                    <div class="question-number" id="mockVivaQNum">
+                        Question 1 of 5
+                    </div>
+                    <div class="question-text" id="mockVivaQuestion">
+                        Loading...
+                    </div>
+                    <div class="answer-input-area">
+                        <textarea id="mockVivaAnswer"
+                                  placeholder="Type your answer or use the mic..."
+                                  rows="4"></textarea>
+                        <div class="answer-controls">
+                            <button class="btn-mic-exam" id="mockVivaMicBtn"
+                                    onclick="toggleMockVivaMic()">
+                                🎤 Speak Answer
+                            </button>
+                            <span id="mockVivaMicStatus" class="mic-status"></span>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="submitMockVivaAnswer()">
+                        Submit Answer →
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const ALL_CASES = [
+            "abdominal_1", "abdominal_2", "abdominal_3",
+            "chest_1", "chest_2", "chest_3",
+            "cough_1", "cough_2", "cough_3"
+        ];
+
+        let selectedCount = 0;
+        let mockCases = [];
+        let currentCaseIndex = 0;
+        let mockConversation = [];
+        let mockTimerInterval = null;
+        let mockTimerSeconds = 0;
+        let mockVivaInterval = null;
+        let mockVivaSeconds = 0;
+        let mockVivaQuestions = [];
+        let mockVivaIndex = 0;
+        let mockVivaAnswers = [];
+        let mockVivaResults = [];
+        let allCaseResults = [];
+        let mockVivaMicRecognition = null;
+        let mockVivaMicRecording = false;
+        let mockMicRecognition = null;
+        let mockMicRecording = false;
+
+        function selectCaseCount(count) {
+            selectedCount = count;
+            document.querySelectorAll(".case-count-btn").forEach(btn => {
+                btn.classList.remove("selected");
+            });
+            event.target.closest(".case-count-btn").classList.add("selected");
+            document.getElementById("startMockBtn").disabled = false;
+        }
+
+        function shuffleArray(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        async function startMockExam() {
+            mockCases = shuffleArray(ALL_CASES).slice(0, selectedCount);
+            currentCaseIndex = 0;
+            allCaseResults = [];
+            document.getElementById("mockSetup").style.display = "none";
+            await startCase(mockCases[0]);
+        }
+
+        async function startCase(caseId) {
+            mockConversation = [];
+            mockTimerSeconds = 0;
+            document.getElementById("mockExam").style.display = "block";
+            document.getElementById("mockTransition").style.display = "none";
+            document.getElementById("mockViva").style.display = "none";
+
+            document.getElementById("mockCaseCounter").textContent =
+                `Case ${currentCaseIndex + 1} of ${mockCases.length}`;
+            document.getElementById("mockTimerDisplay").textContent = "08:00";
+            document.getElementById("mockTimerBarFill").style.width = "100%";
+            document.getElementById("mockTimerBarFill").style.background = "#2c7be5";
+            document.getElementById("mockPhaseLabel").textContent = "History Taking";
+
+            const chatBox = document.getElementById("mockChatBox");
+            chatBox.innerHTML = `<div class="message patient">
+                Hello, I am your patient today.
+                Please go ahead and ask me about my symptoms.
+            </div>`;
+
+            document.getElementById("mockNotes").value = "";
+
+            await loadMockPatientInfo(caseId);
+            startMockTimer(caseId);
+        }
+
+        async function loadMockPatientInfo(caseId) {
+            try {
+                const res = await fetch(`/get_full_case_info?case_id=${caseId}`);
+                const data = await res.json();
+                document.getElementById("mockInfoName").textContent =
+                    data.patient_name || "—";
+                document.getElementById("mockInfoAge").textContent =
+                    data.age || "—";
+                document.getElementById("mockInfoLocation").textContent =
+                    data.location || "—";
+                document.getElementById("mockInfoComplaint").textContent =
+                    data.complaint || "—";
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function startMockTimer(caseId) {
+            clearInterval(mockTimerInterval);
+            mockTimerSeconds = 480;
+
+            mockTimerInterval = setInterval(() => {
+                mockTimerSeconds--;
+                updateMockTimer();
+
+                if (mockTimerSeconds <= 0) {
+                    clearInterval(mockTimerInterval);
+                    showTransition("history", caseId);
+                }
+            }, 1000);
+        }
+
+        function updateMockTimer() {
+            const mins = Math.floor(mockTimerSeconds / 60);
+            const secs = mockTimerSeconds % 60;
+            document.getElementById("mockTimerDisplay").textContent =
+                `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+
+            const pct = (mockTimerSeconds / 480) * 100;
+            const fill = document.getElementById("mockTimerBarFill");
+            fill.style.width = pct + "%";
+
+            if (mockTimerSeconds > 240) {
+                fill.style.background = "#2c7be5";
+                document.getElementById("mockTimerDisplay").style.color = "#2c7be5";
+            } else if (mockTimerSeconds > 120) {
+                fill.style.background = "#f6a623";
+                document.getElementById("mockTimerDisplay").style.color = "#f6a623";
+            } else {
+                fill.style.background = "#e74c3c";
+                document.getElementById("mockTimerDisplay").style.color = "#e74c3c";
+            }
+        }
+
+        function showTransition(from, caseId) {
+            document.getElementById("mockExam").style.display = "none";
+            document.getElementById("mockViva").style.display = "none";
+            document.getElementById("mockTransition").style.display = "flex";
+
+            let countdown = 5;
+            let title, message, icon;
+
+            if (from === "history") {
+                icon = "📋";
+                title = "History Taking Complete!";
+                message = "Moving to viva questions in...";
+            } else if (from === "viva") {
+                if (currentCaseIndex + 1 < mockCases.length) {
+                    icon = "⏸️";
+                    title = "Case Complete!";
+                    message = "Next case starting in...";
+                    countdown = 20;
+                } else {
+                    icon = "🏆";
+                    title = "All Cases Complete!";
+                    message = "Loading your results in...";
+                    countdown = 5;
+                }
+            }
+
+            document.getElementById("transitionIcon").textContent = icon;
+            document.getElementById("transitionTitle").textContent = title;
+            document.getElementById("transitionMessage").textContent = message;
+            document.getElementById("transitionCountdown").textContent = countdown;
+
+            const countdownInterval = setInterval(() => {
+                countdown--;
+                document.getElementById("transitionCountdown").textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    if (from === "history") {
+                        startMockViva(caseId);
+                    } else if (from === "viva") {
+                        currentCaseIndex++;
+                        if (currentCaseIndex < mockCases.length) {
+                            startCase(mockCases[currentCaseIndex]);
+                        } else {
+                            showMockResults();
+                        }
+                    }
+                }
+            }, 1000);
+        }
+
+        async function startMockViva(caseId) {
+            document.getElementById("mockTransition").style.display = "none";
+            document.getElementById("mockViva").style.display = "block";
+
+            mockVivaAnswers = [];
+            mockVivaResults = [];
+            mockVivaIndex = 0;
+            mockVivaSeconds = 180;
+
+            document.getElementById("mockVivaCaseCounter").textContent =
+                `Case ${currentCaseIndex + 1} of ${mockCases.length}`;
+            document.getElementById("mockVivaTimer").textContent = "03:00";
+            document.getElementById("mockVivaBarFill").style.width = "100%";
+
+            try {
+                const res = await fetch(`/get_questions?case_id=${caseId}`);
+                const data = await res.json();
+                mockVivaQuestions = data.questions;
+                showMockVivaQuestion();
+            } catch (err) {
+                console.error(err);
+            }
+
+            mockVivaInterval = setInterval(() => {
+                mockVivaSeconds--;
+                updateMockVivaTimer();
+                if (mockVivaSeconds <= 0) {
+                    clearInterval(mockVivaInterval);
+                    finishMockViva(caseId);
+                }
+            }, 1000);
+        }
+
+        function updateMockVivaTimer() {
+            const mins = Math.floor(mockVivaSeconds / 60);
+            const secs = mockVivaSeconds % 60;
+            document.getElementById("mockVivaTimer").textContent =
+                `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+            const pct = (mockVivaSeconds / 180) * 100;
+            document.getElementById("mockVivaBarFill").style.width = pct + "%";
+            if (mockVivaSeconds < 60) {
+                document.getElementById("mockVivaBarFill").style.background = "#e74c3c";
+                document.getElementById("mockVivaTimer").style.color = "#e74c3c";
+            }
+        }
+
+        function showMockVivaQuestion() {
+            if (mockVivaIndex >= mockVivaQuestions.length) {
+                finishMockViva(mockCases[currentCaseIndex]);
+                return;
+            }
+            const q = mockVivaQuestions[mockVivaIndex];
+            document.getElementById("mockVivaQNum").textContent =
+                `Question ${mockVivaIndex + 1} of ${mockVivaQuestions.length}`;
+            document.getElementById("mockVivaQuestion").textContent = q.question;
+            document.getElementById("mockVivaAnswer").value = "";
+            document.getElementById("mockVivaMicStatus").textContent = "";
+        }
+
+        async function submitMockVivaAnswer() {
+            const answer = document.getElementById("mockVivaAnswer").value.trim();
+            if (!answer) {
+                alert("Please type or speak your answer first!");
+                return;
+            }
+
+            const caseId = mockCases[currentCaseIndex];
+            mockVivaAnswers.push(answer);
+
+            try {
+                const res = await fetch("/evaluate_viva", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        answer: answer,
+                        question_index: mockVivaIndex,
+                        case_id: caseId
+                    })
+                });
+                const data = await res.json();
+                mockVivaResults.push(data);
+            } catch (err) {
+                mockVivaResults.push({ marks_achieved: 0, point_results: [] });
+            }
+
+            mockVivaIndex++;
+            showMockVivaQuestion();
+        }
+
+        async function finishMockViva(caseId) {
+            clearInterval(mockVivaInterval);
+
+            try {
+                const checkRes = await fetch("/evaluate_checklist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        case_id: caseId,
+                        conversation: mockConversation
+                    })
+                });
+                const checkData = await checkRes.json();
+
+                allCaseResults.push({
+                    case_id: caseId,
+                    checklist: checkData,
+                    viva_scores: mockVivaResults.map(r => r.marks_achieved),
+                    viva_point_results: mockVivaResults.map(r => r.point_results),
+                    viva_questions: mockVivaQuestions,
+                    viva_answers: mockVivaAnswers
+                });
+            } catch (err) {
+                console.error(err);
+            }
+
+            showTransition("viva", caseId);
+        }
+
+        function showMockResults() {
+            sessionStorage.setItem("mockResults", JSON.stringify(allCaseResults));
+            sessionStorage.setItem("mockCases", JSON.stringify(mockCases));
+            window.location.href = "/mock_results";
+        }
+
+        function sendMockMessage() {
+            const input = document.getElementById("mockUserInput");
+            const message = input.value.trim();
+            if (!message) return;
+
+            const caseId = mockCases[currentCaseIndex];
+            input.value = "";
+
+            addMockMessage(message, "student");
+            mockConversation.push({ role: "user", content: message });
+
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message, case_id: caseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                addMockMessage(data.response, "patient");
+                mockConversation.push({
+                    role: "assistant",
+                    content: data.response
+                });
+            })
+            .catch(err => console.error(err));
+        }
+
+        function addMockMessage(text, sender) {
+            const chatBox = document.getElementById("mockChatBox");
+            const div = document.createElement("div");
+            div.className = `message ${sender}`;
+            div.textContent = text;
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleMockEnter(event) {
+            if (event.key === "Enter") sendMockMessage();
+        }
+
+        function toggleMockMic() {
+            if (!('webkitSpeechRecognition' in window ||
+                  'SpeechRecognition' in window)) {
+                alert("Please use Chrome for voice input.");
+                return;
+            }
+            if (mockMicRecording) {
+                mockMicRecognition.stop();
+                mockMicRecording = false;
+                document.getElementById("mockMicBtn").classList.remove("recording");
+            } else {
+                mockMicRecognition = new (window.SpeechRecognition ||
+                                          window.webkitSpeechRecognition)();
+                mockMicRecognition.lang = "en-US";
+                mockMicRecognition.onresult = function(event) {
+                    document.getElementById("mockUserInput").value =
+                        event.results[0][0].transcript;
+                };
+                mockMicRecognition.onend = function() {
+                    mockMicRecording = false;
+                    document.getElementById("mockMicBtn").classList.remove("recording");
+                };
+                mockMicRecognition.start();
+                mockMicRecording = true;
+                document.getElementById("mockMicBtn").classList.add("recording");
+            }
+        }
+
+        function toggleMockVivaMic() {
+            if (!('webkitSpeechRecognition' in window ||
+                  'SpeechRecognition' in window)) {
+                alert("Please use Chrome for voice input.");
+                return;
+            }
+            if (mockVivaMicRecording) {
+                mockVivaMicRecognition.stop();
+                mockVivaMicRecording = false;
+                document.getElementById("mockVivaMicBtn").textContent = "🎤 Speak Answer";
+                document.getElementById("mockVivaMicBtn").classList.remove("recording");
+            } else {
+                mockVivaMicRecognition = new (window.SpeechRecognition ||
+                                               window.webkitSpeechRecognition)();
+                mockVivaMicRecognition.lang = "en-US";
+                mockVivaMicRecognition.continuous = true;
+                mockVivaMicRecognition.interimResults = true;
+                mockVivaMicRecognition.onresult = function(event) {
+                    let transcript = "";
+                    for (let i = 0; i < event.results.length; i++) {
+                        transcript += event.results[i][0].transcript;
+                    }
+                    document.getElementById("mockVivaAnswer").value = transcript;
+                };
+                mockVivaMicRecognition.onend = function() {
+                    mockVivaMicRecording = false;
+                    document.getElementById("mockVivaMicBtn").textContent =
+                        "🎤 Speak Answer";
+                    document.getElementById("mockVivaMicBtn").classList.remove("recording");
+                    document.getElementById("mockVivaMicStatus").textContent =
+                        "✅ Recording stopped";
+                };
+                mockVivaMicRecognition.start();
+                mockVivaMicRecording = true;
+                document.getElementById("mockVivaMicBtn").textContent = "⏹ Stop";
+                document.getElementById("mockVivaMicBtn").classList.add("recording");
+                document.getElementById("mockVivaMicStatus").textContent =
+                    "🔴 Recording...";
+            }
+        }
+    </script>
+</body>
+</html>

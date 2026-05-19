@@ -237,6 +237,13 @@ def generate_feedback():
         "correct_diagnosis": case.get("correct_diagnosis", ""),
         "global_impression": global_impression
     })
+@app.route("/mock_exam")
+def mock_exam():
+    return render_template("mock_exam.html")
+
+@app.route("/mock_results")
+def mock_results():
+    return render_template("mock_results.html")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

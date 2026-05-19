@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Mock Exam Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="feedback-container">
+
+        <div class="feedback-header">
+            <h2>🏆 Mock OSCE Exam Results</h2>
+            <p>Here is your full performance summary</p>
+        </div>
+
+        <div id="loadingState" class="loading-panel">
+            <p>Generating your results...</p>
+        </div>
+
+        <div id="resultsBody" style="display:none;">
+            <div class="overall-score-card">
+                <h3>Overall Performance</h3>
+                <div class="big-score" id="bigScore">0</div>
+                <div class="score-out-of" id="scoreOutOf">out of 0</div>
+                <div class="global-impression" id="globalImpression"></div>
+            </div>
+            <div id="caseResultsList"></div>
+            <div class="feedback-footer">
+                <a href="/mock_exam" class="btn">Try Again</a>
+                <a href="/" class="btn-secondary">Back to Home</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const mockResults = JSON.parse(
+            sessionStorage.getItem("mockResults") || "[]"
+        );
+        const mockCases = JSON.parse(
+            sessionStorage.getItem("mockCases") || "[]"
+        );
+
+        const caseLabels = {
+            "abdominal_1": "Abdominal 1 — Sarah, 34 (Pancreatitis)",
+            "abdominal_2": "Abdominal 2 — Margaret, 59 (Bowel Obstruction)",
+            "abdominal_3": "Abdominal 3 — James, 52 (GERD)",
+            "chest_1": "Chest 1 — John, 55 (Aortic Dissection)",
+            "chest_2": "Chest 2 — Michael, 55 (Stable Angina)",
+            "chest_3": "Chest 3 — Robert, 50 (STEMI)",
+            "cough_1": "Cough 1 — Emma, 24 (Post-infective)",
+            "cough_2": "Cough 2 — George, 64 (Lung Cancer)",
+            "cough_3": "Cough 3 — Thomas, 56 (Tuberculosis)"
+        };
+
+        function renderResults() {
+            let grandTotal = 0;
+            let grandPossible = 0;
+
+            const container = document.getElementById("caseResultsList");
+            container.innerHTML = "";
+
+            mockResults.forEach((result, index) => {
+                const vivaTotal = result.viva_scores.reduce((a, b) => a + b, 0);
+                const vivaPossible = result.viva_questions.reduce(
+                    (a, q) => a + q.max_marks, 0
+                );
+                const checkTotal = result.checklist.total_achieved;
+                const checkPossible = result.checklist.total_possible;
+                const caseTotal = vivaTotal + checkTotal;
+                const casePossible = vivaPossible + checkPossible;
+                const casePct = casePossible > 0 ?
+                    Math.round((caseTotal / casePossible) * 100) : 0;
+
+                grandTotal += caseTotal;
+                grandPossible += casePossible;
+
+                const card = document.createElement("div");
+                card.className = "feedback-section";
+                card.innerHTML = `
+                    <h3>Case ${index + 1}: ${caseLabels[result.case_id] || result.case_id}</h3>
+                    <div class="score-breakdown-row">
+                        <div class="score-mini-card">
+                            <h4>Checklist</h4>
+                            <div class="score-mini-number">${checkTotal}</div>
+                            <div class="score-mini-total">out of ${checkPossible}</div>
+                        </div>
+                        <div class="score-mini-card">
+                            <h4>Viva</h4>
+                            <div class="score-mini-number">${vivaTotal}</div>
+                            <div class="score-mini-total">out of ${vivaPossible}</div>
+                        </div>
+                        <div class="score-mini-card">
+                            <h4>Total</h4>
+                            <div class="score-mini-number">${caseTotal}</div>
+                            <div class="score-mini-total">out of ${casePossible}</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            const overallPct = grandPossible > 0 ?
+                Math.round((grandTotal / grandPossible) * 100) : 0;
+
+            document.getElementById("bigScore").textContent = grandTotal;
+            document.getElementById("scoreOutOf").textContent =
+                `out of ${grandPossible} (${overallPct}%)`;
+
+            let grade, gradeClass;
+            if (overallPct >= 80) { grade = "🏆 Excellent"; gradeClass = "excellent"; }
+            else if (overallPct >= 65) { grade = "✅ Pass"; gradeClass = "pass"; }
+            else if (overallPct >= 50) { grade = "⚠️ Borderline"; gradeClass = "borderline"; }
+            else { grade = "❌ Fail"; gradeClass = "fail"; }
+
+            const imp = document.getElementById("globalImpression");
+            imp.textContent = grade;
+            imp.className = `global-impression ${gradeClass}`;
+
+            document.getElementById("loadingState").style.display = "none";
+            document.getElementById("resultsBody").style.display = "block";
+        }
+
+        renderResults();
+    </script>
+</body>
+</html>
