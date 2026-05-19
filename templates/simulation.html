@@ -100,6 +100,31 @@
             </div>
         </div>
 
+        <!-- Voice Controls — hidden until case selected -->
+        <div class="voice-controls" id="voiceControls" style="display:none;">
+            <div class="voice-control-inner">
+                <span class="voice-control-icon">🔊</span>
+                <span class="voice-control-title">Voice Speed</span>
+                <div class="voice-speed-track">
+                    <button class="voice-speed-pill"
+                            onclick="setVoiceSpeed('slow', this)">
+                        Slow
+                    </button>
+                    <button class="voice-speed-pill active"
+                            onclick="setVoiceSpeed('normal', this)">
+                        Normal
+                    </button>
+                    <button class="voice-speed-pill"
+                            onclick="setVoiceSpeed('fast', this)">
+                        Fast
+                    </button>
+                </div>
+                <span class="voice-speed-hint" id="voiceSpeedHint">
+                    Normal speed
+                </span>
+            </div>
+        </div>
+
         <!-- Case Selection Panel -->
         <div id="caseSelection" class="case-selection-panel">
             <h3>Select Your Case</h3>

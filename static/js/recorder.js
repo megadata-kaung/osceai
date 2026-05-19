@@ -10,6 +10,7 @@ let avatarRecording = false;
 let practiceTimerInterval = null;
 let practiceTimerSeconds = 0;
 let practiceTimerRunning = false;
+let voiceSpeedMultiplier = 1.0;
 
 async function loadPatientVoiceProfile() {
     if (!selectedCaseId) return;
@@ -115,23 +116,31 @@ function addMessage(text, sender) {
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+// ── Updated voice settings with speed multiplier ──
 function getVoiceSettings() {
     let rate, pitch;
+
     if (patientGender === "female") {
-        if (patientAge < 30) { rate = 1.05; pitch = 1.3; }
-        else if (patientAge <= 50) { rate = 0.92; pitch = 1.1; }
-        else { rate = 0.78; pitch = 0.95; }
+        if (patientAge < 30) { rate = 1.1; pitch = 1.2; }
+        else if (patientAge <= 50) { rate = 1.0; pitch = 1.05; }
+        else { rate = 0.9; pitch = 0.95; }
     } else {
-        if (patientAge < 30) { rate = 1.0; pitch = 1.0; }
-        else if (patientAge <= 50) { rate = 0.88; pitch = 0.85; }
-        else { rate = 0.75; pitch = 0.75; }
+        if (patientAge < 30) { rate = 1.05; pitch = 1.0; }
+        else if (patientAge <= 50) { rate = 0.95; pitch = 0.9; }
+        else { rate = 0.88; pitch = 0.82; }
     }
+
+    // Apply speed multiplier — clamp between 0.5 and 1.8
+    rate = Math.max(0.5, Math.min(1.8, rate * voiceSpeedMultiplier));
+
     return { rate, pitch };
 }
 
+// ── Voice always respects patient gender ──
 function getBestVoice(gender) {
     const voices = window.speechSynthesis.getVoices();
     if (!voices || voices.length === 0) return null;
+
     const femaleKeywords = [
         "female", "woman", "zira", "samantha", "karen",
         "victoria", "moira", "fiona", "kate", "susan",
@@ -141,8 +150,10 @@ function getBestVoice(gender) {
         "male", "man", "david", "daniel", "mark",
         "alex", "fred", "thomas", "google uk english male"
     ];
+
     const keywords = gender === "female" ? femaleKeywords : maleKeywords;
     let bestVoice = null;
+
     for (const keyword of keywords) {
         bestVoice = voices.find(v =>
             v.name.toLowerCase().includes(keyword) &&
@@ -150,9 +161,11 @@ function getBestVoice(gender) {
         );
         if (bestVoice) break;
     }
+
     if (!bestVoice) {
         bestVoice = voices.find(v => v.lang.startsWith("en")) || voices[0];
     }
+
     return bestVoice;
 }
 
@@ -175,6 +188,38 @@ function speakResponse(text) {
         if (voice) utterance.voice = voice;
         window.speechSynthesis.speak(utterance);
     }
+}
+
+// ── Voice speed control ──
+function setVoiceSpeed(speed, btn) {
+    if (speed === "slow") voiceSpeedMultiplier = 0.82;
+    else if (speed === "normal") voiceSpeedMultiplier = 1.0;
+    else if (speed === "fast") voiceSpeedMultiplier = 1.2;
+
+    // Update active button
+    document.querySelectorAll(".voice-speed-btn").forEach(b =>
+        b.classList.remove("active"));
+    btn.classList.add("active");
+
+    // Save preference
+    sessionStorage.setItem("voiceSpeed", speed);
+}
+
+function loadVoicePreferences() {
+    const savedSpeed = sessionStorage.getItem("voiceSpeed") || "normal";
+
+    if (savedSpeed === "slow") voiceSpeedMultiplier = 0.82;
+    else if (savedSpeed === "normal") voiceSpeedMultiplier = 1.0;
+    else if (savedSpeed === "fast") voiceSpeedMultiplier = 1.2;
+
+    // Highlight correct button
+    document.querySelectorAll(".voice-speed-btn").forEach(btn => {
+        btn.classList.remove("active");
+        const btnText = btn.textContent.toLowerCase();
+        if (btnText.includes(savedSpeed)) {
+            btn.classList.add("active");
+        }
+    });
 }
 
 function toggleMic() {
@@ -447,13 +492,16 @@ window.onload = async function() {
         const simulationPanel = document.getElementById("simulationPanel");
         const simFooter = document.getElementById("simFooter");
         const simTabs = document.getElementById("simTabs");
+        const voiceControls = document.getElementById("voiceControls");
 
         if (caseSelection) caseSelection.style.display = "none";
         if (simulationPanel) simulationPanel.style.display = "flex";
         if (simFooter) simFooter.style.display = "flex";
         if (simTabs) simTabs.style.display = "flex";
+        if (voiceControls) voiceControls.style.display = "flex";
 
         switchTab("chat");
+        loadVoicePreferences();
 
         const savedNotes = sessionStorage.getItem("candidateNotes");
         const notesEl = document.getElementById("studentNotes");
@@ -462,3 +510,44 @@ window.onload = async function() {
         }
     }
 };
+function setVoiceSpeed(speed, btn) {
+    if (speed === "slow") voiceSpeedMultiplier = 0.82;
+    else if (speed === "normal") voiceSpeedMultiplier = 1.0;
+    else if (speed === "fast") voiceSpeedMultiplier = 1.2;
+
+    document.querySelectorAll(".voice-speed-pill").forEach(b =>
+        b.classList.remove("active"));
+    btn.classList.add("active");
+
+    const hint = document.getElementById("voiceSpeedHint");
+    if (hint) {
+        if (speed === "slow") hint.textContent = "🐢 Slower speech";
+        else if (speed === "normal") hint.textContent = "✓ Normal speed";
+        else if (speed === "fast") hint.textContent = "⚡ Faster speech";
+    }
+
+    sessionStorage.setItem("voiceSpeed", speed);
+}
+
+function loadVoicePreferences() {
+    const savedSpeed = sessionStorage.getItem("voiceSpeed") || "normal";
+
+    if (savedSpeed === "slow") voiceSpeedMultiplier = 0.82;
+    else if (savedSpeed === "normal") voiceSpeedMultiplier = 1.0;
+    else if (savedSpeed === "fast") voiceSpeedMultiplier = 1.2;
+
+    document.querySelectorAll(".voice-speed-pill").forEach(btn => {
+        btn.classList.remove("active");
+        const btnText = btn.textContent.toLowerCase().trim();
+        if (btnText === savedSpeed) {
+            btn.classList.add("active");
+        }
+    });
+
+    const hint = document.getElementById("voiceSpeedHint");
+    if (hint) {
+        if (savedSpeed === "slow") hint.textContent = "🐢 Slower speech";
+        else if (savedSpeed === "normal") hint.textContent = "✓ Normal speed";
+        else if (savedSpeed === "fast") hint.textContent = "⚡ Faster speech";
+    }
+}
