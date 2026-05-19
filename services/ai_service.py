@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 import json
+import requests
 
 load_dotenv()
 
@@ -37,6 +38,62 @@ def get_symptom_image(response_text):
 def get_groq_client():
     from groq import Groq
     return Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+
+# ── Core AI call with Groq → OpenRouter fallback ──
+def call_ai(messages, max_tokens=150, temperature=0.4):
+    """
+    Try Groq first.
+    If Groq fails for any reason, fall back to OpenRouter.
+    """
+
+    # ── Attempt 1: Groq ──
+    try:
+        response = get_groq_client().chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature
+        )
+        return response.choices[0].message.content
+
+    except Exception as groq_error:
+        print(f"[AI] Groq failed: {groq_error} — switching to OpenRouter")
+
+    # ── Attempt 2: OpenRouter ──
+    try:
+        openrouter_key = os.getenv("OPENROUTER_API_KEY")
+        if not openrouter_key:
+            raise Exception("OPENROUTER_API_KEY not set")
+
+        response = requests.post(
+            "https://openrouter.ai/api/v1/chat/completions",
+            headers={
+                "Authorization": f"Bearer {openrouter_key}",
+                "Content-Type": "application/json",
+                "HTTP-Referer": "https://osceai.onrender.com",
+                "X-Title": "OsceAI"
+            },
+            json={
+                "model": "mistralai/mistral-7b-instruct",
+                "messages": messages,
+                "max_tokens": max_tokens,
+                "temperature": temperature
+            },
+            timeout=30
+        )
+
+        data = response.json()
+
+        if "choices" not in data:
+            raise Exception(f"Unexpected response: {data}")
+
+        print("[AI] OpenRouter responded successfully")
+        return data["choices"][0]["message"]["content"]
+
+    except Exception as openrouter_error:
+        print(f"[AI] OpenRouter also failed: {openrouter_error}")
+        return "I am sorry, I am having some difficulty right now. Please try again in a moment."
 
 
 def get_patient_response(user_message, case_id):
@@ -91,17 +148,12 @@ You: "I have chest pain that started this morning, it radiates to my left arm, I
 
 Remember: answer one question at a time."""
 
-    response = get_groq_client().chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_message}
-        ],
-        max_tokens=80,
-        temperature=0.3,
-    )
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": user_message}
+    ]
 
-    patient_response = response.choices[0].message.content
+    patient_response = call_ai(messages, max_tokens=80, temperature=0.3)
     image = get_symptom_image(patient_response)
 
     return {
@@ -284,13 +336,6 @@ Please provide:
 Keep the feedback encouraging, specific, and clinically relevant.
 Total response should be 5-6 sentences maximum."""
 
-    response = get_groq_client().chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=300,
-        temperature=0.4,
-    )
+    messages = [{"role": "user", "content": prompt}]
 
-    return response.choices[0].message.content
+    return call_ai(messages, max_tokens=300, temperature=0.4)
