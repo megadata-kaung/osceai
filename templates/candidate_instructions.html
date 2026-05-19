@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Candidate Instructions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="candidate-body">
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <a href="/dashboard">OSCE Cases</a>
+        <span>/</span>
+        <span id="breadcrumbCase">Case</span>
+    </div>
+
+    <div class="candidate-container">
+
+        <div class="candidate-left">
+
+            <!-- Title -->
+            <div class="candidate-title">
+                <h2>Candidate instructions</h2>
+                <span class="candidate-case-badge" id="caseBadge">
+                    Loading...
+                </span>
+            </div>
+
+            <!-- Instructions Card -->
+            <div class="candidate-instructions-card">
+                <ul class="candidate-list" id="instructionsList">
+                    <li>Loading instructions...</li>
+                </ul>
+            </div>
+
+            <!-- Notes -->
+            <div class="candidate-notes">
+                <h3>Your notes</h3>
+                <div class="notes-input-wrapper">
+                    <textarea id="candidateNotes"
+                              placeholder="You can write notes here, which will only be visible to you during this session."></textarea>
+                    <span class="notes-pencil">✏️</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="candidate-right">
+
+            <!-- Timer -->
+            <div class="candidate-timer-card">
+                <div class="candidate-timer-display" id="candidateTimer">
+                    08:00
+                </div>
+                <div class="candidate-timer-controls">
+                    <button class="timer-ctrl-btn" onclick="adjustTimer(-60)"
+                            title="Minus 1 minute">−</button>
+                    <button class="timer-ctrl-btn" onclick="pauseTimer()"
+                            id="pauseBtn" title="Pause">⏸</button>
+                    <button class="timer-ctrl-btn start-btn"
+                            onclick="startSimulation()" title="Start">▶</button>
+                    <button class="timer-ctrl-btn" onclick="resetTimer()"
+                            title="Reset">↺</button>
+                    <button class="timer-ctrl-btn" onclick="adjustTimer(60)"
+                            title="Plus 1 minute">+</button>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="candidate-action-buttons">
+                <button class="action-btn examiner-btn"
+                        onclick="startSimulation()">
+                    Start Simulation
+                </button>
+                <button class="action-btn patient-btn"
+                        onclick="window.location.href='/'">
+                    Back to Home
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const caseId = params.get("case_id") || "abdominal_1";
+        const caseLabel = params.get("case_label") || "Case";
+
+        const caseNames = {
+            "abdominal_1": "Abdominal pain 01",
+            "abdominal_2": "Abdominal pain 02",
+            "abdominal_3": "Abdominal pain 03",
+            "chest_1": "Chest pain 01",
+            "chest_2": "Chest pain 02",
+            "chest_3": "Chest pain 03",
+            "cough_1": "Cough 01",
+            "cough_2": "Cough 02",
+            "cough_3": "Cough 03"
+        };
+
+        document.getElementById("breadcrumbCase").textContent =
+            caseNames[caseId] || caseLabel;
+        document.getElementById("caseBadge").textContent =
+            caseNames[caseId] || caseLabel;
+
+        let timerSeconds = 480;
+        let timerInterval = null;
+        let timerPaused = false;
+        let timerStarted = false;
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60);
+            const secs = timerSeconds % 60;
+            document.getElementById("candidateTimer").textContent =
+                `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+        }
+
+        function adjustTimer(seconds) {
+            timerSeconds = Math.max(60, timerSeconds + seconds);
+            updateTimerDisplay();
+        }
+
+        function pauseTimer() {
+            if (!timerStarted) return;
+            if (timerPaused) {
+                timerInterval = setInterval(countDown, 1000);
+                timerPaused = false;
+                document.getElementById("pauseBtn").textContent = "⏸";
+            } else {
+                clearInterval(timerInterval);
+                timerPaused = true;
+                document.getElementById("pauseBtn").textContent = "▶";
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerSeconds = 480;
+            timerStarted = false;
+            timerPaused = false;
+            document.getElementById("pauseBtn").textContent = "⏸";
+            updateTimerDisplay();
+        }
+
+        function countDown() {
+            timerSeconds--;
+            updateTimerDisplay();
+            if (timerSeconds <= 0) {
+                clearInterval(timerInterval);
+                document.getElementById("candidateTimer").textContent = "00:00";
+            }
+        }
+
+        function startSimulation() {
+            const notes = document.getElementById("candidateNotes").value;
+            sessionStorage.setItem("candidateNotes", notes);
+            sessionStorage.setItem("caseLabel",
+                decodeURIComponent(caseLabel));
+            const encodedLabel = encodeURIComponent(
+                decodeURIComponent(caseLabel));
+            window.location.href =
+                `/pre_check?case_id=${caseId}&case_label=${encodedLabel}`;
+        }
+
+        async function loadInstructions() {
+            try {
+                const res = await fetch(
+                    `/get_candidate_instructions?case_id=${caseId}`
+                );
+                const data = await res.json();
+                const list = document.getElementById("instructionsList");
+                list.innerHTML = `
+                    <li>You are a <strong>${data.role}</strong></li>
+                    <li>${data.patient}</li>
+                    ${data.complaint ?
+                        `<li>Their presenting complaint is
+                        <strong>${data.complaint}</strong></li>` : ""}
+                    <li>${data.task}</li>
+                    <li>${data.note}</li>
+                `;
+            } catch (err) {
+                console.error("Could not load instructions:", err);
+            }
+        }
+
+        loadInstructions();
+        updateTimerDisplay();
+    </script>
+
+</body>
+</html>

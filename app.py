@@ -47,7 +47,7 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for("simulation"))
+            return redirect(url_for("dashboard"))
         flash("Invalid email or password")
     return render_template("login.html")
 
@@ -72,14 +72,14 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        return redirect(url_for("simulation"))
+        return redirect(url_for("dashboard"))
     return render_template("register.html")
 
 @app.route("/guest")
 def guest():
     session["guest"] = True
     session["guest_name"] = "Guest"
-    return redirect(url_for("simulation"))
+    return redirect(url_for("dashboard"))
 
 @app.route("/logout")
 def logout():
@@ -91,11 +91,23 @@ def logout():
 # MAIN ROUTES
 # ─────────────────────────────────────────
 
+@app.route("/dashboard")
+def dashboard():
+    return render_template("dashboard.html")
+
 @app.route("/simulation")
 def simulation():
     case_id = request.args.get("case_id", "")
     case_label = request.args.get("case_label", "")
     return render_template("simulation.html",
+                           case_id=case_id,
+                           case_label=case_label)
+
+@app.route("/candidate_instructions")
+def candidate_instructions():
+    case_id = request.args.get("case_id", "abdominal_1")
+    case_label = request.args.get("case_label", "")
+    return render_template("candidate_instructions.html",
                            case_id=case_id,
                            case_label=case_label)
 
@@ -121,6 +133,14 @@ def examiner():
 def feedback():
     case_id = request.args.get("case_id", "abdominal_1")
     return render_template("feedback.html", case_id=case_id)
+
+@app.route("/mock_exam")
+def mock_exam():
+    return render_template("mock_exam.html")
+
+@app.route("/mock_results")
+def mock_results():
+    return render_template("mock_results.html")
 
 # ─────────────────────────────────────────
 # API ROUTES
@@ -155,6 +175,56 @@ def get_case_info():
         "patient_name": case.get("patient_name", "Patient")
     })
 
+@app.route("/get_full_case_info")
+def get_full_case_info():
+    case_id = request.args.get("case_id", "abdominal_1")
+    case = load_case(case_id)
+    if not case:
+        return jsonify({"error": "Case not found"})
+
+    location_map = {
+        "abdominal_1": "Emergency Department",
+        "abdominal_2": "Surgical Assessment Unit",
+        "abdominal_3": "General Practice",
+        "chest_1": "Emergency Department",
+        "chest_2": "General Practice",
+        "chest_3": "Emergency Department",
+        "cough_1": "General Practice",
+        "cough_2": "General Practice",
+        "cough_3": "General Practice"
+    }
+
+    complaint_map = {
+        "abdominal_1": "Epigastric pain",
+        "abdominal_2": "Crampy abdominal pain",
+        "abdominal_3": "Burning epigastric pain",
+        "chest_1": "Severe central chest pain",
+        "chest_2": "Exertional chest pain",
+        "chest_3": "Left sided chest pain",
+        "cough_1": "Persistent cough",
+        "cough_2": "Cough with breathlessness",
+        "cough_3": "Productive cough"
+    }
+
+    return jsonify({
+        "patient_name": case.get("patient_name", ""),
+        "age": case.get("age", ""),
+        "gender": case.get("gender", ""),
+        "location": location_map.get(case_id, "General Practice"),
+        "complaint": complaint_map.get(case_id, ""),
+        "description": case.get("description", "")
+    })
+
+@app.route("/get_candidate_instructions")
+def get_candidate_instructions():
+    case_id = request.args.get("case_id", "abdominal_1")
+    case = load_case(case_id)
+    if not case:
+        return jsonify({"error": "Case not found"})
+    return jsonify(case.get("candidate_instructions", {}))
+
+
+
 @app.route("/evaluate_viva", methods=["POST"])
 def evaluate_viva_route():
     data = request.get_json()
@@ -178,7 +248,9 @@ def evaluate_checklist_route():
     if not case:
         return jsonify({"error": "Case not found"})
     from services.ai_service import evaluate_checklist
-    results = evaluate_checklist(conversation, case.get("checklist", {}))
+    results = evaluate_checklist(
+        conversation, case.get("checklist", {})
+    )
     return jsonify(results)
 
 @app.route("/generate_feedback", methods=["POST"])
@@ -188,9 +260,13 @@ def generate_feedback():
     checklist_results = data.get("checklist_results", {})
     viva_scores = data.get("viva_scores", [])
     viva_questions = data.get("viva_questions", [])
+    total_score = data.get("total_score", 0)
+    total_possible = data.get("total_possible", 0)
+
     case = load_case(case_id)
     if not case:
         return jsonify({"error": "Case not found"})
+
     from services.ai_service import generate_overall_feedback
     feedback = generate_overall_feedback(
         checklist_results,
@@ -199,8 +275,6 @@ def generate_feedback():
         case_id
     )
 
-    total_score = data.get("total_score", 0)
-    total_possible = data.get("total_possible", 0)
     checklist_score = checklist_results.get("total_achieved", 0)
     checklist_possible = checklist_results.get("total_possible", 0)
     viva_total = sum(viva_scores)
@@ -237,13 +311,49 @@ def generate_feedback():
         "correct_diagnosis": case.get("correct_diagnosis", ""),
         "global_impression": global_impression
     })
-@app.route("/mock_exam")
-def mock_exam():
-    return render_template("mock_exam.html")
+@app.route("/get_user_results")
+def get_user_results():
+    if current_user.is_authenticated:
+        results = Result.query.filter_by(
+            user_id=current_user.id
+        ).order_by(Result.created_at.desc()).all()
+        return jsonify({
+            "results": [{
+                "case_id": r.case_id,
+                "case_label": r.case_label,
+                "checklist_score": r.checklist_score,
+                "checklist_possible": r.checklist_possible,
+                "viva_score": r.viva_score,
+                "viva_possible": r.viva_possible,
+                "total_score": r.total_score,
+                "total_possible": r.total_possible,
+                "global_impression": r.global_impression,
+                "created_at": r.created_at.isoformat()
+            } for r in results]
+        })
+    return jsonify({"results": []})
 
-@app.route("/mock_results")
-def mock_results():
-    return render_template("mock_results.html")
+@app.route("/get_current_user")
+def get_current_user():
+    if current_user.is_authenticated:
+        return jsonify({
+            "name": current_user.full_name,
+            "email": current_user.email,
+            "university": current_user.university or "—"
+        })
+    return jsonify({
+        "name": "Guest",
+        "email": "",
+        "university": "—"
+    })
+
+@app.route("/clear_history", methods=["POST"])
+def clear_history():
+    if current_user.is_authenticated:
+        Result.query.filter_by(user_id=current_user.id).delete()
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"error": "Not authenticated"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

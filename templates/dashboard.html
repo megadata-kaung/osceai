@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+
+            <nav class="sidebar-nav">
+                <button class="sidebar-item active" id="nav-home"
+                        onclick="showView('home')">
+                    <span class="sidebar-icon">🏠</span>
+                    <span class="sidebar-label">Home</span>
+                </button>
+                <button class="sidebar-item" id="nav-cases"
+                        onclick="showView('cases')">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-label">OSCE Cases</span>
+                </button>
+                <button class="sidebar-item" id="nav-mock"
+                        onclick="window.location.href='/mock_exam'">
+                    <span class="sidebar-icon">🏥</span>
+                    <span class="sidebar-label">Mock Exam</span>
+                </button>
+                <button class="sidebar-item" id="nav-profile"
+                        onclick="showView('profile')">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-label">Profile</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-logout">
+                    <span>⬅️</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="dashboard-main">
+
+            <!-- Top Navigation -->
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="dashboard-search">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput"
+                               placeholder="Search cases..."
+                               oninput="handleSearch(this.value)"/>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-tabs">
+                        <button class="topbar-tab active" id="tab-home"
+                                onclick="showView('home')">
+                            Home
+                        </button>
+                        <button class="topbar-tab" id="tab-cases"
+                                onclick="showView('cases')">
+                            OSCE Cases
+                        </button>
+                        <button class="topbar-tab" id="tab-mock"
+                                onclick="window.location.href='/mock_exam'">
+                            Mock Exam
+                        </button>
+                        <button class="topbar-tab" id="tab-profile"
+                                onclick="showView('profile')">
+                            Profile
+                        </button>
+                    </div>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="topbarAvatar">H</div>
+                        <span id="topbarName">Student</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="dashboard-content">
+
+                <!-- HOME VIEW -->
+                <div id="view-home" class="view">
+
+                    <div class="view-header">
+                        <h1 id="welcomeMsg">Welcome back! 👋</h1>
+                        <p>What would you like to practice today?</p>
+                    </div>
+
+                    <!-- Two Main Cards -->
+                    <div class="home-cards-grid">
+                        <div class="home-card osce-home-card"
+                             onclick="showView('cases')">
+                            <div class="home-card-icon">📋</div>
+                            <div class="home-card-content">
+                                <h2>OSCE Cases</h2>
+                                <p>Practice history taking with AI virtual
+                                patients. Get detailed feedback and marking
+                                after each case.</p>
+                                <div class="home-card-meta">
+                                    9 cases · Abdominal · Chest · Cough
+                                </div>
+                            </div>
+                            <div class="home-card-arrow">→</div>
+                        </div>
+
+                        <div class="home-card mock-home-card"
+                             onclick="window.location.href='/mock_exam'">
+                            <div class="home-card-icon">🏥</div>
+                            <div class="home-card-content">
+                                <h2>Mock OSCE Exam</h2>
+                                <p>Simulate a real timed OSCE exam with
+                                automatic progression between cases and
+                                full results at the end.</p>
+                                <div class="home-card-meta">
+                                    Timed · 11 mins per case · Auto progression
+                                </div>
+                            </div>
+                            <div class="home-card-arrow">→</div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="stats-row">
+                        <div class="stat-box">
+                            <div class="stat-box-icon">📋</div>
+                            <div class="stat-box-info">
+                                <div class="stat-box-number">9</div>
+                                <div class="stat-box-label">Cases Available</div>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-box-icon">⏱️</div>
+                            <div class="stat-box-info">
+                                <div class="stat-box-number">8</div>
+                                <div class="stat-box-label">Mins Per Case</div>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-box-icon">🎯</div>
+                            <div class="stat-box-info">
+                                <div class="stat-box-number" id="statAttempts">0</div>
+                                <div class="stat-box-label">Your Attempts</div>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-box-icon">⭐</div>
+                            <div class="stat-box-info">
+                                <div class="stat-box-number" id="statAvg">—</div>
+                                <div class="stat-box-label">Avg Score</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Attempts -->
+                    <div class="recent-section">
+                        <div class="recent-header">
+                            <h3>Recent Attempts</h3>
+                            <button class="btn-view-all"
+                                    onclick="showView('profile')">
+                                View all →
+                            </button>
+                        </div>
+                        <div id="recentAttempts">
+                            <div class="empty-state">
+                                <div class="empty-icon">📋</div>
+                                <p>No attempts yet — start practising!</p>
+                                <button class="btn"
+                                        onclick="showView('cases')"
+                                        style="margin-top:12px;">
+                                    Browse Cases
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- CASES VIEW -->
+                <div id="view-cases" class="view" style="display:none;">
+
+                    <div class="view-header">
+                        <h1>OSCE Cases</h1>
+                        <p>Select a case to begin your simulation</p>
+                    </div>
+
+                    <div class="case-filter-tabs">
+                        <button class="filter-tab active"
+                                onclick="filterCases('all', this)">
+                            All Cases
+                        </button>
+                        <button class="filter-tab"
+                                onclick="filterCases('abdominal', this)">
+                            🫁 Abdominal Pain
+                        </button>
+                        <button class="filter-tab"
+                                onclick="filterCases('chest', this)">
+                            ❤️ Chest Pain
+                        </button>
+                        <button class="filter-tab"
+                                onclick="filterCases('cough', this)">
+                            😮 Cough
+                        </button>
+                    </div>
+
+                    <div class="cases-dashboard-grid" id="casesGrid">
+
+                        <div class="case-dashboard-card"
+                             data-category="abdominal"
+                             onclick="goToCase('abdominal_1', 'Abdominal 1 — Epigastric Pain (Sarah, 34)')"
+                             title="Abdominal Pain 1 — Sarah, 34 — Acute Pancreatitis">
+                            <div class="case-card-top abdominal-bg">
+                                <img src="/static/images/avatars/abdominal_1.svg"
+                                     class="case-card-avatar" alt="Sarah"/>
+                                <div class="case-card-category abdominal-tag">
+                                    Abdominal
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Abdominal Pain 01</h3>
+                                <p>Sarah, 34 · Emergency Department</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="abdominal"
+                             onclick="goToCase('abdominal_2', 'Abdominal 2 — Crampy Pain (Margaret, 59)')"
+                             title="Abdominal Pain 2 — Margaret, 59 — Bowel Obstruction">
+                            <div class="case-card-top abdominal-bg">
+                                <img src="/static/images/avatars/abdominal_2.svg"
+                                     class="case-card-avatar" alt="Margaret"/>
+                                <div class="case-card-category abdominal-tag">
+                                    Abdominal
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Abdominal Pain 02</h3>
+                                <p>Margaret, 59 · Surgical Assessment</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="abdominal"
+                             onclick="goToCase('abdominal_3', 'Abdominal 3 — Epigastric Burning (James, 52)')"
+                             title="Abdominal Pain 3 — James, 52 — GERD">
+                            <div class="case-card-top abdominal-bg">
+                                <img src="/static/images/avatars/abdominal_3.svg"
+                                     class="case-card-avatar" alt="James"/>
+                                <div class="case-card-category abdominal-tag">
+                                    Abdominal
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Abdominal Pain 03</h3>
+                                <p>James, 52 · General Practice</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="chest"
+                             onclick="goToCase('chest_1', 'Chest 1 — Severe Chest Pain (John, 55)')"
+                             title="Chest Pain 1 — John, 55 — Aortic Dissection">
+                            <div class="case-card-top chest-bg">
+                                <img src="/static/images/avatars/chest_1.svg"
+                                     class="case-card-avatar" alt="John"/>
+                                <div class="case-card-category chest-tag">
+                                    Chest Pain
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Chest Pain 01</h3>
+                                <p>John, 55 · Emergency Department</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="chest"
+                             onclick="goToCase('chest_2', 'Chest 2 — Exertional Chest Pain (Michael, 55)')"
+                             title="Chest Pain 2 — Michael, 55 — Stable Angina">
+                            <div class="case-card-top chest-bg">
+                                <img src="/static/images/avatars/chest_2.svg"
+                                     class="case-card-avatar" alt="Michael"/>
+                                <div class="case-card-category chest-tag">
+                                    Chest Pain
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Chest Pain 02</h3>
+                                <p>Michael, 55 · General Practice</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="chest"
+                             onclick="goToCase('chest_3', 'Chest 3 — Left Sided Chest Pain (Robert, 50)')"
+                             title="Chest Pain 3 — Robert, 50 — STEMI">
+                            <div class="case-card-top chest-bg">
+                                <img src="/static/images/avatars/chest_3.svg"
+                                     class="case-card-avatar" alt="Robert"/>
+                                <div class="case-card-category chest-tag">
+                                    Chest Pain
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Chest Pain 03</h3>
+                                <p>Robert, 50 · Emergency Department</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="cough"
+                             onclick="goToCase('cough_1', 'Cough 1 — Persistent Cough (Emma, 24)')"
+                             title="Cough 1 — Emma, 24 — Post-infective Cough">
+                            <div class="case-card-top cough-bg">
+                                <img src="/static/images/avatars/cough_1.svg"
+                                     class="case-card-avatar" alt="Emma"/>
+                                <div class="case-card-category cough-tag">
+                                    Cough
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Cough 01</h3>
+                                <p>Emma, 24 · General Practice</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="cough"
+                             onclick="goToCase('cough_2', 'Cough 2 — Cough with Breathlessness (George, 64)')"
+                             title="Cough 2 — George, 64 — Lung Cancer">
+                            <div class="case-card-top cough-bg">
+                                <img src="/static/images/avatars/cough_2.svg"
+                                     class="case-card-avatar" alt="George"/>
+                                <div class="case-card-category cough-tag">
+                                    Cough
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Cough 02</h3>
+                                <p>George, 64 · General Practice</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="case-dashboard-card"
+                             data-category="cough"
+                             onclick="goToCase('cough_3', 'Cough 3 — Productive Cough (Thomas, 56)')"
+                             title="Cough 3 — Thomas, 56 — Tuberculosis">
+                            <div class="case-card-top cough-bg">
+                                <img src="/static/images/avatars/cough_3.svg"
+                                     class="case-card-avatar" alt="Thomas"/>
+                                <div class="case-card-category cough-tag">
+                                    Cough
+                                </div>
+                            </div>
+                            <div class="case-card-body">
+                                <h3>Cough 03</h3>
+                                <p>Thomas, 56 · General Practice</p>
+                                <div class="case-card-tags">
+                                    <span class="tag">History Taking</span>
+                                    <span class="tag">Viva</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- PROFILE VIEW -->
+                <div id="view-profile" class="view" style="display:none;">
+
+                    <div class="view-header">
+                        <h1>My Profile</h1>
+                        <p>Your account details and performance history</p>
+                    </div>
+
+                    <!-- Personal Info -->
+                    <div class="profile-section">
+                        <h3 class="profile-section-title">
+                            👤 Personal Information
+                        </h3>
+                        <div class="profile-info-card">
+                            <div class="profile-avatar-large"
+                                 id="profileAvatarLarge">H</div>
+                            <div class="profile-details">
+                                <div class="profile-detail-row">
+                                    <span class="profile-label">Full Name</span>
+                                    <span class="profile-value"
+                                          id="profileName">—</span>
+                                </div>
+                                <div class="profile-detail-row">
+                                    <span class="profile-label">Email</span>
+                                    <span class="profile-value"
+                                          id="profileEmail">—</span>
+                                </div>
+                                <div class="profile-detail-row">
+                                    <span class="profile-label">University</span>
+                                    <span class="profile-value"
+                                          id="profileUniversity">—</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Summary -->
+                    <div class="profile-section">
+                        <h3 class="profile-section-title">
+                            📊 Performance Summary
+                        </h3>
+                        <div class="performance-grid">
+                            <div class="perf-card">
+                                <div class="perf-number"
+                                     id="perfTotal">0</div>
+                                <div class="perf-label">Total Attempts</div>
+                            </div>
+                            <div class="perf-card">
+                                <div class="perf-number"
+                                     id="perfAvg">—</div>
+                                <div class="perf-label">Average Score</div>
+                            </div>
+                            <div class="perf-card">
+                                <div class="perf-number"
+                                     id="perfBest">—</div>
+                                <div class="perf-label">Best Score</div>
+                            </div>
+                            <div class="perf-card">
+                                <div class="perf-number"
+                                     id="perfLast">—</div>
+                                <div class="perf-label">Last Attempt</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Case History -->
+                    <div class="profile-section">
+                        <div class="history-header">
+                            <h3 class="profile-section-title">
+                                📋 Case History
+                            </h3>
+                            <button class="btn-clear-history"
+                                    onclick="confirmClearHistory()">
+                                🗑️ Clear History
+                            </button>
+                        </div>
+                        <div id="caseHistory">
+                            <div class="empty-state">
+                                <div class="empty-icon">📋</div>
+                                <p>No attempts yet — start practising!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Clear History Modal -->
+    <div id="clearModal" class="quit-modal" style="display:none;">
+        <div class="quit-modal-card">
+            <div class="quit-modal-icon">🗑️</div>
+            <h2>Clear all history?</h2>
+            <p>This will permanently delete all your past attempts
+            and scores. This cannot be undone.</p>
+            <div class="quit-modal-buttons">
+                <button class="btn-quit-confirm"
+                        onclick="clearHistory()">
+                    Yes, clear everything
+                </button>
+                <button class="btn-quit-cancel"
+                        onclick="closeClearModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userData = {};
+        let userResults = [];
+
+        const gradeColors = {
+            "Excellent": "#1e8449",
+            "Pass": "#2c7be5",
+            "Borderline": "#f6a623",
+            "Fail": "#e74c3c"
+        };
+
+        window.onload = async function() {
+            await loadUserData();
+            await loadUserResults();
+        };
+
+        async function loadUserData() {
+            try {
+                const res = await fetch("/get_current_user");
+                const data = await res.json();
+                userData = data;
+
+                const firstName = data.name
+                    ? data.name.split(" ")[0] : "Student";
+                const initial = data.name
+                    ? data.name.charAt(0).toUpperCase() : "S";
+
+                document.getElementById("welcomeMsg").textContent =
+                    `Welcome back, ${firstName}! 👋`;
+                document.getElementById("topbarName").textContent =
+                    data.name || "Student";
+                document.getElementById("topbarAvatar").textContent =
+                    initial;
+                document.getElementById("profileAvatarLarge").textContent =
+                    initial;
+                document.getElementById("profileName").textContent =
+                    data.name || "—";
+                document.getElementById("profileEmail").textContent =
+                    data.email || "—";
+                document.getElementById("profileUniversity").textContent =
+                    data.university || "—";
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function loadUserResults() {
+            try {
+                const res = await fetch("/get_user_results");
+                const data = await res.json();
+                userResults = data.results || [];
+                renderStats();
+                renderRecentAttempts();
+                renderCaseHistory();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function renderStats() {
+            const total = userResults.length;
+            document.getElementById("statAttempts").textContent = total;
+            document.getElementById("perfTotal").textContent = total;
+
+            if (total > 0) {
+                const avg = Math.round(
+                    userResults.reduce((s, r) => s + r.total_score, 0) /
+                    total
+                );
+                const best = Math.max(
+                    ...userResults.map(r => r.total_score)
+                );
+                const last = userResults[0];
+
+                document.getElementById("statAvg").textContent = avg;
+                document.getElementById("perfAvg").textContent = avg;
+                document.getElementById("perfBest").textContent = best;
+                document.getElementById("perfLast").textContent =
+                    last ? last.global_impression : "—";
+            }
+        }
+
+        function renderRecentAttempts() {
+            const container = document.getElementById("recentAttempts");
+            if (userResults.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>No attempts yet — start practising!</p>
+                        <button class="btn" onclick="showView('cases')"
+                                style="margin-top:12px;">
+                            Browse Cases
+                        </button>
+                    </div>`;
+                return;
+            }
+
+            const recent = userResults.slice(0, 3);
+            container.innerHTML = recent.map(r => `
+                <div class="attempt-row">
+                    <div class="attempt-info">
+                        <div class="attempt-case">${r.case_label}</div>
+                        <div class="attempt-date">${
+                            new Date(r.created_at).toLocaleDateString()
+                        }</div>
+                    </div>
+                    <div class="attempt-score">
+                        ${r.total_score}/${r.total_possible}
+                    </div>
+                    <div class="attempt-grade"
+                         style="color:${gradeColors[r.global_impression]
+                         || '#888'}">
+                        ${r.global_impression}
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function renderCaseHistory() {
+            const container = document.getElementById("caseHistory");
+            if (userResults.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>No attempts yet — start practising!</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="history-table">
+                    <div class="history-table-header">
+                        <span>Case</span>
+                        <span>Checklist</span>
+                        <span>Viva</span>
+                        <span>Total</span>
+                        <span>Grade</span>
+                        <span>Date</span>
+                    </div>
+                    ${userResults.map(r => `
+                        <div class="history-table-row">
+                            <span class="history-case-name">
+                                ${r.case_label}
+                            </span>
+                            <span>${r.checklist_score}/${r.checklist_possible}</span>
+                            <span>${r.viva_score}/${r.viva_possible}</span>
+                            <span class="history-total">
+                                ${r.total_score}/${r.total_possible}
+                            </span>
+                            <span class="history-grade"
+                                  style="color:${gradeColors[r.global_impression] || '#888'}">
+                                ${r.global_impression}
+                            </span>
+                            <span class="history-date">
+                                ${new Date(r.created_at)
+                                    .toLocaleDateString()}
+                            </span>
+                        </div>
+                    `).join("")}
+                </div>`;
+        }
+
+        function showView(view) {
+            document.querySelectorAll(".view").forEach(v => {
+                v.style.display = "none";
+            });
+            document.getElementById(`view-${view}`).style.display = "block";
+
+            document.querySelectorAll(".sidebar-item").forEach(i => {
+                i.classList.remove("active");
+            });
+            document.querySelectorAll(".topbar-tab").forEach(t => {
+                t.classList.remove("active");
+            });
+
+            const sideEl = document.getElementById(`nav-${view}`);
+            const tabEl = document.getElementById(`tab-${view}`);
+            if (sideEl) sideEl.classList.add("active");
+            if (tabEl) tabEl.classList.add("active");
+        }
+
+        function goToCase(caseId, caseLabel) {
+            const encodedLabel = encodeURIComponent(caseLabel);
+            window.location.href =
+                `/candidate_instructions?case_id=${caseId}&case_label=${encodedLabel}`;
+        }
+
+        function filterCases(category, btn) {
+            document.querySelectorAll(".filter-tab").forEach(b => {
+                b.classList.remove("active");
+            });
+            btn.classList.add("active");
+            document.querySelectorAll(".case-dashboard-card").forEach(card => {
+                if (category === "all" ||
+                    card.dataset.category === category) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        function handleSearch(query) {
+            const q = query.toLowerCase().trim();
+            if (q.length > 0) {
+                showView("cases");
+                document.querySelectorAll(".filter-tab").forEach(b =>
+                    b.classList.remove("active"));
+                document.querySelector(".filter-tab")
+                    .classList.add("active");
+                document.querySelectorAll(".case-dashboard-card")
+                    .forEach(card => {
+                        const text = card.textContent.toLowerCase();
+                        const title = (card.getAttribute("title") || "")
+                            .toLowerCase();
+                        card.style.display =
+                            (text.includes(q) || title.includes(q))
+                            ? "block" : "none";
+                    });
+            }
+        }
+
+        function confirmClearHistory() {
+            document.getElementById("clearModal").style.display = "flex";
+        }
+
+        function closeClearModal() {
+            document.getElementById("clearModal").style.display = "none";
+        }
+
+        async function clearHistory() {
+            try {
+                await fetch("/clear_history", { method: "POST" });
+                userResults = [];
+                renderStats();
+                renderRecentAttempts();
+                renderCaseHistory();
+                closeClearModal();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    </script>
+
+</body>
+</html>

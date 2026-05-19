@@ -3,6 +3,14 @@
     "patient_name": "Sarah",
     "age": 34,
     "gender": "female",
+    "candidate_instructions": {
+    "role": "medical student",
+    "location": "emergency department",
+    "patient": "A 34-year-old woman has presented for assessment",
+    "complaint": "abdominal pain",
+    "task": "Please take a history",
+     "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to emergency department with acute epigastric pain, likely acute pancreatitis",
     "symptoms": "Epigastric pain that started suddenly 90 minutes ago, sharp and gripping, severity 11 out of 10, radiates through to the back, constant and worsening, worse on deep inspiration and movement, relieved slightly by leaning forward, associated nausea and fever, feeling breathless even when sitting down, bowels opened normally this morning, 3kg intentional weight loss over last 4 weeks due to new fitness regime",
     "negative_features": "No jaundice, no dysphagia, no reflux, no change in bowel habits, no blood in stool, no confusion, no recent travel, no night sweats",
@@ -188,6 +196,14 @@
     "patient_name": "Margaret",
     "age": 59,
     "gender": "female",
+    "candidate_instructions": {
+    "role": "medical student on placement in the surgical assessment unit",
+    "location": "surgical assessment unit",
+    "patient": "A 59-year-old woman has presented for assessment",
+    "complaint": "abdominal pain",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to surgical assessment unit with severe crampy abdominal pain, likely bowel obstruction secondary to Crohn's disease flare",
     "symptoms": "Severe crampy abdominal pain since 3am, woken up by it, pain comes and goes every 5 minutes, generalised around centre and lower abdomen, severity 10 out of 10, gradually worsening over past 2 days starting as bloating, 5 episodes of vomiting this morning with bright green then dark brown offensive smelling vomit, abdomen feels rock hard and distended, one episode of diarrhoea with blood in last 48 hours, still passing some wind, tried paracetamol and ibuprofen but vomited them up",
     "negative_features": "No fever, no joint pain, no numbness or tingling in legs, no blood in vomit, no chest pain, no left arm pain",
@@ -332,6 +348,14 @@
     "patient_name": "James",
     "age": 52,
     "gender": "male",
+    "candidate_instructions": {
+    "role": "medical student working in general practice",
+    "location": "general practice",
+    "patient": "A 52-year-old man has presented with abdominal pain",
+    "complaint": "abdominal pain",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to general practice with intermittent epigastric pain, likely GERD or peptic ulcer disease",
     "symptoms": "Intermittent burning pain in epigastric region for 4 months, severity 5 to 6 out of 10, occurring 2 to 3 times daily, worst in evenings after dinner and when lying down, associated bloating belching and acid reflux with horrible taste in mouth, worse after meals when lying down and when using NSAIDs, antacids helped initially but no longer working, ibuprofen and paracetamol made it worse, mornings are usually fine",
     "negative_features": "No jaundice, no ulcers, no vomiting, no blood in vomit, no dysphagia, no difficulty swallowing, no abdominal distension, no constipation or diarrhoea, no blood in stool, no melaena, no PR bleeding, no shortness of breath, no palpitations",
@@ -484,6 +508,13 @@
     "patient_name": "John",
     "age": 55,
     "gender": "male",
+    "candidate_instructions": {"role": "medical student working in the emergency department",
+    "location": "emergency department",
+    "patient": "A 55-year-old man has presented with chest pain",
+    "complaint": "chest pain",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to emergency department with severe central chest pain, likely aortic dissection",
     "symptoms": "Severe central chest pain that came on suddenly 4 hours ago at work, sharp and fierce ripping pain in the centre, severity 7 out of 10, radiates straight through to between the shoulder blades, started at maximal intensity within seconds and has not eased off, nothing makes it better or worse, breathing in does not change it, not better lying flat or leaning forward",
     "negative_features": "No chest or back trauma, no sweating, no shortness of breath, no palpitations, no syncope, no abdominal pain, no rashes, no cough, no haemoptysis, no nausea or vomiting, no fever, no reflux or heartburn, no recent travel",
@@ -656,6 +687,14 @@
     "patient_name": "Michael",
     "age": 55,
     "gender": "male",
+    "candidate_instructions": {
+    "role": "junior doctor completing a rotation in general practice",
+    "location": "general practice",
+    "patient": "A 55-year-old man has presented with chest pain",
+    "complaint": "chest pain",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to general practice with recurring chest pain on exertion, likely stable angina",
     "symptoms": "Central chest pain occurring a couple of times per week for the last 3 months, tight feeling like a band squeezing across the chest, severity 5 out of 10, radiates into neck on both sides and sometimes left arm, associated shortness of breath at the same time as chest pain, pain is not worse on deep breathing, each episode lasts a few minutes, comes on suddenly during physical exertion at work especially carrying heavy things up stairs, goes away completely with rest within a few minutes",
     "negative_features": "No syncope or collapse, no palpitations, no breathlessness when lying flat, no waking up gasping at night, no cough, no blood in sputum, no reflux, no weight loss, otherwise well in himself",
@@ -812,6 +851,14 @@
     "patient_name": "Robert",
     "age": 50,
     "gender": "male",
+    "candidate_instructions": {
+    "role": "junior doctor completing a rotation in the emergency department",
+    "location": "emergency department",
+    "patient": "A 50-year-old man has presented with chest pain",
+    "complaint": "chest pain",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to emergency department with severe left sided chest pain, likely ST-elevation myocardial infarction (STEMI)",
     "symptoms": "Left sided chest pain that came on suddenly out of nowhere, woke him up at 6am and wife called ambulance immediately, heavy tight pressing feeling against the chest, severity 9 out of 10, constant and has not changed since it started, radiates up into neck and jaw and down left arm, associated nausea but not vomited yet, feeling clammy and sweaty, nothing makes it better or worse, does not worsen when sitting standing or lying down, not worse on deep breathing",
     "negative_features": "No shortness of breath, no syncope or collapse, no fatigue, no palpitations, no previous episodes like this",
@@ -968,6 +1015,14 @@
     "patient_name": "Emma",
     "age": 24,
     "gender": "female",
+    "candidate_instructions": {
+    "role": "junior doctor completing a rotation in general practice",
+    "location": "general practice",
+    "patient": "A 24-year-old woman has presented for assessment",
+    "complaint": "cough",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to general practice with 4 week history of persistent cough following lower respiratory tract infection, likely post-infective cough",
     "symptoms": "Persistent non-productive cough for 4 weeks throughout the day at home and at work, started 4 weeks ago with lower respiratory tract infection symptoms including productive cough with horrible phlegm and fever, treated with oral penicillin 2 weeks ago and felt much better since but cough has not fully resolved, antibiotics helped but cough still lingering, COVID-19 negative on 2 PCR tests, feels well in herself otherwise apart from the cough",
     "negative_features": "No haemoptysis, no chest pain, no breathlessness, no wheeze, no post-nasal drip, no heartburn or reflux, no hoarseness, no weight loss, no current fever, no night sweats, no specific symptoms of systemic disease, no recent overseas travel",
@@ -1099,6 +1154,14 @@
     "patient_name": "George",
     "age": 64,
     "gender": "male",
+    "candidate_instructions": {
+    "role": "medical student working in general practice",
+    "location": "general practice",
+    "patient": "A 64-year-old man has presented with a cough",
+    "complaint": "cough",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to general practice with 5 month history of persistent cough, breathlessness and haemoptysis, likely lung cancer given red flag symptoms and smoking history",
     "symptoms": "Persistent cough for 5 months starting suddenly, initially thought it was an infection as husband was also unwell, cough started with small amount of green phlegm for a few days but no phlegm since, cough is becoming more frequent throughout the day, nothing triggers it and nothing makes it go away, noticed small amount of bright red blood on tissue last week which is what prompted the visit today, feeling fatigued and worn out after activities that previously were fine, trousers are falling down suggesting unintentional weight loss but no weighing scale at home, breathlessness on exertion only over the last few weeks, used to be very fit but now gets short of breath walking up stairs quickly or running, breathlessness is stable and not getting considerably worse, no change overnight or in the morning",
     "negative_features": "No chest pain, no wheeze, no breathlessness at rest or at night, no hoarseness, no voice changes, no changes to appetite, no difficulty swallowing, no urinary or bowel symptoms, no fever, no recent travel, no bird or animal exposure",
@@ -1265,6 +1328,14 @@
     "patient_name": "Thomas",
     "age": 56,
     "gender": "male",
+    "candidate_instructions": {
+    "role": "medical student working in general practice",
+    "location": "general practice",
+    "patient": "A 56-year-old man has presented with a cough",
+    "complaint": "cough",
+    "task": "Please take a history",
+    "note": "At the end of the station, the examiner may ask you some further questions"
+    },
     "description": "Patient presenting to general practice with several months of productive cough, breathlessness, pleuritic chest pain, weight loss and night sweats, likely pneumonia or serious respiratory infection",
     "symptoms": "Productive chesty cough for several months, started as dry cough and progressed to bringing up green and yellow phlegm, no bursts or coughing fits, bloody phlegm noticed in last couple of weeks only if directly asked, shorter of breath than usual needing to take a break climbing the hill to his house, pleuritic chest pain with sharp pain when coughing heavily or taking a deep breath, family have commented he looks thin and he has had to tighten his belt suggesting unintentional weight loss, reduced appetite lately, feels warm and sometimes very hot and sweaty overnight with night sweats, generally feels quite unwell and not himself",
     "negative_features": "No urinary symptoms, no nasal blockage or runny nose, no wheeze, no confusion or neurological symptoms, no joint pain, no rashes or skin changes, no recent travel, no unwell contacts",

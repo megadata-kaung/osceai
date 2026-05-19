@@ -26,7 +26,9 @@ async function loadPatientVoiceProfile() {
 async function loadPatientInfo() {
     if (!selectedCaseId) return;
     try {
-        const res = await fetch(`/get_full_case_info?case_id=${selectedCaseId}`);
+        const res = await fetch(
+            `/get_full_case_info?case_id=${selectedCaseId}`
+        );
         const data = await res.json();
         const name = document.getElementById("infoName");
         const age = document.getElementById("infoAge");
@@ -47,7 +49,7 @@ async function loadPatientInfo() {
 function selectCase(caseId, caseLabel) {
     const encodedLabel = encodeURIComponent(caseLabel);
     window.location.href =
-        `/pre_check?case_id=${caseId}&case_label=${encodedLabel}`;
+        `/candidate_instructions?case_id=${caseId}&case_label=${encodedLabel}`;
 }
 
 function sendMessage() {
@@ -85,14 +87,16 @@ function sendMessage() {
             role: "assistant",
             content: data.response
         });
-        if (data.image) showAnatomyImage(data.image);
         if (sendBtn) {
             sendBtn.textContent = "Send";
             sendBtn.disabled = false;
         }
     })
     .catch(error => {
-        addMessage("Sorry, something went wrong. Please try again.", "patient");
+        addMessage(
+            "Sorry, something went wrong. Please try again.",
+            "patient"
+        );
         console.error("Error:", error);
         if (sendBtn) {
             sendBtn.textContent = "Send";
@@ -128,11 +132,15 @@ function getVoiceSettings() {
 function getBestVoice(gender) {
     const voices = window.speechSynthesis.getVoices();
     if (!voices || voices.length === 0) return null;
-    const femaleKeywords = ["female", "woman", "zira", "samantha",
-        "karen", "victoria", "moira", "fiona", "kate", "susan",
-        "google uk english female", "google us english"];
-    const maleKeywords = ["male", "man", "david", "daniel", "mark",
-        "alex", "fred", "thomas", "google uk english male"];
+    const femaleKeywords = [
+        "female", "woman", "zira", "samantha", "karen",
+        "victoria", "moira", "fiona", "kate", "susan",
+        "google uk english female", "google us english"
+    ];
+    const maleKeywords = [
+        "male", "man", "david", "daniel", "mark",
+        "alex", "fred", "thomas", "google uk english male"
+    ];
     const keywords = gender === "female" ? femaleKeywords : maleKeywords;
     let bestVoice = null;
     for (const keyword of keywords) {
@@ -169,18 +177,10 @@ function speakResponse(text) {
     }
 }
 
-function showAnatomyImage(imageName) {
-    const display = document.getElementById("anatomyDisplay");
-    if (!display) return;
-    display.innerHTML = `<img src="/static/images/${imageName}"
-                         alt="Anatomy reference"
-                         style="max-width:100%; border-radius:8px;"/>`;
-}
-
 function toggleMic() {
     if (!('webkitSpeechRecognition' in window ||
           'SpeechRecognition' in window)) {
-        alert("Your browser does not support voice input. Please use Chrome.");
+        alert("Voice input not supported. Please use Chrome.");
         return;
     }
     if (isRecording) {
@@ -224,8 +224,10 @@ function endSession() {
     sessionStorage.setItem("conversation",
         JSON.stringify(conversationHistory));
     sessionStorage.setItem("caseId", selectedCaseId);
-    const caseLabel = document.getElementById("caseLabel").textContent;
-    sessionStorage.setItem("caseLabel", caseLabel);
+    const caseLabel = document.getElementById("caseLabel");
+    if (caseLabel) {
+        sessionStorage.setItem("caseLabel", caseLabel.textContent);
+    }
     window.location.href = `/post_check?case_id=${selectedCaseId}`;
 }
 
@@ -253,7 +255,9 @@ function switchTab(tab) {
 async function loadAvatar() {
     if (!selectedCaseId) return;
     try {
-        const res = await fetch(`/get_case_info?case_id=${selectedCaseId}`);
+        const res = await fetch(
+            `/get_case_info?case_id=${selectedCaseId}`
+        );
         const data = await res.json();
         const img = document.getElementById("avatarImg");
         const nameTag = document.getElementById("avatarNameTag");
@@ -312,7 +316,6 @@ function sendAvatarMessage() {
             content: data.response
         });
 
-        if (data.image) showAnatomyImage(data.image);
         speakResponse(data.response);
 
         setTimeout(() => {
@@ -327,7 +330,8 @@ function sendAvatarMessage() {
         console.error(err);
         if (statusEl) statusEl.textContent = "Error — please try again";
         if (speechBubble) {
-            speechBubble.textContent = "Something went wrong. Please try again.";
+            speechBubble.textContent =
+                "Something went wrong. Please try again.";
         }
     });
 }
@@ -345,7 +349,8 @@ function toggleAvatarMic() {
     if (avatarRecording) {
         avatarRecognition.stop();
         avatarRecording = false;
-        document.getElementById("avatarMicBtn").classList.remove("recording");
+        document.getElementById("avatarMicBtn")
+            .classList.remove("recording");
     } else {
         avatarRecognition = new (window.SpeechRecognition ||
                                   window.webkitSpeechRecognition)();
@@ -358,7 +363,8 @@ function toggleAvatarMic() {
         };
         avatarRecognition.onend = function() {
             avatarRecording = false;
-            document.getElementById("avatarMicBtn").classList.remove("recording");
+            document.getElementById("avatarMicBtn")
+                .classList.remove("recording");
         };
         avatarRecognition.start();
         avatarRecording = true;
@@ -370,10 +376,12 @@ function togglePracticeTimer() {
     if (practiceTimerRunning) {
         clearInterval(practiceTimerInterval);
         practiceTimerRunning = false;
-        document.getElementById("timerToggleBtn").textContent = "▶ Start Timer";
+        const btn = document.getElementById("timerToggleBtn");
+        if (btn) btn.textContent = "▶ Start Timer";
     } else {
         practiceTimerRunning = true;
-        document.getElementById("timerToggleBtn").textContent = "⏸ Pause Timer";
+        const btn = document.getElementById("timerToggleBtn");
+        if (btn) btn.textContent = "⏸ Pause Timer";
         practiceTimerInterval = setInterval(() => {
             practiceTimerSeconds++;
             updatePracticeTimerDisplay();
@@ -384,12 +392,15 @@ function togglePracticeTimer() {
 function updatePracticeTimerDisplay() {
     const mins = Math.floor(practiceTimerSeconds / 60);
     const secs = practiceTimerSeconds % 60;
-    const display = `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+    const display =
+        `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
     const timerEl = document.getElementById("timerDisplay");
     if (timerEl) timerEl.textContent = display;
 
     const maxSeconds = 480;
-    const pct = Math.min((practiceTimerSeconds / maxSeconds) * 100, 100);
+    const pct = Math.min(
+        (practiceTimerSeconds / maxSeconds) * 100, 100
+    );
     const fill = document.getElementById("timerBarFill");
     if (!fill) return;
     fill.style.width = pct + "%";
@@ -443,5 +454,11 @@ window.onload = async function() {
         if (simTabs) simTabs.style.display = "flex";
 
         switchTab("chat");
+
+        const savedNotes = sessionStorage.getItem("candidateNotes");
+        const notesEl = document.getElementById("studentNotes");
+        if (savedNotes && notesEl) {
+            notesEl.value = savedNotes;
+        }
     }
 };
