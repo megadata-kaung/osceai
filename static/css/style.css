@@ -3059,3 +3059,18 @@ textarea:focus { border-color: #2c7be5; }
     font-style: italic;
     padding-left: 30px;
 }
+.btn-delete-user {
+    padding: 6px 10px;
+    background: #fdedec;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.btn-delete-user:hover {
+    background: #e74c3c;
+    color: white;
+}

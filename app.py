@@ -530,6 +530,24 @@ def get_feedback():
             "created_at": f.created_at.strftime("%d %b %Y %H:%M")
         } for f in feedbacks]
     })
+@app.route("/admin/delete_user/<int:user_id>", methods=["POST"])
+def delete_user(user_id):
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return jsonify({"error": "Unauthorized"})
+
+    user = User.query.get_or_404(user_id)
+
+    # Delete all results first
+    Result.query.filter_by(user_id=user_id).delete()
+
+    # Delete all feedback
+    Feedback.query.filter_by(user_id=user_id).delete()
+
+    # Delete user
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"success": True})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

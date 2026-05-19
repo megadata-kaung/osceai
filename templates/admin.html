@@ -160,11 +160,18 @@
                                     <span style="color:#ccc;">—</span>
                                 {% endif %}
                             </span>
-                            <span>
+                            <span style="display:flex; gap:6px;
+                                         align-items:center;">
                                 <a href="/admin/user/{{ user.id }}"
                                    class="btn-view-details">
                                     View →
                                 </a>
+                                <button class="btn-delete-user"
+                                        onclick="confirmDeleteUser(
+                                        {{ user.id }},
+                                        '{{ user.full_name }}')">
+                                    🗑️
+                                </button>
                             </span>
                         </div>
                         {% endfor %}
@@ -233,6 +240,26 @@
         </div>
     </div>
 
+    <!-- Delete User Modal -->
+    <div id="deleteUserModal" class="quit-modal" style="display:none;">
+        <div class="quit-modal-card">
+            <div class="quit-modal-icon">⚠️</div>
+            <h2>Delete this account?</h2>
+            <p id="deleteUserMsg">This will permanently delete the
+            account and all their data. This cannot be undone.</p>
+            <div class="quit-modal-buttons">
+                <button class="btn-quit-confirm"
+                        id="deleteUserConfirmBtn">
+                    Yes, delete account
+                </button>
+                <button class="btn-quit-cancel"
+                        onclick="closeDeleteModal()">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ── Search users ──
         function searchUsers(query) {
@@ -249,6 +276,47 @@
                 }
             });
         }
+
+        // ── Delete user ──
+        let deleteUserId = null;
+
+        function confirmDeleteUser(userId, userName) {
+            deleteUserId = userId;
+            document.getElementById("deleteUserMsg").textContent =
+                `This will permanently delete ${userName}'s account
+                and all their attempts and scores.
+                This cannot be undone.`;
+            document.getElementById("deleteUserModal")
+                .style.display = "flex";
+        }
+
+        function closeDeleteModal() {
+            document.getElementById("deleteUserModal")
+                .style.display = "none";
+            deleteUserId = null;
+        }
+
+        document.getElementById("deleteUserConfirmBtn")
+            .addEventListener("click", async function() {
+            if (!deleteUserId) return;
+            try {
+                const res = await fetch(
+                    `/admin/delete_user/${deleteUserId}`,
+                    { method: "POST" }
+                );
+                const data = await res.json();
+                if (data.success) {
+                    closeDeleteModal();
+                    window.location.reload();
+                } else {
+                    alert(data.error || "Error deleting user.");
+                    closeDeleteModal();
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Error deleting user. Please try again.");
+            }
+        });
 
         // ── Feedback ──
         let allFeedbacks = [];
