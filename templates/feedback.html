@@ -134,8 +134,10 @@
                             </div>
                             <div class="score-mini-card">
                                 <h4>Pre/Post Checks</h4>
-                                <div class="score-mini-number">8</div>
-                                <div class="score-mini-total">out of 8</div>
+                                <div class="score-mini-number"
+                                     id="prePostScore">0</div>
+                                <div class="score-mini-total"
+                                     id="prePostTotal">out of 9</div>
                             </div>
                         </div>
 
@@ -152,6 +154,11 @@
                         <div class="feedback-section">
                             <h3>✅ History Taking Checklist</h3>
                             <div id="checklistResults"></div>
+                        </div>
+
+                        <div class="feedback-section">
+                            <h3>Pre/Post Check Results</h3>
+                            <div id="prePostResults"></div>
                         </div>
 
                         <!-- Viva Results -->
@@ -197,6 +204,10 @@
             sessionStorage.getItem("vivaAnswers") || "[]");
         const conversation = JSON.parse(
             sessionStorage.getItem("conversation") || "[]");
+        const preChecks = JSON.parse(
+            sessionStorage.getItem("preChecks") || "{}");
+        const postChecks = JSON.parse(
+            sessionStorage.getItem("postChecks") || "{}");
 
         const sectionLabels = {
             opening_consultation: "Opening the consultation",
@@ -239,7 +250,9 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         case_id: caseId,
-                        conversation: conversation
+                        conversation: conversation,
+                        pre_checks: preChecks,
+                        post_checks: postChecks
                     })
                 });
                 const checkData = await checkRes.json();
@@ -250,19 +263,23 @@
                     (a, q) => a + q.max_marks, 0);
                 const checkTotal = checkData.total_achieved;
                 const checkPossible = checkData.total_possible;
-                const prePostScore = 8;
+                const prePostScore = countPrePostScore();
+                const prePostPossible = 9;
                 const overallTotal = vivaTotal + checkTotal + prePostScore;
-                const overallPossible = vivaPossible + checkPossible + 8;
+                const overallPossible =
+                    vivaPossible + checkPossible + prePostPossible;
 
                 // Step 3 — generate AI feedback
                 const feedbackRes = await fetch("/generate_feedback", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        case_id: caseId,
+                    case_id: caseId,
                         checklist_results: checkData,
                         viva_scores: vivaScores,
                         viva_questions: vivaQuestions,
+                        viva_answers: vivaAnswers,
+                        viva_point_results: vivaPointResults,
                         total_score: overallTotal,
                         total_possible: overallPossible
                     })
@@ -279,8 +296,14 @@
                     overallTotal, overallPossible, feedbackData
                 );
                 renderScoreBreakdown(
-                    checkTotal, checkPossible, vivaTotal, vivaPossible
+                    checkTotal,
+                    checkPossible,
+                    vivaTotal,
+                    vivaPossible,
+                    prePostScore,
+                    prePostPossible
                 );
+                renderPrePostResults();
                 renderAIFeedback(feedbackData.feedback);
                 renderChecklistResults(checkData);
                 renderVivaResults();
@@ -326,8 +349,27 @@
             }
         }
 
+        function countPrePostScore() {
+            return [
+                preChecks.washed_hands,
+                preChecks.donned_ppe,
+                preChecks.understood_task,
+                preChecks.ready_to_begin,
+                postChecks.summarised,
+                postChecks.asked_if_missed,
+                postChecks.thanked_patient,
+                postChecks.disposed_ppe,
+                postChecks.washed_hands_after
+            ].filter(Boolean).length;
+        }
+
         function renderScoreBreakdown(
-            checkTotal, checkPossible, vivaTotal, vivaPossible
+            checkTotal,
+            checkPossible,
+            vivaTotal,
+            vivaPossible,
+            prePostScore,
+            prePostPossible
         ) {
             document.getElementById("checklistScore").textContent =
                 checkTotal;
@@ -337,11 +379,41 @@
                 vivaTotal;
             document.getElementById("vivaTotalDisplay").textContent =
                 `out of ${vivaPossible}`;
+            document.getElementById("prePostScore").textContent =
+                prePostScore;
+            document.getElementById("prePostTotal").textContent =
+                `out of ${prePostPossible}`;
         }
 
         function renderAIFeedback(feedback) {
             document.getElementById("aiFeedback").textContent =
                 feedback || "No feedback available.";
+        }
+
+        function renderPrePostResults() {
+            const container = document.getElementById("prePostResults");
+            const items = [
+                ["Washed hands before consultation", preChecks.washed_hands],
+                ["Donned appropriate PPE", preChecks.donned_ppe],
+                ["Understood the task", preChecks.understood_task],
+                ["Ready to begin consultation", preChecks.ready_to_begin],
+                ["Summarised key history points", postChecks.summarised],
+                ["Asked if anything was missed", postChecks.asked_if_missed],
+                ["Thanked the patient", postChecks.thanked_patient],
+                ["Disposed of PPE appropriately", postChecks.disposed_ppe],
+                ["Washed hands after consultation", postChecks.washed_hands_after]
+            ];
+            container.innerHTML = "";
+            items.forEach(([label, achieved]) => {
+                const div = document.createElement("div");
+                div.className =
+                    `checklist-item ${achieved ? "achieved" : "missed"}`;
+                div.innerHTML = `
+                    <span>${achieved ? "Done" : "Missed"}</span>
+                    <span>${label}</span>
+                `;
+                container.appendChild(div);
+            });
         }
 
         function renderChecklistResults(checkData) {

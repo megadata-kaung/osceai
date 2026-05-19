@@ -2912,3 +2912,19 @@ textarea:focus { border-color: #2c7be5; }
 .score-badge.good { background: #e9f7ef; color: #1e8449; }
 .score-badge.average { background: #fef9e7; color: #d4ac0d; }
 .score-badge.poor { background: #fdedec; color: #e74c3c; }
+
+.btn-view-details {
+    padding: 6px 14px;
+    background: #e8f4fd;
+    color: #2c7be5;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.btn-view-details:hover {
+    background: #2c7be5;
+    color: white;
+}

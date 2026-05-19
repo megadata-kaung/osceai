@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item active" id="nav-users">
+                    <span class="sidebar-icon">👥</span>
+                    <span class="sidebar-label">All Users</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/logout'">
+                    <span class="sidebar-icon">⬅️</span>
+                    <span class="sidebar-label">Logout</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div style="padding:16px 20px; color:rgba(255,255,255,0.4);
+                            font-size:12px;">
+                    👑 Admin Mode
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="dashboard-main">
+
+            <!-- Topbar -->
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        <span class="breadcrumb-active">Admin Panel</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar"
+                             style="background:#e74c3c;">👑</div>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+
+                <div class="view-header">
+                    <h1>👑 Admin Panel</h1>
+                    <p>Overview of all registered students and
+                    their attempts</p>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="stats-row" style="margin-bottom:28px;">
+                    <div class="stat-box">
+                        <div class="stat-box-icon">👥</div>
+                        <div class="stat-box-info">
+                            <div class="stat-box-number">
+                                {{ total_users }}
+                            </div>
+                            <div class="stat-box-label">
+                                Total Students
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">📋</div>
+                        <div class="stat-box-info">
+                            <div class="stat-box-number">
+                                {{ total_attempts }}
+                            </div>
+                            <div class="stat-box-label">
+                                Total Attempts
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">🏥</div>
+                        <div class="stat-box-info">
+                            <div class="stat-box-number">9</div>
+                            <div class="stat-box-label">
+                                Cases Available
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-icon">🎓</div>
+                        <div class="stat-box-info">
+                            <div class="stat-box-number">APU</div>
+                            <div class="stat-box-label">Institution</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search -->
+                <div class="profile-section">
+                    <div class="history-header">
+                        <h3 class="profile-section-title">
+                            👥 Registered Students
+                        </h3>
+                        <div class="dashboard-search"
+                             style="width:240px;">
+                            <span class="search-icon">🔍</span>
+                            <input type="text"
+                                   placeholder="Search students..."
+                                   oninput="searchUsers(this.value)"/>
+                        </div>
+                    </div>
+
+                    {% if user_data %}
+                    <div class="history-table" id="usersTable">
+                        <div class="history-table-header"
+                             style="grid-template-columns:
+                             2fr 2fr 2fr 1fr 1fr 1fr;">
+                            <span>Name</span>
+                            <span>Email</span>
+                            <span>University</span>
+                            <span>Attempts</span>
+                            <span>Avg Score</span>
+                            <span>Action</span>
+                        </div>
+
+                        {% for user in user_data %}
+                        <div class="history-table-row admin-user-row"
+                             style="grid-template-columns:
+                             2fr 2fr 2fr 1fr 1fr 1fr;"
+                             data-name="{{ user.full_name.lower() }}"
+                             data-email="{{ user.email.lower() }}"
+                             data-uni="{{ user.university.lower() }}">
+                            <span class="history-case-name">
+                                {{ user.full_name }}
+                            </span>
+                            <span style="font-size:13px; color:#666;">
+                                {{ user.email }}
+                            </span>
+                            <span style="font-size:13px; color:#666;">
+                                {{ user.university }}
+                            </span>
+                            <span>
+                                <strong>{{ user.total_attempts }}</strong>
+                            </span>
+                            <span>
+                                {% if user.avg_score > 0 %}
+                                    <strong>{{ user.avg_score }}</strong>
+                                {% else %}
+                                    <span style="color:#ccc;">—</span>
+                                {% endif %}
+                            </span>
+                            <span>
+                                <a href="/admin/user/{{ user.id }}"
+                                   class="btn-view-details">
+                                    View →
+                                </a>
+                            </span>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">👥</div>
+                        <p>No students registered yet.</p>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchUsers(query) {
+            const q = query.toLowerCase().trim();
+            document.querySelectorAll(".admin-user-row").forEach(row => {
+                const name = row.dataset.name || "";
+                const email = row.dataset.email || "";
+                const uni = row.dataset.uni || "";
+                if (name.includes(q) || email.includes(q) ||
+                    uni.includes(q)) {
+                    row.style.display = "grid";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

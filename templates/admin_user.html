@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Student Detail</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item"
+                        onclick="window.location.href='/admin'">
+                    <span class="sidebar-icon">👥</span>
+                    <span class="sidebar-label">All Users</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/logout'">
+                    <span class="sidebar-icon">⬅️</span>
+                    <span class="sidebar-label">Logout</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <div style="padding:16px 20px;
+                            color:rgba(255,255,255,0.4);
+                            font-size:12px;">
+                    👑 Admin Mode
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="dashboard-main">
+
+            <!-- Topbar -->
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        <a href="/admin">Admin Panel</a>
+                        <span>/</span>
+                        <span class="breadcrumb-active">
+                            {{ user.full_name }}
+                        </span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-user">
+                        <div class="topbar-avatar"
+                             style="background:#e74c3c;">👑</div>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+
+                <div class="view-header">
+                    <a href="/admin"
+                       style="color:#888; text-decoration:none;
+                              font-size:14px;">
+                        ← Back to all students
+                    </a>
+                    <h1 style="margin-top:8px;">
+                        {{ user.full_name }}
+                    </h1>
+                    <p>{{ user.email }} · {{ user.university or "—" }}</p>
+                </div>
+
+                <!-- Student Info -->
+                <div class="profile-section">
+                    <h3 class="profile-section-title">
+                        👤 Student Information
+                    </h3>
+                    <div class="profile-info-card">
+                        <div class="profile-avatar-large">
+                            {{ user.full_name[0].upper() }}
+                        </div>
+                        <div class="profile-details">
+                            <div class="profile-detail-row">
+                                <span class="profile-label">
+                                    Full Name
+                                </span>
+                                <span class="profile-value">
+                                    {{ user.full_name }}
+                                </span>
+                            </div>
+                            <div class="profile-detail-row">
+                                <span class="profile-label">Email</span>
+                                <span class="profile-value">
+                                    {{ user.email }}
+                                </span>
+                            </div>
+                            <div class="profile-detail-row">
+                                <span class="profile-label">
+                                    University
+                                </span>
+                                <span class="profile-value">
+                                    {{ user.university or "—" }}
+                                </span>
+                            </div>
+                            <div class="profile-detail-row">
+                                <span class="profile-label">
+                                    Registered
+                                </span>
+                                <span class="profile-value">
+                                    {{ user.created_at.strftime("%d %b %Y") }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Summary -->
+                <div class="profile-section">
+                    <h3 class="profile-section-title">
+                        📊 Performance Summary
+                    </h3>
+                    <div class="performance-grid">
+                        <div class="perf-card">
+                            <div class="perf-number">
+                                {{ results|length }}
+                            </div>
+                            <div class="perf-label">Total Attempts</div>
+                        </div>
+                        <div class="perf-card">
+                            <div class="perf-number">
+                                {% if results %}
+                                    {{ (results|sum(attribute='total_score') / results|length)|round|int }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
+                            <div class="perf-label">Average Score</div>
+                        </div>
+                        <div class="perf-card">
+                            <div class="perf-number">
+                                {% if results %}
+                                    {{ results|max(attribute='total_score')|attr('total_score') }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
+                            <div class="perf-label">Best Score</div>
+                        </div>
+                        <div class="perf-card">
+                            <div class="perf-number">
+                                {% if results %}
+                                    {{ results[0].global_impression }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </div>
+                            <div class="perf-label">Last Grade</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case History -->
+                <div class="profile-section">
+                    <h3 class="profile-section-title">
+                        📋 Case History
+                    </h3>
+
+                    {% if results %}
+                    <div class="history-table">
+                        <div class="history-table-header">
+                            <span>Case</span>
+                            <span>Checklist</span>
+                            <span>Viva</span>
+                            <span>Total</span>
+                            <span>Grade</span>
+                            <span>Date</span>
+                        </div>
+                        {% for r in results %}
+                        <div class="history-table-row"
+                             style="cursor:pointer;"
+                             onclick="window.location.href='/result/{{ r.id }}'">
+                            <span class="history-case-name">
+                                {{ r.case_label }}
+                            </span>
+                            <span>
+                                {{ r.checklist_score }}/{{ r.checklist_possible }}
+                            </span>
+                            <span>
+                                {{ r.viva_score }}/{{ r.viva_possible }}
+                            </span>
+                            <span class="history-total">
+                                {{ r.total_score }}/{{ r.total_possible }}
+                            </span>
+                            <span class="history-grade"
+                                  style="color:
+                                  {% if r.global_impression == 'Excellent' %}#1e8449
+                                  {% elif r.global_impression == 'Pass' %}#2c7be5
+                                  {% elif r.global_impression == 'Borderline' %}#f6a623
+                                  {% else %}#e74c3c{% endif %}">
+                                {{ r.global_impression }}
+                            </span>
+                            <span class="history-date">
+                                {{ r.created_at.strftime("%d %b %Y") }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <p>No attempts yet.</p>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

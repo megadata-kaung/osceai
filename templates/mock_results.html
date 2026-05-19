@@ -54,6 +54,62 @@
             "cough_3": "Cough 3 — Thomas, 56 (Tuberculosis)"
         };
 
+        function countPrePostScore(result) {
+            const pre = result.pre_checks || {};
+            const post = result.post_checks || {};
+            return [
+                pre.washed_hands,
+                pre.donned_ppe,
+                pre.understood_task,
+                pre.ready_to_begin,
+                post.summarised,
+                post.asked_if_missed,
+                post.thanked_patient,
+                post.disposed_ppe,
+                post.washed_hands_after
+            ].filter(Boolean).length;
+        }
+
+        async function loadCaseFeedback(result, caseTotal, casePossible) {
+            const box = document.getElementById(
+                `mockFeedback-${result.case_id}`
+            );
+            if (!box) return;
+
+            try {
+                const res = await fetch("/generate_feedback", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        case_id: result.case_id,
+                        checklist_results: result.checklist,
+                        viva_scores: result.viva_scores,
+                        viva_questions: result.viva_questions,
+                        total_score: caseTotal,
+                        total_possible: casePossible
+                    })
+                });
+                const data = await res.json();
+                box.innerHTML = `
+                    <div class="ai-feedback-box">
+                        ${data.feedback || "No feedback available."}
+                    </div>
+                    ${data.correct_diagnosis ? `
+                        <p style="margin-top:12px; color:#555;">
+                            <strong>Correct diagnosis:</strong>
+                            ${data.correct_diagnosis}
+                        </p>` : ""}
+                `;
+            } catch (err) {
+                console.error(err);
+                box.innerHTML = `
+                    <div class="ai-feedback-box">
+                        Feedback could not be generated for this case.
+                    </div>
+                `;
+            }
+        }
+
         function renderResults() {
             let grandTotal = 0;
             let grandPossible = 0;
@@ -68,8 +124,11 @@
                 );
                 const checkTotal = result.checklist.total_achieved;
                 const checkPossible = result.checklist.total_possible;
-                const caseTotal = vivaTotal + checkTotal;
-                const casePossible = vivaPossible + checkPossible;
+                const prePostTotal = countPrePostScore(result);
+                const prePostPossible = 9;
+                const caseTotal = vivaTotal + checkTotal + prePostTotal;
+                const casePossible =
+                    vivaPossible + checkPossible + prePostPossible;
                 const casePct = casePossible > 0 ?
                     Math.round((caseTotal / casePossible) * 100) : 0;
 
@@ -92,13 +151,27 @@
                             <div class="score-mini-total">out of ${vivaPossible}</div>
                         </div>
                         <div class="score-mini-card">
+                            <h4>Pre/Post</h4>
+                            <div class="score-mini-number">${prePostTotal}</div>
+                            <div class="score-mini-total">out of ${prePostPossible}</div>
+                        </div>
+                        <div class="score-mini-card">
                             <h4>Total</h4>
                             <div class="score-mini-number">${caseTotal}</div>
                             <div class="score-mini-total">out of ${casePossible}</div>
                         </div>
                     </div>
+                    <div style="margin-top:18px;">
+                        <h4 style="margin-bottom:10px;">Examiner Feedback</h4>
+                        <div id="mockFeedback-${result.case_id}">
+                            <div class="ai-feedback-box">
+                                Generating feedback...
+                            </div>
+                        </div>
+                    </div>
                 `;
                 container.appendChild(card);
+                loadCaseFeedback(result, caseTotal, casePossible);
             });
 
             const overallPct = grandPossible > 0 ?

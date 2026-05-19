@@ -39,17 +39,7 @@ def load_case(case_id):
 def home():
     return render_template("landing.html")
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        user = User.query.filter_by(email=email).first()
-        if user and check_password_hash(user.password, password):
-            login_user(user)
-            return redirect(url_for("dashboard"))
-        flash("Invalid email or password")
-    return render_template("login.html")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -246,14 +236,121 @@ def evaluate_checklist_route():
     data = request.get_json()
     case_id = data.get("case_id")
     conversation = data.get("conversation", [])
+    pre_checks = data.get("pre_checks", {})
+    post_checks = data.get("post_checks", {})
     case = load_case(case_id)
     if not case:
         return jsonify({"error": "Case not found"})
     from services.ai_service import evaluate_checklist
     results = evaluate_checklist(
-        conversation, case.get("checklist", {})
+        conversation,
+        case.get("checklist", {}),
+        pre_checks,
+        post_checks
     )
     return jsonify(results)
+
+
+
+@app.route("/get_current_user")
+def get_current_user():
+    if current_user.is_authenticated:
+        return jsonify({
+            "name": current_user.full_name,
+            "email": current_user.email,
+            "university": current_user.university or "—"
+        })
+    if session.get("guest"):
+        return jsonify({
+            "name": "Guest",
+            "email": "Guest mode",
+            "university": "—"
+        })
+    return jsonify({
+        "name": "Guest",
+        "email": "",
+        "university": "—"
+    })
+@app.route("/clear_history", methods=["POST"])
+def clear_history():
+    if current_user.is_authenticated:
+        Result.query.filter_by(user_id=current_user.id).delete()
+        db.session.commit()
+        return jsonify({"success": True})
+    return jsonify({"error": "Not authenticated"})
+# ─────────────────────────────────────────
+# UPDATE LOGIN — redirect admin to admin panel
+# ─────────────────────────────────────────
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            login_user(user)
+            if user.is_admin:
+                return redirect(url_for("admin_dashboard"))
+            return redirect(url_for("dashboard"))
+        flash("Invalid email or password")
+    return render_template("login.html")
+
+# ─────────────────────────────────────────
+# ADMIN ROUTES
+# ─────────────────────────────────────────
+
+@app.route("/admin")
+def admin_dashboard():
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return redirect(url_for("login"))
+
+    users = User.query.filter_by(is_admin=False).all()
+
+    user_data = []
+    for user in users:
+        results = Result.query.filter_by(user_id=user.id).all()
+        total_attempts = len(results)
+        avg_score = 0
+        if total_attempts > 0:
+            avg_score = round(
+                sum(r.total_score for r in results) / total_attempts
+            )
+        user_data.append({
+            "id": user.id,
+            "full_name": user.full_name,
+            "email": user.email,
+            "university": user.university or "—",
+            "total_attempts": total_attempts,
+            "avg_score": avg_score,
+            "created_at": user.created_at.strftime("%d %b %Y")
+        })
+
+    total_users = len(users)
+    total_attempts = Result.query.count()
+
+    return render_template("admin.html",
+                           user_data=user_data,
+                           total_users=total_users,
+                           total_attempts=total_attempts)
+
+@app.route("/admin/user/<int:user_id>")
+def admin_user_detail(user_id):
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return redirect(url_for("login"))
+
+    user = User.query.get_or_404(user_id)
+    results = Result.query.filter_by(
+        user_id=user_id
+    ).order_by(Result.created_at.desc()).all()
+
+    return render_template("admin_user.html",
+                           user=user,
+                           results=results)
+
+# ─────────────────────────────────────────
+# UPDATE GENERATE FEEDBACK — save full data
+# ─────────────────────────────────────────
 
 @app.route("/generate_feedback", methods=["POST"])
 def generate_feedback():
@@ -303,7 +400,15 @@ def generate_feedback():
             viva_possible=viva_possible,
             total_score=total_score,
             total_possible=total_possible,
-            global_impression=global_impression
+            global_impression=global_impression,
+            checklist_data=json.dumps(checklist_results),
+            viva_data=json.dumps({
+                "scores": viva_scores,
+                "questions": viva_questions,
+                "answers": data.get("viva_answers", []),
+                "point_results": data.get("viva_point_results", [])
+            }),
+            ai_feedback=feedback
         )
         db.session.add(result)
         db.session.commit()
@@ -313,6 +418,24 @@ def generate_feedback():
         "correct_diagnosis": case.get("correct_diagnosis", ""),
         "global_impression": global_impression
     })
+
+# ─────────────────────────────────────────
+# RESULT DETAIL — for student viewing past results
+# ─────────────────────────────────────────
+
+@app.route("/result/<int:result_id>")
+def result_detail(result_id):
+    result = Result.query.get_or_404(result_id)
+    if not current_user.is_authenticated:
+        return redirect(url_for("login"))
+    if result.user_id != current_user.id and not current_user.is_admin:
+        return redirect(url_for("dashboard"))
+    return render_template("result_detail.html", result=result)
+
+# ─────────────────────────────────────────
+# UPDATE GET USER RESULTS — include result id
+# ─────────────────────────────────────────
+
 @app.route("/get_user_results")
 def get_user_results():
     if current_user.is_authenticated:
@@ -321,6 +444,7 @@ def get_user_results():
         ).order_by(Result.created_at.desc()).all()
         return jsonify({
             "results": [{
+                "id": r.id,
                 "case_id": r.case_id,
                 "case_label": r.case_label,
                 "checklist_score": r.checklist_score,
@@ -334,33 +458,6 @@ def get_user_results():
             } for r in results]
         })
     return jsonify({"results": []})
-
-@app.route("/get_current_user")
-def get_current_user():
-    if current_user.is_authenticated:
-        return jsonify({
-            "name": current_user.full_name,
-            "email": current_user.email,
-            "university": current_user.university or "—"
-        })
-    if session.get("guest"):
-        return jsonify({
-            "name": "Guest",
-            "email": "Guest mode",
-            "university": "—"
-        })
-    return jsonify({
-        "name": "Guest",
-        "email": "",
-        "university": "—"
-    })
-@app.route("/clear_history", methods=["POST"])
-def clear_history():
-    if current_user.is_authenticated:
-        Result.query.filter_by(user_id=current_user.id).delete()
-        db.session.commit()
-        return jsonify({"success": True})
-    return jsonify({"error": "Not authenticated"})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

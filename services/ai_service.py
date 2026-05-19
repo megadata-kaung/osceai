@@ -1,27 +1,39 @@
-from groq import Groq
 from dotenv import load_dotenv
 import os
 import json
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def load_case(case_id):
     with open("cases/cases.json", "r") as f:
         cases = json.load(f)
     return cases.get(case_id, None)
 
+
 def get_symptom_image(response_text):
     response_lower = response_text.lower()
-    if any(word in response_lower for word in ["stomach", "abdomen", "abdominal", "belly", "tummy", "epigastric", "bowel", "intestine"]):
+    if any(word in response_lower for word in [
+        "stomach", "abdomen", "abdominal", "belly", "tummy",
+        "epigastric", "bowel", "intestine"
+    ]):
         return "stomach.png"
-    elif any(word in response_lower for word in ["chest", "heart", "cardiac", "aorta", "angina"]):
+    if any(word in response_lower for word in [
+        "chest", "heart", "cardiac", "aorta", "angina"
+    ]):
         return "chest.png"
-    elif any(word in response_lower for word in ["cough", "lung", "breathing", "breath", "respiratory", "wheeze", "sputum", "phlegm"]):
+    if any(word in response_lower for word in [
+        "cough", "lung", "breathing", "breath", "respiratory",
+        "wheeze", "sputum", "phlegm"
+    ]):
         return "lungs.png"
-    else:
-        return None
+    return None
+
+
+def get_groq_client():
+    from groq import Groq
+    return Groq(api_key=os.getenv("GROQ_API_KEY"))
+
 
 def get_patient_response(user_message, case_id):
     case = load_case(case_id)
@@ -33,33 +45,39 @@ def get_patient_response(user_message, case_id):
         }
 
     system_prompt = f"""You are a virtual patient in a medical simulation for OSCE training.
-    Your name is {case['patient_name']}, aged {case['age']}.
-    Situation: {case['description']}
+        Your name is {case['patient_name']}, aged {case['age']}.
+        Situation: {case['description']}
+        
+        Your symptoms: {case['symptoms']}
+        What you do NOT have: {case.get('negative_features', '')}
+        Your past medical history: {case.get('past_medical_history', '')}
+        Your medications: {case.get('drug_history', '')}
+        Your family history: {case.get('family_history', '')}
+        Your social history: {case.get('social_history', '')}
+        Your ideas about what is wrong: {case.get('ice', {}).get('ideas', '')}
+        Your concerns: {case.get('ice', {}).get('concerns', '')}
+        Your expectations: {case.get('ice', {}).get('expectations', '')}
+        
+        STRICT rules you must follow:
+        - Only answer the specific question asked.
+        - Give one fact per answer unless the student explicitly asks for a list.
+        - If asked a broad opening question, give only the main presenting complaint.
+        - If asked about associated symptoms, mention only one or two symptoms.
+        - If asked multiple questions at once, answer only the first clear question.
+        - Do not volunteer extra information unprompted.
+        - Do not mention radiation unless asked where pain spreads.
+        - Do not mention severity unless asked how bad it is.
+        - Do not mention associated symptoms unless directly asked.
+        - Do not mention past medical history, medications, family history, social history, ICE, travel, or red flags unless directly asked.
+        - Respond naturally as a patient, usually in 1-2 sentences. Give only the information directly asked for. Do not volunteer extra clinical details unless the student asks.
+        - Avoid repeating information already given; if asked the same thing again, briefly confirm it instead of restating the full answer.
+        - Speak naturally like a real patient.
+        - Never reveal the diagnosis.
+        - If asked something not in your case, say you are not sure.
+        - If the student shows empathy or reassurance, respond naturally and emotionally.
+        - If the student introduces themselves, respond politely and naturally."""
 
-    Your symptoms: {case['symptoms']}
-    What you do NOT have: {case.get('negative_features', '')}
-    Your past medical history: {case.get('past_medical_history', '')}
-    Your medications: {case.get('drug_history', '')}
-    Your family history: {case.get('family_history', '')}
-    Your social history: {case.get('social_history', '')}
-    Your ideas about what is wrong: {case.get('ice', {}).get('ideas', '')}
-    Your concerns: {case.get('ice', {}).get('concerns', '')}
-    Your expectations: {case.get('ice', {}).get('expectations', '')}
-
-    STRICT rules you must follow:
-    - ONLY answer the specific question asked — nothing more
-    - Do NOT volunteer extra information unprompted
-    - Do NOT mention radiation unless asked where the pain spreads
-    - Do NOT mention severity unless asked how bad it is
-    - Do NOT mention associated symptoms unless directly asked
-    - Respond in 1 to 2 sentences maximum
-    - Speak naturally like a real patient
-    - Never reveal the diagnosis
-    - If asked something not in your case say you are not sure
-    - If the student shows empathy or says something reassuring like I am sorry to hear that or don't worry, respond naturally and emotionally like a real patient would
-    - If the student introduces themselves respond politely and naturally"""
-
-    response = client.chat.completions.create(
+    response = get_groq_client().chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
             {"role": "system", "content": system_prompt},
@@ -75,10 +93,46 @@ def get_patient_response(user_message, case_id):
         "image": image
     }
 
-def evaluate_checklist(conversation_history, checklist):
+
+def is_pre_post_item_achieved(item_text, pre_checks, post_checks):
+    text = item_text.lower()
+
+    if (
+        "washes hands" in text and
+        ("ppe" in text or "dons ppe" in text) and
+        pre_checks.get("washed_hands") and
+        pre_checks.get("donned_ppe")
+    ):
+        return True
+
+    if (
+        "disposes ppe" in text and
+        "washes hands" in text and
+        post_checks.get("disposed_ppe") and
+        post_checks.get("washed_hands_after")
+    ):
+        return True
+
+    if "summarises" in text and post_checks.get("summarised"):
+        return True
+
+    if "thanks" in text and post_checks.get("thanked_patient"):
+        return True
+
+    return False
+
+
+def evaluate_checklist(
+    conversation_history,
+    checklist,
+    pre_checks=None,
+    post_checks=None
+):
     results = {}
     total_possible = 0
     total_achieved = 0
+    pre_checks = pre_checks or {}
+    post_checks = post_checks or {}
 
     full_conversation = " ".join([
         msg.get("content", "").lower()
@@ -94,6 +148,12 @@ def evaluate_checklist(conversation_history, checklist):
         for item in items:
             keywords = [kw.lower() for kw in item["keywords"]]
             achieved = any(kw in full_conversation for kw in keywords)
+
+            if is_pre_post_item_achieved(
+                item["item"], pre_checks, post_checks
+            ):
+                achieved = True
+
             section_results.append({
                 "item": item["item"],
                 "achieved": achieved,
@@ -116,6 +176,7 @@ def evaluate_checklist(conversation_history, checklist):
         "total_achieved": total_achieved,
         "total_possible": total_possible
     }
+
 
 def evaluate_viva_answer(user_answer, viva_question):
     answer_lower = user_answer.lower()
@@ -153,7 +214,13 @@ def evaluate_viva_answer(user_answer, viva_question):
         "required_missed": required_missed
     }
 
-def generate_overall_feedback(checklist_results, viva_scores, viva_questions, case_id):
+
+def generate_overall_feedback(
+    checklist_results,
+    viva_scores,
+    viva_questions,
+    case_id
+):
     case = load_case(case_id)
     if not case:
         return "Unable to generate feedback."
@@ -175,25 +242,25 @@ def generate_overall_feedback(checklist_results, viva_scores, viva_questions, ca
 
     prompt = f"""You are an experienced OSCE examiner giving feedback to a medical student.
 
-Case: {case['description']}
-Correct diagnosis: {case['correct_diagnosis']}
+        Case: {case['description']}
+        Correct diagnosis: {case['correct_diagnosis']}
 
-Student performance:
-- Checklist score: {checklist_total} out of {checklist_possible}
-- Viva score: {viva_total} out of {viva_possible}
-- Overall score: {overall_total} out of {overall_possible}
+        Student performance:
+        - Checklist score: {checklist_total} out of {checklist_possible}
+        - Viva score: {viva_total} out of {viva_possible}
+        - Overall score: {overall_total} out of {overall_possible}
+        
+        Key checklist items the student missed: {missed_str}
+        
+        Please provide:
+        1. Two sentences of positive feedback on what they did well
+        2. Two sentences on the main areas they need to improve
+        3. One sentence on the most important clinical point they should remember about this case
+        
+        Keep the feedback encouraging, specific and clinically relevant.
+        Total response should be 5-6 sentences maximum."""
 
-Key checklist items the student missed: {missed_str}
-
-Please provide:
-1. Two sentences of positive feedback on what they did well
-2. Two sentences on the main areas they need to improve
-3. One sentence on the most important clinical point they should remember about this case
-
-Keep the feedback encouraging, specific and clinically relevant. 
-Total response should be 5-6 sentences maximum."""
-
-    response = client.chat.completions.create(
+    response = get_groq_client().chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[
             {"role": "user", "content": prompt}

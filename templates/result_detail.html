@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OsceAI — Result Detail</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                {% if current_user.is_admin %}
+                <button class="sidebar-item"
+                        onclick="window.location.href='/admin'">
+                    <span class="sidebar-icon">👥</span>
+                    <span class="sidebar-label">All Users</span>
+                </button>
+                {% else %}
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard'">
+                    <span class="sidebar-icon">🏠</span>
+                    <span class="sidebar-label">Home</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=cases'">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-label">OSCE Cases</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/mock_exam'">
+                    <span class="sidebar-icon">🏥</span>
+                    <span class="sidebar-label">Mock Exam</span>
+                </button>
+                <button class="sidebar-item active"
+                        onclick="window.location.href='/dashboard?view=profile'">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-label">Profile</span>
+                </button>
+                {% endif %}
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-logout">
+                    <span>⬅️</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="dashboard-main">
+
+            <!-- Topbar -->
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        {% if current_user.is_admin %}
+                        <a href="/admin">Admin Panel</a>
+                        <span>/</span>
+                        <a href="/admin/user/{{ result.user_id }}">
+                            Student
+                        </a>
+                        {% else %}
+                        <a href="/dashboard">Home</a>
+                        <span>/</span>
+                        <a href="/dashboard?view=profile">Profile</a>
+                        {% endif %}
+                        <span>/</span>
+                        <span class="breadcrumb-active">Result Detail</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-user">
+                        {% if current_user.is_admin %}
+                        <div class="topbar-avatar"
+                             style="background:#e74c3c;">👑</div>
+                        <span>Admin</span>
+                        {% else %}
+                        <div class="topbar-avatar"
+                             id="topbarAvatar">S</div>
+                        <span id="topbarName">Student</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+                <div style="max-width:900px; margin:0 auto;">
+
+                    <!-- Back button -->
+                    <div style="margin-bottom:20px;">
+                        {% if current_user.is_admin %}
+                        <a href="/admin/user/{{ result.user_id }}"
+                           style="color:#888; text-decoration:none;
+                                  font-size:14px;">
+                            ← Back to student
+                        </a>
+                        {% else %}
+                        <a href="/dashboard?view=profile"
+                           style="color:#888; text-decoration:none;
+                                  font-size:14px;">
+                            ← Back to profile
+                        </a>
+                        {% endif %}
+                    </div>
+
+                    <div class="view-header">
+                        <h1>Result Detail</h1>
+                        <p>{{ result.case_label }} ·
+                        {{ result.created_at.strftime("%d %b %Y") }}</p>
+                    </div>
+
+                    <!-- Overall Score -->
+                    <div class="overall-score-card">
+                        <h3>Overall Score</h3>
+                        <div class="big-score">
+                            {{ result.total_score }}
+                        </div>
+                        <div class="score-out-of">
+                            out of {{ result.total_possible }}
+                        </div>
+                        <div class="global-impression
+                            {% if result.global_impression == 'Excellent' %}excellent
+                            {% elif result.global_impression == 'Pass' %}pass
+                            {% elif result.global_impression == 'Borderline' %}borderline
+                            {% else %}fail{% endif %}">
+                            {% if result.global_impression == 'Excellent' %}🏆
+                            {% elif result.global_impression == 'Pass' %}✅
+                            {% elif result.global_impression == 'Borderline' %}⚠️
+                            {% else %}❌{% endif %}
+                            {{ result.global_impression }}
+                        </div>
+                    </div>
+
+                    <!-- Score Breakdown -->
+                    <div class="score-breakdown-row">
+                        <div class="score-mini-card">
+                            <h4>Checklist</h4>
+                            <div class="score-mini-number">
+                                {{ result.checklist_score }}
+                            </div>
+                            <div class="score-mini-total">
+                                out of {{ result.checklist_possible }}
+                            </div>
+                        </div>
+                        <div class="score-mini-card">
+                            <h4>Viva Questions</h4>
+                            <div class="score-mini-number">
+                                {{ result.viva_score }}
+                            </div>
+                            <div class="score-mini-total">
+                                out of {{ result.viva_possible }}
+                            </div>
+                        </div>
+                        <div class="score-mini-card">
+                            <h4>Pre/Post Checks</h4>
+                            <div class="score-mini-number">8</div>
+                            <div class="score-mini-total">out of 8</div>
+                        </div>
+                    </div>
+
+                    <!-- AI Feedback -->
+                    {% if result.ai_feedback %}
+                    <div class="feedback-section">
+                        <h3>📝 Examiner Feedback</h3>
+                        <div class="ai-feedback-box">
+                            {{ result.ai_feedback }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Checklist Results -->
+                    {% if result.checklist_data %}
+                    <div class="feedback-section">
+                        <h3>✅ History Taking Checklist</h3>
+                        <div id="checklistResults"></div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Viva Results -->
+                    {% if result.viva_data %}
+                    <div class="feedback-section">
+                        <h3>🎓 Viva Question Results</h3>
+                        <div id="vivaResults"></div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Footer -->
+                    <div class="feedback-footer">
+                        {% if current_user.is_admin %}
+                        <a href="/admin/user/{{ result.user_id }}"
+                           class="btn">
+                            ← Back to Student
+                        </a>
+                        <a href="/admin" class="btn-secondary">
+                            All Students
+                        </a>
+                        {% else %}
+                        <a href="/dashboard?view=cases" class="btn">
+                            Try Another Case
+                        </a>
+                        <a href="/dashboard?view=profile"
+                           class="btn-secondary">
+                            Back to Profile
+                        </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sectionLabels = {
+            opening_consultation: "Opening the consultation",
+            presenting_complaint: "Presenting complaint",
+            history_of_complaint: "History of presenting complaint",
+            systems_review: "Systems review",
+            past_medical_history: "Past medical history",
+            drug_history: "Drug history",
+            family_history: "Family history",
+            social_history: "Social history",
+            closing_consultation: "Closing the consultation",
+            communication_skills: "Key communication skills"
+        };
+
+        const gradeColors = {
+            "Excellent": "#1e8449",
+            "Pass": "#2c7be5",
+            "Borderline": "#f6a623",
+            "Fail": "#e74c3c"
+        };
+
+        // Load topbar user for students
+        {% if not current_user.is_admin %}
+        async function loadTopbarUser() {
+            try {
+                const res = await fetch("/get_current_user");
+                const data = await res.json();
+                const name = data.name || "Student";
+                document.getElementById("topbarName").textContent = name;
+                document.getElementById("topbarAvatar").textContent =
+                    name.charAt(0).toUpperCase();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        loadTopbarUser();
+        {% endif %}
+
+        // Render checklist
+        {% if result.checklist_data %}
+        const checklistData = {{ result.checklist_data | safe }};
+        const checklistContainer =
+            document.getElementById("checklistResults");
+
+        for (const [sectionKey, sectionData] of
+            Object.entries(checklistData.sections)) {
+
+            const label = sectionLabels[sectionKey] || sectionKey;
+            const achieved = sectionData.section_achieved;
+            const possible = sectionData.section_possible;
+
+            const titleDiv = document.createElement("div");
+            titleDiv.className = "checklist-section-title";
+            titleDiv.innerHTML =
+                `${label} <span style="font-weight:normal;
+                color:#888;">(${achieved}/${possible})</span>`;
+            checklistContainer.appendChild(titleDiv);
+
+            sectionData.items.forEach(item => {
+                const div = document.createElement("div");
+                div.className =
+                    `checklist-item ${item.achieved ? "achieved" : "missed"}`;
+                div.innerHTML = `
+                    <span>${item.achieved ? "✅" : "❌"}</span>
+                    <span>${item.item}</span>
+                `;
+                checklistContainer.appendChild(div);
+            });
+        }
+        {% endif %}
+
+        // Render viva results
+        {% if result.viva_data %}
+        const vivaData = {{ result.viva_data | safe }};
+        const vivaContainer = document.getElementById("vivaResults");
+        const questions = vivaData.questions || [];
+        const scores = vivaData.scores || [];
+        const answers = vivaData.answers || [];
+        const pointResults = vivaData.point_results || [];
+
+        questions.forEach((q, index) => {
+            const score = scores[index] || 0;
+            const maxMarks = q.max_marks;
+            const points = pointResults[index] || [];
+            const answer = answers[index] || "No answer recorded";
+            const pct = maxMarks > 0 ? (score / maxMarks) * 100 : 0;
+            const scoreClass =
+                pct >= 75 ? "good" : pct >= 50 ? "average" : "poor";
+
+            const block = document.createElement("div");
+            block.className = "viva-question-block";
+            block.innerHTML = `
+                <div class="viva-question-text">
+                    Q${index + 1}: ${q.question}
+                </div>
+                <div class="viva-student-answer">
+                    Your answer: "${answer}"
+                </div>
+                <div class="viva-score-line ${scoreClass}">
+                    Score: ${score} / ${maxMarks}
+                </div>
+            `;
+
+            points.forEach(point => {
+                const pointDiv = document.createElement("div");
+                pointDiv.className =
+                    `point-item ${point.achieved ? "achieved" : "missed"}`;
+                pointDiv.innerHTML = `
+                    <span class="point-icon">
+                        ${point.achieved ? "✅" : "❌"}
+                    </span>
+                    <span class="point-text">${point.point}</span>
+                    <span class="point-mark">
+                        ${point.achieved ? "+1" : "0"}
+                    </span>
+                `;
+                block.appendChild(pointDiv);
+            });
+
+            vivaContainer.appendChild(block);
+        });
+        {% endif %}
+    </script>
+
+</body>
+</html>

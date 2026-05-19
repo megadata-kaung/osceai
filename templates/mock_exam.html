@@ -231,6 +231,48 @@
                     </div>
                 </div>
 
+                <div id="mockPreCheck" style="display:none;">
+                    <div style="max-width:700px; margin:0 auto;">
+                        <div class="view-header">
+                            <h1>Before You Begin</h1>
+                            <p>Confirm these steps before starting the station</p>
+                        </div>
+                        <div class="check-body">
+                            <div class="check-section">
+                                <h3>Infection Control</h3>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPre1"
+                                           onchange="updateMockPreButton()">
+                                    <span>I have washed my hands and used hand sanitiser</span>
+                                </label>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPre2"
+                                           onchange="updateMockPreButton()">
+                                    <span>I have donned appropriate PPE</span>
+                                </label>
+                            </div>
+                            <div class="check-section">
+                                <h3>Preparation</h3>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPre3"
+                                           onchange="updateMockPreButton()">
+                                    <span>I understand this is a history taking station</span>
+                                </label>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPre4"
+                                           onchange="updateMockPreButton()">
+                                    <span>I am ready to introduce myself and begin</span>
+                                </label>
+                            </div>
+                            <button class="btn" id="mockPreStartBtn"
+                                    onclick="confirmMockPreCheck()" disabled
+                                    style="width:100%; padding:16px;">
+                                Start History Taking
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Exam Screen -->
                 <div id="mockExam" style="display:none;">
                     <div class="mock-exam-header">
@@ -267,11 +309,11 @@
                     <div id="mockModeTabs" class="sim-tabs mock-mode-tabs">
                         <button class="sim-tab active" id="mockTabChat"
                                 onclick="switchMockMode('chat')">
-                            ðŸ’¬ Chat Mode
+                            💬 Chat Mode
                         </button>
                         <button class="sim-tab" id="mockTabAvatar"
                                 onclick="switchMockMode('avatar')">
-                            ðŸŽ­ Avatar Mode
+                            🎭 Avatar Mode
                         </button>
                     </div>
 
@@ -328,7 +370,7 @@
                                     <button class="btn-mic"
                                             id="mockAvatarMicBtn"
                                             onclick="toggleMockAvatarMic()">
-                                        ðŸŽ¤
+                                        🎤
                                     </button>
                                     <button class="btn-send"
                                             onclick="sendMockAvatarMessage()">
@@ -372,6 +414,53 @@
                                     Clear notes
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="mockPostCheck" style="display:none;">
+                    <div style="max-width:700px; margin:0 auto;">
+                        <div class="view-header">
+                            <h1>Post Consultation Check</h1>
+                            <p>Confirm these closing steps before viva</p>
+                        </div>
+                        <div class="check-body">
+                            <div class="check-section">
+                                <h3>Closing the Consultation</h3>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPost1"
+                                           onchange="updateMockPostButton()">
+                                    <span>I summarised the key history points</span>
+                                </label>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPost2"
+                                           onchange="updateMockPostButton()">
+                                    <span>I asked if there was anything I missed</span>
+                                </label>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPost3"
+                                           onchange="updateMockPostButton()">
+                                    <span>I thanked the patient for their time</span>
+                                </label>
+                            </div>
+                            <div class="check-section">
+                                <h3>Infection Control</h3>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPost4"
+                                           onchange="updateMockPostButton()">
+                                    <span>I disposed of PPE appropriately</span>
+                                </label>
+                                <label class="check-item">
+                                    <input type="checkbox" id="mockPost5"
+                                           onchange="updateMockPostButton()">
+                                    <span>I washed my hands after the consultation</span>
+                                </label>
+                            </div>
+                            <button class="btn" id="mockPostNextBtn"
+                                    onclick="confirmMockPostCheck()" disabled
+                                    style="width:100%; padding:16px;">
+                                Continue to Viva
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -516,6 +605,8 @@
         let mockCases = [];
         let currentCaseIndex = 0;
         let mockConversation = [];
+        let mockPreChecks = {};
+        let mockPostChecks = {};
         let mockTimerInterval = null;
         let mockTimerSeconds = 480;
         let mockVivaInterval = null;
@@ -561,7 +652,9 @@
         function hideAll() {
             document.getElementById("mockSetup").style.display = "none";
             document.getElementById("mockInstructions").style.display = "none";
+            document.getElementById("mockPreCheck").style.display = "none";
             document.getElementById("mockExam").style.display = "none";
+            document.getElementById("mockPostCheck").style.display = "none";
             document.getElementById("mockTransition").style.display = "none";
             document.getElementById("mockViva").style.display = "none";
         }
@@ -601,6 +694,8 @@
             clearInterval(instructionsTimerInterval);
 
             mockConversation = [];
+            mockPreChecks = {};
+            mockPostChecks = {};
             isTransitioning = false;
 
             hideAll();
@@ -644,7 +739,7 @@
                 updateInstructionsTimerDisplay();
                 if (instructionsSeconds <= 0) {
                     clearInterval(instructionsTimerInterval);
-                    beginActualCase(caseId);
+                    showMockPreCheck(caseId);
                 }
             }, 1000);
         }
@@ -667,6 +762,34 @@
 
         function skipInstructions() {
             clearInterval(instructionsTimerInterval);
+            showMockPreCheck(mockCases[currentCaseIndex]);
+        }
+
+        function showMockPreCheck(caseId) {
+            hideAll();
+            document.getElementById("mockPreCheck").style.display = "block";
+            ["mockPre1", "mockPre2", "mockPre3", "mockPre4"].forEach(id => {
+                document.getElementById(id).checked = false;
+            });
+            document.getElementById("mockPreStartBtn").disabled = true;
+        }
+
+        function updateMockPreButton() {
+            const ready =
+                document.getElementById("mockPre1").checked &&
+                document.getElementById("mockPre2").checked &&
+                document.getElementById("mockPre3").checked &&
+                document.getElementById("mockPre4").checked;
+            document.getElementById("mockPreStartBtn").disabled = !ready;
+        }
+
+        function confirmMockPreCheck() {
+            mockPreChecks = {
+                washed_hands: document.getElementById("mockPre1").checked,
+                donned_ppe: document.getElementById("mockPre2").checked,
+                understood_task: document.getElementById("mockPre3").checked,
+                ready_to_begin: document.getElementById("mockPre4").checked
+            };
             beginActualCase(mockCases[currentCaseIndex]);
         }
 
@@ -732,7 +855,7 @@
                 updateMockTimerDisplay();
                 if (mockTimerSeconds <= 0) {
                     clearInterval(mockTimerInterval);
-                    showTransition("history", caseId);
+                    showMockPostCheck(caseId);
                 }
             }, 1000);
         }
@@ -762,6 +885,39 @@
         // ── Transition screen ──
         function skipMockHistory() {
             clearInterval(mockTimerInterval);
+            showMockPostCheck(mockCases[currentCaseIndex]);
+        }
+
+        function showMockPostCheck(caseId) {
+            hideAll();
+            document.getElementById("mockPostCheck").style.display = "block";
+            [
+                "mockPost1", "mockPost2", "mockPost3",
+                "mockPost4", "mockPost5"
+            ].forEach(id => {
+                document.getElementById(id).checked = false;
+            });
+            document.getElementById("mockPostNextBtn").disabled = true;
+        }
+
+        function updateMockPostButton() {
+            const ready =
+                document.getElementById("mockPost1").checked &&
+                document.getElementById("mockPost2").checked &&
+                document.getElementById("mockPost3").checked &&
+                document.getElementById("mockPost4").checked &&
+                document.getElementById("mockPost5").checked;
+            document.getElementById("mockPostNextBtn").disabled = !ready;
+        }
+
+        function confirmMockPostCheck() {
+            mockPostChecks = {
+                summarised: document.getElementById("mockPost1").checked,
+                asked_if_missed: document.getElementById("mockPost2").checked,
+                thanked_patient: document.getElementById("mockPost3").checked,
+                disposed_ppe: document.getElementById("mockPost4").checked,
+                washed_hands_after: document.getElementById("mockPost5").checked
+            };
             showTransition("history", mockCases[currentCaseIndex]);
         }
 
@@ -944,7 +1100,9 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         case_id: caseId,
-                        conversation: mockConversation
+                        conversation: mockConversation,
+                        pre_checks: mockPreChecks,
+                        post_checks: mockPostChecks
                     })
                 });
                 const checkData = await checkRes.json();
@@ -954,7 +1112,9 @@
                     viva_scores: mockVivaResults.map(r => r.marks_achieved),
                     viva_point_results: mockVivaResults.map(r => r.point_results),
                     viva_questions: mockVivaQuestions,
-                    viva_answers: mockVivaAnswers
+                    viva_answers: mockVivaAnswers,
+                    pre_checks: mockPreChecks,
+                    post_checks: mockPostChecks
                 });
             } catch (err) {
                 console.error(err);
@@ -964,7 +1124,9 @@
                     viva_scores: [],
                     viva_point_results: [],
                     viva_questions: mockVivaQuestions,
-                    viva_answers: mockVivaAnswers
+                    viva_answers: mockVivaAnswers,
+                    pre_checks: mockPreChecks,
+                    post_checks: mockPostChecks
                 });
             }
             showTransition("viva", caseId);
