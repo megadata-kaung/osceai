@@ -3,86 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OsceAI — Candidate Instructions</title>
+    <title>OsceAI - Candidate Instructions</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body class="candidate-body">
+<body class="dashboard-body">
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb">
-        <a href="/">Home</a>
-        <span>/</span>
-        <a href="/dashboard">OSCE Cases</a>
-        <span>/</span>
-        <span id="breadcrumbCase">Case</span>
-    </div>
-
-    <div class="candidate-container">
-
-        <div class="candidate-left">
-
-            <!-- Title -->
-            <div class="candidate-title">
-                <h2>Candidate instructions</h2>
-                <span class="candidate-case-badge" id="caseBadge">
-                    Loading...
-                </span>
-            </div>
-
-            <!-- Instructions Card -->
-            <div class="candidate-instructions-card">
-                <ul class="candidate-list" id="instructionsList">
-                    <li>Loading instructions...</li>
-                </ul>
-            </div>
-
-            <!-- Notes -->
-            <div class="candidate-notes">
-                <h3>Your notes</h3>
-                <div class="notes-input-wrapper">
-                    <textarea id="candidateNotes"
-                              placeholder="You can write notes here, which will only be visible to you during this session."></textarea>
-                    <span class="notes-pencil">✏️</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="candidate-right">
-
-            <!-- Timer -->
-            <div class="candidate-timer-card">
-                <div class="candidate-timer-display" id="candidateTimer">
-                    08:00
-                </div>
-                <div class="candidate-timer-controls">
-                    <button class="timer-ctrl-btn" onclick="adjustTimer(-60)"
-                            title="Minus 1 minute">−</button>
-                    <button class="timer-ctrl-btn" onclick="pauseTimer()"
-                            id="pauseBtn" title="Pause">⏸</button>
-                    <button class="timer-ctrl-btn start-btn"
-                            onclick="startSimulation()" title="Start">▶</button>
-                    <button class="timer-ctrl-btn" onclick="resetTimer()"
-                            title="Reset">↺</button>
-                    <button class="timer-ctrl-btn" onclick="adjustTimer(60)"
-                            title="Plus 1 minute">+</button>
-                </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="candidate-action-buttons">
-                <button class="action-btn examiner-btn"
-                        onclick="startSimulation()">
-                    Start Simulation
+    <div class="dashboard-layout">
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=home'">
+                    <span class="sidebar-icon">🏠</span>
+                    <span class="sidebar-label">Home</span>
                 </button>
-                <button class="action-btn patient-btn"
-                        onclick="window.location.href='/'">
-                    Back to Home
+                <button class="sidebar-item active"
+                        onclick="window.location.href='/dashboard?view=cases'">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-label">OSCE Cases</span>
                 </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/mock_exam'">
+                    <span class="sidebar-icon">🏥</span>
+                    <span class="sidebar-label">Mock Exam</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=profile'">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-label">Profile</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-logout">
+                    <span>⬅️</span>
+                    <span>Logout</span>
+                </a>
             </div>
+        </aside>
 
+        <div class="dashboard-main">
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        <a href="/dashboard">Home</a>
+                        <span>/</span>
+                        <a href="/dashboard?view=cases">OSCE Cases</a>
+                        <span>/</span>
+                        <span class="breadcrumb-active" id="breadcrumbCase">
+                            Candidate Instructions
+                        </span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-tabs">
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=home'">
+                            Home
+                        </button>
+                        <button class="topbar-tab active"
+                                onclick="window.location.href='/dashboard?view=cases'">
+                            OSCE Cases
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/mock_exam'">
+                            Mock Exam
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=profile'">
+                            Profile
+                        </button>
+                    </div>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="topbarAvatar">S</div>
+                        <span id="topbarName">Student</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="view-header">
+                    <div class="mock-phase-header">
+                        <span class="mock-badge">Reading Time</span>
+                        <span class="mock-case-counter" id="caseBadge">
+                            Loading...
+                        </span>
+                    </div>
+                </div>
+
+                <div class="instructions-layout">
+                    <div class="instructions-left">
+                        <div class="candidate-title">
+                            <h2>Candidate Instructions</h2>
+                        </div>
+                        <div class="candidate-instructions-card"
+                             style="margin-top:16px;">
+                            <ul class="candidate-list" id="instructionsList">
+                                <li>Loading instructions...</li>
+                            </ul>
+                        </div>
+
+                        <div class="candidate-notes" style="margin-top:16px;">
+                            <h3>Your notes</h3>
+                            <div class="notes-input-wrapper">
+                                <textarea id="candidateNotes"
+                                          placeholder="You can write notes here, which will visible to you in history taking session."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="instructions-right">
+                        <div class="mock-info-card" style="text-align:center;">
+                            <h3>Reading Time</h3>
+                            <div class="instructions-timer-display"
+                                 id="candidateTimer">02:00</div>
+                            <p class="instructions-timer-label">
+                                Time available before the station
+                            </p>
+                            <div class="candidate-timer-controls"
+                                 style="justify-content:center;">
+                                <button class="timer-ctrl-btn"
+                                        onclick="adjustTimer(-60)"
+                                        title="Minus 1 minute">-</button>
+                                <button class="timer-ctrl-btn start-btn"
+                                        onclick="toggleReadingTimer()"
+                                        id="timerToggleBtn"
+                                        title="Start or pause timer">▶</button>
+                                <button class="timer-ctrl-btn"
+                                        onclick="resetTimer()"
+                                        title="Reset">↻</button>
+                                <button class="timer-ctrl-btn"
+                                        onclick="adjustTimer(60)"
+                                        title="Plus 1 minute">+</button>
+                            </div>
+                            <button class="btn" onclick="startSimulation()"
+                                    style="width:100%; margin-top:16px;">
+                                Start
+                            </button>
+                            <a href="/dashboard?view=cases"
+                               class="btn-secondary"
+                               style="display:block; text-align:center;
+                               margin-top:10px; padding:14px;">
+                                Back to Cases
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
 
     <script>
@@ -102,15 +169,27 @@
             "cough_3": "Cough 03"
         };
 
-        document.getElementById("breadcrumbCase").textContent =
-            caseNames[caseId] || caseLabel;
-        document.getElementById("caseBadge").textContent =
-            caseNames[caseId] || caseLabel;
+        const displayCase = caseNames[caseId] || decodeURIComponent(caseLabel);
+        document.getElementById("breadcrumbCase").textContent = displayCase;
+        document.getElementById("caseBadge").textContent = displayCase;
 
         let timerSeconds = 480;
         let timerInterval = null;
         let timerPaused = false;
         let timerStarted = false;
+
+        async function loadTopbarUser() {
+            try {
+                const res = await fetch("/get_current_user");
+                const data = await res.json();
+                const name = data.name || "Student";
+                document.getElementById("topbarName").textContent = name;
+                document.getElementById("topbarAvatar").textContent =
+                    name.charAt(0).toUpperCase();
+            } catch (err) {
+                console.error(err);
+            }
+        }
 
         function updateTimerDisplay() {
             const mins = Math.floor(timerSeconds / 60);
@@ -124,25 +203,27 @@
             updateTimerDisplay();
         }
 
-        function pauseTimer() {
-            if (!timerStarted) return;
-            if (timerPaused) {
+        function toggleReadingTimer() {
+            const btn = document.getElementById("timerToggleBtn");
+            if (!timerStarted || timerPaused) {
+                clearInterval(timerInterval);
                 timerInterval = setInterval(countDown, 1000);
+                timerStarted = true;
                 timerPaused = false;
-                document.getElementById("pauseBtn").textContent = "⏸";
+                btn.textContent = "⏸";
             } else {
                 clearInterval(timerInterval);
                 timerPaused = true;
-                document.getElementById("pauseBtn").textContent = "▶";
+                btn.textContent = "▶";
             }
         }
 
         function resetTimer() {
             clearInterval(timerInterval);
-            timerSeconds = 480;
+            timerSeconds = 120;
             timerStarted = false;
             timerPaused = false;
-            document.getElementById("pauseBtn").textContent = "⏸";
+            document.getElementById("timerToggleBtn").textContent = "▶";
             updateTimerDisplay();
         }
 
@@ -187,9 +268,11 @@
             }
         }
 
+        loadTopbarUser();
         loadInstructions();
         updateTimerDisplay();
     </script>
 
 </body>
 </html>
+

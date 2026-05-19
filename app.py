@@ -77,6 +77,8 @@ def register():
 
 @app.route("/guest")
 def guest():
+    logout_user()
+    session.clear()
     session["guest"] = True
     session["guest_name"] = "Guest"
     return redirect(url_for("dashboard"))
@@ -341,12 +343,17 @@ def get_current_user():
             "email": current_user.email,
             "university": current_user.university or "—"
         })
+    if session.get("guest"):
+        return jsonify({
+            "name": "Guest",
+            "email": "Guest mode",
+            "university": "—"
+        })
     return jsonify({
         "name": "Guest",
         "email": "",
         "university": "—"
     })
-
 @app.route("/clear_history", methods=["POST"])
 def clear_history():
     if current_user.is_authenticated:

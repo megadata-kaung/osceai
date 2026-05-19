@@ -6,51 +6,142 @@
     <title>OsceAI - Pre Simulation Check</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <div class="check-container">
+<body class="dashboard-body">
 
-        <div class="check-header">
-            <h2>Before You Begin</h2>
-            <p>Please confirm the following before starting your simulation</p>
-            <div class="case-badge-large" id="caseLabel"></div>
+    <div class="dashboard-layout">
+
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=home'">
+                    <span class="sidebar-icon">🏠</span>
+                    <span class="sidebar-label">Home</span>
+                </button>
+                <button class="sidebar-item active"
+                        onclick="window.location.href='/dashboard?view=cases'">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-label">OSCE Cases</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/mock_exam'">
+                    <span class="sidebar-icon">🏥</span>
+                    <span class="sidebar-label">Mock Exam</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=profile'">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-label">Profile</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-logout">
+                    <span>⬅️</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <div class="dashboard-main">
+
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        <a href="/dashboard?view=home">Home</a>
+                        <span>/</span>
+                        <a href="/dashboard?view=cases">OSCE Cases</a>
+                        <span>/</span>
+                        <span class="breadcrumb-active" id="breadcrumbCase">
+                            Pre Check
+                        </span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-tabs">
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=home'">
+                            Home
+                        </button>
+                        <button class="topbar-tab active"
+                                onclick="window.location.href='/dashboard?view=cases'">
+                            OSCE Cases
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/mock_exam'">
+                            Mock Exam
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=profile'">
+                            Profile
+                        </button>
+                    </div>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="topbarAvatar">S</div>
+                        <span id="topbarName">Student</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <div class="check-container" style="margin:0 auto; max-width:700px;">
+
+                    <div class="check-header">
+                        <h2>Before You Begin</h2>
+                        <p>Please confirm the following before starting your simulation</p>
+                        <div class="case-badge-large" id="caseLabel"></div>
+                    </div>
+
+                    <div class="check-body">
+
+                        <div class="check-section">
+                            <h3>Infection Control</h3>
+                            <label class="check-item">
+                                <input type="checkbox" id="check1"
+                                       onchange="updateButton()"/>
+                                <span>I have washed my hands and used appropriate hand sanitiser</span>
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" id="check2"
+                                       onchange="updateButton()"/>
+                                <span>I have donned appropriate PPE, gloves or apron if required</span>
+                            </label>
+                        </div>
+
+                        <div class="check-section">
+                            <h3>Preparation</h3>
+                            <label class="check-item">
+                                <input type="checkbox" id="check3"
+                                       onchange="updateButton()"/>
+                                <span>I understand this is a history taking simulation</span>
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" id="check4"
+                                       onchange="updateButton()"/>
+                                <span>I am ready to introduce myself and begin the consultation</span>
+                            </label>
+                        </div>
+
+                        <div class="check-note">
+                            <p>These items cannot be assessed digitally and are based on your self declaration. Please answer honestly.</p>
+                        </div>
+
+                        <button class="btn" id="startBtn"
+                                onclick="startSimulation()" disabled
+                                style="width:100%; padding:16px; font-size:16px;">
+                            All confirmed - Start Simulation
+                        </button>
+
+                        <a href="/dashboard?view=cases"
+                           class="btn-secondary"
+                           style="display:block; text-align:center; margin-top:12px; padding:14px;">
+                            Back to Cases
+                        </a>
+
+                    </div>
+
+                </div>
+            </div>
         </div>
-
-        <div class="check-body">
-
-            <div class="check-section">
-                <h3>🧼 Infection Control</h3>
-                <label class="check-item">
-                    <input type="checkbox" id="check1" onchange="updateButton()">
-                    <span>I have washed my hands and used appropriate hand sanitiser</span>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="check2" onchange="updateButton()">
-                    <span>I have donned appropriate PPE (gloves, apron if required)</span>
-                </label>
-            </div>
-
-            <div class="check-section">
-                <h3>📋 Preparation</h3>
-                <label class="check-item">
-                    <input type="checkbox" id="check3" onchange="updateButton()">
-                    <span>I understand this is a history taking simulation</span>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="check4" onchange="updateButton()">
-                    <span>I am ready to introduce myself and begin the consultation</span>
-                </label>
-            </div>
-
-            <div class="check-note">
-                <p>⚠️ These items cannot be assessed digitally and are based on your self declaration. Please answer honestly.</p>
-            </div>
-
-            <button class="btn" id="startBtn" onclick="startSimulation()" disabled>
-                All confirmed — Start Simulation →
-            </button>
-
-        </div>
-
     </div>
 
     <script>
@@ -58,7 +149,26 @@
         const caseId = params.get("case_id");
         const caseLabel = params.get("case_label");
 
-        document.getElementById("caseLabel").textContent = caseLabel;
+        async function loadTopbarUser() {
+            try {
+                const res = await fetch("/get_current_user");
+                const data = await res.json();
+                const name = data.name || "Student";
+                document.getElementById("topbarName").textContent = name;
+                document.getElementById("topbarAvatar").textContent =
+                    name.charAt(0).toUpperCase();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        loadTopbarUser();
+
+        if (caseLabel) {
+            document.getElementById("caseLabel").textContent =
+                decodeURIComponent(caseLabel);
+            document.getElementById("breadcrumbCase").textContent =
+                decodeURIComponent(caseLabel);
+        }
 
         function updateButton() {
             const allChecked =
@@ -78,9 +188,11 @@
             };
             sessionStorage.setItem("preChecks", JSON.stringify(preChecks));
             sessionStorage.setItem("caseId", caseId);
-            sessionStorage.setItem("caseLabel", caseLabel);
-            window.location.href = `/simulation?case_id=${caseId}&case_label=${encodeURIComponent(caseLabel)}`;
+            sessionStorage.setItem("caseLabel", decodeURIComponent(caseLabel));
+            window.location.href =
+                `/simulation?case_id=${caseId}&case_label=${caseLabel}`;
         }
     </script>
+
 </body>
 </html>

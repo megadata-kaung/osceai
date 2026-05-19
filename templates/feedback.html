@@ -6,76 +6,174 @@
     <title>OsceAI - Results</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <div class="feedback-container">
+<body class="dashboard-body">
 
-        <div class="feedback-header">
-            <h2>OsceAI — Results & Feedback</h2>
-            <div class="case-badge-large" id="caseLabel"></div>
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard'">
+                    <span class="sidebar-icon">🏠</span>
+                    <span class="sidebar-label">Home</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=cases'">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-label">OSCE Cases</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/mock_exam'">
+                    <span class="sidebar-icon">🏥</span>
+                    <span class="sidebar-label">Mock Exam</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=profile'">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-label">Profile</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-logout">
+                    <span>⬅️</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="dashboard-main">
+
+            <!-- Topbar -->
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        <a href="/dashboard">Home</a>
+                        <span>/</span>
+                        <a href="/dashboard?view=cases">OSCE Cases</a>
+                        <span>/</span>
+                        <span class="breadcrumb-active">Results</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-tabs">
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard'">
+                            Home
+                        </button>
+                        <button class="topbar-tab active"
+                                onclick="window.location.href='/dashboard?view=cases'">
+                            OSCE Cases
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/mock_exam'">
+                            Mock Exam
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=profile'">
+                            Profile
+                        </button>
+                    </div>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="topbarAvatar">S</div>
+                        <span id="topbarName">Student</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+                <div style="max-width:900px; margin:0 auto;">
+
+                    <div class="view-header">
+                        <h1>Results & Feedback</h1>
+                        <div class="case-badge-large" id="caseLabel"
+                             style="display:inline-block;">
+                        </div>
+                    </div>
+
+                    <div id="loadingState" class="loading-panel">
+                        <p>⏳ Generating your results and feedback...
+                        this may take a few seconds.</p>
+                    </div>
+
+                    <div id="resultsBody" style="display:none;">
+
+                        <!-- Overall Score -->
+                        <div class="overall-score-card">
+                            <h3>Overall Score</h3>
+                            <div class="big-score" id="bigScore">0</div>
+                            <div class="score-out-of" id="scoreOutOf">
+                                out of 0
+                            </div>
+                            <div class="global-impression"
+                                 id="globalImpression">
+                                Loading...
+                            </div>
+                            <div id="correctDiagnosis"
+                                 class="correct-diagnosis"></div>
+                        </div>
+
+                        <!-- Score Breakdown -->
+                        <div class="score-breakdown-row">
+                            <div class="score-mini-card">
+                                <h4>Checklist</h4>
+                                <div class="score-mini-number"
+                                     id="checklistScore">0</div>
+                                <div class="score-mini-total"
+                                     id="checklistTotal">out of 0</div>
+                            </div>
+                            <div class="score-mini-card">
+                                <h4>Viva Questions</h4>
+                                <div class="score-mini-number"
+                                     id="vivaScoreDisplay">0</div>
+                                <div class="score-mini-total"
+                                     id="vivaTotalDisplay">out of 0</div>
+                            </div>
+                            <div class="score-mini-card">
+                                <h4>Pre/Post Checks</h4>
+                                <div class="score-mini-number">8</div>
+                                <div class="score-mini-total">out of 8</div>
+                            </div>
+                        </div>
+
+                        <!-- AI Feedback -->
+                        <div class="feedback-section">
+                            <h3>📝 Examiner Feedback</h3>
+                            <div class="ai-feedback-box"
+                                 id="aiFeedback">
+                                Generating feedback...
+                            </div>
+                        </div>
+
+                        <!-- Checklist Results -->
+                        <div class="feedback-section">
+                            <h3>✅ History Taking Checklist</h3>
+                            <div id="checklistResults"></div>
+                        </div>
+
+                        <!-- Viva Results -->
+                        <div class="feedback-section">
+                            <h3>🎓 Viva Question Results</h3>
+                            <div id="vivaResults"></div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="feedback-footer">
+                            <a href="/dashboard?view=cases" class="btn">
+                                Try Another Case
+                            </a>
+                            <a href="/dashboard" class="btn-secondary">
+                                Back to Dashboard
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div id="loadingState" class="loading-panel">
-            <p>Generating your results and feedback...</p>
-        </div>
-
-        <div id="resultsBody" style="display:none;">
-
-            <!-- Overall Score -->
-            <div class="overall-score-card">
-                <h3>Overall Score</h3>
-                <div class="big-score" id="bigScore">0</div>
-                <div class="score-out-of" id="scoreOutOf">out of 0</div>
-                <div class="global-impression" id="globalImpression">Loading...</div>
-                <div id="correctDiagnosis" class="correct-diagnosis"></div>
-            </div>
-
-            <!-- Score Breakdown -->
-            <div class="score-breakdown-row">
-                <div class="score-mini-card">
-                    <h4>Checklist</h4>
-                    <div class="score-mini-number" id="checklistScore">0</div>
-                    <div class="score-mini-total" id="checklistTotal">out of 0</div>
-                </div>
-                <div class="score-mini-card">
-                    <h4>Viva Questions</h4>
-                    <div class="score-mini-number" id="vivaScore">0</div>
-                    <div class="score-mini-total" id="vivaTotal">out of 0</div>
-                </div>
-                <div class="score-mini-card">
-                    <h4>Pre/Post Checks</h4>
-                    <div class="score-mini-number" id="checksScore">8</div>
-                    <div class="score-mini-total">out of 8</div>
-                </div>
-            </div>
-
-            <!-- AI Feedback -->
-            <div class="feedback-section">
-                <h3>📝 Examiner Feedback</h3>
-                <div class="ai-feedback-box" id="aiFeedback">
-                    Generating feedback...
-                </div>
-            </div>
-
-            <!-- Checklist Results -->
-            <div class="feedback-section">
-                <h3>✅ History Taking Checklist</h3>
-                <div id="checklistResults"></div>
-            </div>
-
-            <!-- Viva Results -->
-            <div class="feedback-section">
-                <h3>🎓 Viva Question Results</h3>
-                <div id="vivaResults"></div>
-            </div>
-
-            <!-- Footer Buttons -->
-            <div class="feedback-footer">
-                <a href="/simulation" class="btn">Try Another Case</a>
-                <a href="/" class="btn-secondary">Back to Home</a>
-            </div>
-
-        </div>
-
     </div>
 
     <script>
@@ -83,28 +181,28 @@
         const caseId = params.get("case_id") ||
                        sessionStorage.getItem("caseId") ||
                        "abdominal_1";
-        const caseLabel = sessionStorage.getItem("caseLabel") || "Clinical Case";
+        const caseLabel = sessionStorage.getItem("caseLabel") ||
+                          "Clinical Case";
 
         document.getElementById("caseLabel").textContent =
             decodeURIComponent(caseLabel);
 
-        const vivaScores = JSON.parse(sessionStorage.getItem("vivaScores") || "[]");
-        const vivaPointResults = JSON.parse(sessionStorage.getItem("vivaPointResults") || "[]");
-        const vivaQuestions = JSON.parse(sessionStorage.getItem("vivaQuestions") || "[]");
-        const vivaAnswers = JSON.parse(sessionStorage.getItem("vivaAnswers") || "[]");
-        const conversation = JSON.parse(sessionStorage.getItem("conversation") || "[]");
-        const preChecks = JSON.parse(sessionStorage.getItem("preChecks") || "{}");
-        const postChecks = JSON.parse(sessionStorage.getItem("postChecks") || "{}");
+        const vivaScores = JSON.parse(
+            sessionStorage.getItem("vivaScores") || "[]");
+        const vivaPointResults = JSON.parse(
+            sessionStorage.getItem("vivaPointResults") || "[]");
+        const vivaQuestions = JSON.parse(
+            sessionStorage.getItem("vivaQuestions") || "[]");
+        const vivaAnswers = JSON.parse(
+            sessionStorage.getItem("vivaAnswers") || "[]");
+        const conversation = JSON.parse(
+            sessionStorage.getItem("conversation") || "[]");
 
         const sectionLabels = {
             opening_consultation: "Opening the consultation",
             presenting_complaint: "Presenting complaint",
             history_of_complaint: "History of presenting complaint",
-            history_of_complaint_cough: "History of presenting complaint (cough)",
-            history_of_complaint_dyspnoea: "History of presenting complaint (dyspnoea)",
-            systemic_enquiry: "Systemic enquiry",
             systems_review: "Systems review",
-            travel_history: "Travel history",
             past_medical_history: "Past medical history",
             drug_history: "Drug history",
             family_history: "Family history",
@@ -113,8 +211,29 @@
             communication_skills: "Key communication skills"
         };
 
+        const gradeColors = {
+            "Excellent": "#1e8449",
+            "Pass": "#2c7be5",
+            "Borderline": "#f6a623",
+            "Fail": "#e74c3c"
+        };
+
+        async function loadTopbarUser() {
+            try {
+                const res = await fetch("/get_current_user");
+                const data = await res.json();
+                const name = data.name || "Student";
+                document.getElementById("topbarName").textContent = name;
+                document.getElementById("topbarAvatar").textContent =
+                    name.charAt(0).toUpperCase();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
         async function loadResults() {
             try {
+                // Step 1 — evaluate checklist
                 const checkRes = await fetch("/evaluate_checklist", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -125,6 +244,17 @@
                 });
                 const checkData = await checkRes.json();
 
+                // Step 2 — calculate scores
+                const vivaTotal = vivaScores.reduce((a, b) => a + b, 0);
+                const vivaPossible = vivaQuestions.reduce(
+                    (a, q) => a + q.max_marks, 0);
+                const checkTotal = checkData.total_achieved;
+                const checkPossible = checkData.total_possible;
+                const prePostScore = 8;
+                const overallTotal = vivaTotal + checkTotal + prePostScore;
+                const overallPossible = vivaPossible + checkPossible + 8;
+
+                // Step 3 — generate AI feedback
                 const feedbackRes = await fetch("/generate_feedback", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -132,25 +262,25 @@
                         case_id: caseId,
                         checklist_results: checkData,
                         viva_scores: vivaScores,
-                        viva_questions: vivaQuestions
+                        viva_questions: vivaQuestions,
+                        total_score: overallTotal,
+                        total_possible: overallPossible
                     })
                 });
                 const feedbackData = await feedbackRes.json();
 
-                const vivaTotal = vivaScores.reduce((a, b) => a + b, 0);
-                const vivaPossible = vivaQuestions.reduce((a, q) =>
-                    a + q.max_marks, 0);
-                const checkTotal = checkData.total_achieved;
-                const checkPossible = checkData.total_possible;
-                const prePostScore = 8;
-                const overallTotal = vivaTotal + checkTotal + prePostScore;
-                const overallPossible = vivaPossible + checkPossible + 8;
+                // Step 4 — render everything
+                document.getElementById("loadingState").style.display =
+                    "none";
+                document.getElementById("resultsBody").style.display =
+                    "block";
 
-                document.getElementById("loadingState").style.display = "none";
-                document.getElementById("resultsBody").style.display = "block";
-
-                renderOverallScore(overallTotal, overallPossible, feedbackData);
-                renderScoreBreakdown(checkTotal, checkPossible, vivaTotal, vivaPossible);
+                renderOverallScore(
+                    overallTotal, overallPossible, feedbackData
+                );
+                renderScoreBreakdown(
+                    checkTotal, checkPossible, vivaTotal, vivaPossible
+                );
                 renderAIFeedback(feedbackData.feedback);
                 renderChecklistResults(checkData);
                 renderVivaResults();
@@ -158,29 +288,30 @@
             } catch (err) {
                 console.error("Error loading results:", err);
                 document.getElementById("loadingState").innerHTML =
-                    "<p>Error generating results. Please try again.</p>";
+                    `<p>❌ Error generating results. Please try again.</p>
+                     <a href="/dashboard" class="btn"
+                        style="margin-top:16px;">
+                         Back to Dashboard
+                     </a>`;
             }
         }
 
         function renderOverallScore(total, possible, feedbackData) {
             document.getElementById("bigScore").textContent = total;
-            document.getElementById("scoreOutOf").textContent = `out of ${possible}`;
+            document.getElementById("scoreOutOf").textContent =
+                `out of ${possible}`;
 
             const pct = possible > 0 ? (total / possible) * 100 : 0;
             let grade, gradeClass;
 
             if (pct >= 80) {
-                grade = "🏆 Excellent";
-                gradeClass = "excellent";
+                grade = "🏆 Excellent"; gradeClass = "excellent";
             } else if (pct >= 65) {
-                grade = "✅ Pass";
-                gradeClass = "pass";
+                grade = "✅ Pass"; gradeClass = "pass";
             } else if (pct >= 50) {
-                grade = "⚠️ Borderline";
-                gradeClass = "borderline";
+                grade = "⚠️ Borderline"; gradeClass = "borderline";
             } else {
-                grade = "❌ Fail";
-                gradeClass = "fail";
+                grade = "❌ Fail"; gradeClass = "fail";
             }
 
             const impression = document.getElementById("globalImpression");
@@ -190,16 +321,22 @@
             if (feedbackData.correct_diagnosis) {
                 document.getElementById("correctDiagnosis").innerHTML =
                     `<p style="margin-top:12px; color:#555; font-size:15px;">
-                    <strong>Correct diagnosis:</strong> ${feedbackData.correct_diagnosis}
-                    </p>`;
+                    <strong>Correct diagnosis:</strong>
+                    ${feedbackData.correct_diagnosis}</p>`;
             }
         }
 
-        function renderScoreBreakdown(checkTotal, checkPossible, vivaTotal, vivaPossible) {
-            document.getElementById("checklistScore").textContent = checkTotal;
-            document.getElementById("checklistTotal").textContent = `out of ${checkPossible}`;
-            document.getElementById("vivaScore").textContent = vivaTotal;
-            document.getElementById("vivaTotal").textContent = `out of ${vivaPossible}`;
+        function renderScoreBreakdown(
+            checkTotal, checkPossible, vivaTotal, vivaPossible
+        ) {
+            document.getElementById("checklistScore").textContent =
+                checkTotal;
+            document.getElementById("checklistTotal").textContent =
+                `out of ${checkPossible}`;
+            document.getElementById("vivaScoreDisplay").textContent =
+                vivaTotal;
+            document.getElementById("vivaTotalDisplay").textContent =
+                `out of ${vivaPossible}`;
         }
 
         function renderAIFeedback(feedback) {
@@ -208,25 +345,28 @@
         }
 
         function renderChecklistResults(checkData) {
-            const container = document.getElementById("checklistResults");
+            const container =
+                document.getElementById("checklistResults");
             container.innerHTML = "";
 
-            for (const [sectionKey, sectionData] of Object.entries(checkData.sections)) {
+            for (const [sectionKey, sectionData] of
+                Object.entries(checkData.sections)) {
+
                 const label = sectionLabels[sectionKey] || sectionKey;
                 const achieved = sectionData.section_achieved;
                 const possible = sectionData.section_possible;
 
                 const titleDiv = document.createElement("div");
                 titleDiv.className = "checklist-section-title";
-                titleDiv.innerHTML = `${label}
-                    <span style="font-weight:normal; color:#888;">
-                    (${achieved}/${possible})
-                    </span>`;
+                titleDiv.innerHTML =
+                    `${label} <span style="font-weight:normal;
+                    color:#888;">(${achieved}/${possible})</span>`;
                 container.appendChild(titleDiv);
 
                 sectionData.items.forEach(item => {
                     const div = document.createElement("div");
-                    div.className = `checklist-item ${item.achieved ? "achieved" : "missed"}`;
+                    div.className =
+                        `checklist-item ${item.achieved ? "achieved" : "missed"}`;
                     div.innerHTML = `
                         <span>${item.achieved ? "✅" : "❌"}</span>
                         <span>${item.item}</span>
@@ -246,7 +386,8 @@
                 const points = vivaPointResults[index] || [];
                 const answer = vivaAnswers[index] || "No answer recorded";
                 const pct = maxMarks > 0 ? (score / maxMarks) * 100 : 0;
-                const scoreClass = pct >= 75 ? "good" : pct >= 50 ? "average" : "poor";
+                const scoreClass =
+                    pct >= 75 ? "good" : pct >= 50 ? "average" : "poor";
 
                 const block = document.createElement("div");
                 block.className = "viva-question-block";
@@ -264,11 +405,16 @@
 
                 points.forEach(point => {
                     const pointDiv = document.createElement("div");
-                    pointDiv.className = `point-item ${point.achieved ? "achieved" : "missed"}`;
+                    pointDiv.className =
+                        `point-item ${point.achieved ? "achieved" : "missed"}`;
                     pointDiv.innerHTML = `
-                        <span class="point-icon">${point.achieved ? "✅" : "❌"}</span>
+                        <span class="point-icon">
+                            ${point.achieved ? "✅" : "❌"}
+                        </span>
                         <span class="point-text">${point.point}</span>
-                        <span class="point-mark">${point.achieved ? "+1" : "0"}</span>
+                        <span class="point-mark">
+                            ${point.achieved ? "+1" : "0"}
+                        </span>
                     `;
                     block.appendChild(pointDiv);
                 });
@@ -277,7 +423,9 @@
             });
         }
 
+        loadTopbarUser();
         loadResults();
     </script>
+
 </body>
 </html>

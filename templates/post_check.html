@@ -6,59 +6,172 @@
     <title>OsceAI - Post Simulation Check</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <div class="check-container">
+<body class="dashboard-body">
 
-        <div class="check-header">
-            <h2>Before You Leave the Consultation</h2>
-            <p>Please confirm the following closing steps</p>
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard'">
+                    <span class="sidebar-icon">🏠</span>
+                    <span class="sidebar-label">Home</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=cases'">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-label">OSCE Cases</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/mock_exam'">
+                    <span class="sidebar-icon">🏥</span>
+                    <span class="sidebar-label">Mock Exam</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=profile'">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-label">Profile</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-logout">
+                    <span>⬅️</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="dashboard-main">
+
+            <!-- Topbar -->
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        <a href="/dashboard">Home</a>
+                        <span>/</span>
+                        <a href="/dashboard?view=cases">OSCE Cases</a>
+                        <span>/</span>
+                        <span class="breadcrumb-active">Post Check</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-tabs">
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard'">
+                            Home
+                        </button>
+                        <button class="topbar-tab active"
+                                onclick="window.location.href='/dashboard?view=cases'">
+                            OSCE Cases
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/mock_exam'">
+                            Mock Exam
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=profile'">
+                            Profile
+                        </button>
+                    </div>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="topbarAvatar">S</div>
+                        <span id="topbarName">Student</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+                <div style="max-width:700px; margin:0 auto;">
+
+                    <div class="view-header">
+                        <h1>Post Consultation Check</h1>
+                        <p>Please confirm the following closing steps</p>
+                    </div>
+
+                    <div class="check-body">
+
+                        <div class="check-section">
+                            <h3>📝 Closing the Consultation</h3>
+                            <label class="check-item">
+                                <input type="checkbox" id="post1"
+                                       onchange="updateButton()">
+                                <span>I summarised the key history points
+                                back to the patient</span>
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" id="post2"
+                                       onchange="updateButton()">
+                                <span>I asked the patient if there was
+                                anything I missed</span>
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" id="post3"
+                                       onchange="updateButton()">
+                                <span>I thanked the patient for their time</span>
+                            </label>
+                        </div>
+
+                        <div class="check-section">
+                            <h3>🧼 Infection Control</h3>
+                            <label class="check-item">
+                                <input type="checkbox" id="post4"
+                                       onchange="updateButton()">
+                                <span>I disposed of PPE appropriately</span>
+                            </label>
+                            <label class="check-item">
+                                <input type="checkbox" id="post5"
+                                       onchange="updateButton()">
+                                <span>I washed my hands after the
+                                consultation</span>
+                            </label>
+                        </div>
+
+                        <div class="check-note">
+                            <p>⚠️ These items are based on your self
+                            declaration. Please answer honestly.</p>
+                        </div>
+
+                        <button class="btn" id="nextBtn"
+                                onclick="goToExaminer()" disabled
+                                style="width:100%; padding:16px;
+                                font-size:16px;">
+                            Confirmed — Proceed to Examiner →
+                        </button>
+
+                        <a href="/dashboard?view=cases"
+                           class="btn-secondary"
+                           style="display:block; text-align:center;
+                           margin-top:12px; padding:14px;">
+                            ← Back to Cases
+                        </a>
+
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="check-body">
-
-            <div class="check-section">
-                <h3>📝 Closing the Consultation</h3>
-                <label class="check-item">
-                    <input type="checkbox" id="post1" onchange="updateButton()">
-                    <span>I summarised the key history points back to the patient</span>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="post2" onchange="updateButton()">
-                    <span>I asked the patient if there was anything I missed</span>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="post3" onchange="updateButton()">
-                    <span>I thanked the patient for their time</span>
-                </label>
-            </div>
-
-            <div class="check-section">
-                <h3>🧼 Infection Control</h3>
-                <label class="check-item">
-                    <input type="checkbox" id="post4" onchange="updateButton()">
-                    <span>I disposed of PPE appropriately</span>
-                </label>
-                <label class="check-item">
-                    <input type="checkbox" id="post5" onchange="updateButton()">
-                    <span>I washed my hands after the consultation</span>
-                </label>
-            </div>
-
-            <div class="check-note">
-                <p>⚠️ These items are based on your self declaration. Please answer honestly.</p>
-            </div>
-
-            <button class="btn" id="nextBtn" onclick="goToExaminer()" disabled>
-                Confirmed — Proceed to Examiner →
-            </button>
-
-        </div>
-
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const caseId = params.get("case_id");
+
+        async function loadTopbarUser() {
+            try {
+                const res = await fetch("/get_current_user");
+                const data = await res.json();
+                const name = data.name || "Student";
+                document.getElementById("topbarName").textContent = name;
+                document.getElementById("topbarAvatar").textContent =
+                    name.charAt(0).toUpperCase();
+            } catch (err) {
+                console.error(err);
+            }
+        }
+        loadTopbarUser();
 
         function updateButton() {
             const allChecked =
@@ -78,9 +191,11 @@
                 disposed_ppe: true,
                 washed_hands_after: true
             };
-            sessionStorage.setItem("postChecks", JSON.stringify(postChecks));
+            sessionStorage.setItem("postChecks",
+                JSON.stringify(postChecks));
             window.location.href = `/examiner?case_id=${caseId}`;
         }
     </script>
+
 </body>
 </html>

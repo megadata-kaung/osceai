@@ -6,236 +6,491 @@
     <title>OsceAI — Mock OSCE Exam</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-    <div class="mock-container">
+<body class="dashboard-body">
 
-        <!-- Setup Screen -->
-        <div id="mockSetup" class="mock-setup">
-            <div class="mock-setup-card">
-                <h2>🏥 Mock OSCE Exam</h2>
-                <p>Simulate a real OSCE exam with timed cases and automatic progression</p>
+    <div class="dashboard-layout">
 
-                <div class="mock-rules">
-                    <h3>Exam Rules</h3>
-                    <div class="rule-item">⏱️ 8 minutes for history taking</div>
-                    <div class="rule-item">📋 3 minutes for viva questions</div>
-                    <div class="rule-item">⏸️ 20 second break between cases</div>
-                    <div class="rule-item">🔀 Cases selected randomly</div>
-                    <div class="rule-item">📊 Full results shown at end</div>
-                </div>
-
-                <h3>How many cases?</h3>
-                <div class="case-count-grid">
-                    <button class="case-count-btn"
-                            onclick="selectCaseCount(1, this)">
-                        1 Case<br><small>~11 mins</small>
-                    </button>
-                    <button class="case-count-btn"
-                            onclick="selectCaseCount(3, this)">
-                        3 Cases<br><small>~35 mins</small>
-                    </button>
-                    <button class="case-count-btn"
-                            onclick="selectCaseCount(5, this)">
-                        5 Cases<br><small>~58 mins</small>
-                    </button>
-                    <button class="case-count-btn"
-                            onclick="selectCaseCount(9, this)">
-                        All 9<br><small>~105 mins</small>
-                    </button>
-                </div>
-
-                <button class="btn" id="startMockBtn"
-                        onclick="startMockExam()" disabled>
-                    Start Mock Exam →
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">OsceAI</div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard'">
+                    <span class="sidebar-icon">🏠</span>
+                    <span class="sidebar-label">Home</span>
                 </button>
-
-                <a href="/dashboard"
-                   class="btn-secondary"
-                   style="display:block; text-align:center; margin-top:12px;">
-                    ← Back to Dashboard
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=cases'">
+                    <span class="sidebar-icon">📋</span>
+                    <span class="sidebar-label">OSCE Cases</span>
+                </button>
+                <button class="sidebar-item active">
+                    <span class="sidebar-icon">🏥</span>
+                    <span class="sidebar-label">Mock Exam</span>
+                </button>
+                <button class="sidebar-item"
+                        onclick="window.location.href='/dashboard?view=profile'">
+                    <span class="sidebar-icon">👤</span>
+                    <span class="sidebar-label">Profile</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="/logout" class="sidebar-logout">
+                    <span>⬅️</span>
+                    <span>Logout</span>
                 </a>
             </div>
-        </div>
+        </aside>
 
-        <!-- Exam Screen -->
-        <div id="mockExam" style="display:none;">
+        <!-- Main Content -->
+        <div class="dashboard-main">
 
-            <div class="mock-header">
-                <div class="mock-header-left">
-                    <span class="mock-badge">🏥 Mock OSCE</span>
-                    <span id="mockCaseCounter" class="mock-case-counter">
-                        Case 1 of 3
-                    </span>
-                </div>
-                <div class="mock-timer-display" id="mockTimerDisplay">
-                    08:00
-                </div>
-                <div class="mock-header-right">
-                    <span id="mockPhaseLabel" class="mock-phase-label">
-                        History Taking
-                    </span>
-                    <button class="btn-quit-mock" onclick="confirmQuit()">
-                        ✕ Quit Exam
-                    </button>
-                </div>
-            </div>
-
-            <div class="mock-timer-bar-bg">
-                <div class="mock-timer-bar-fill" id="mockTimerBarFill"></div>
-            </div>
-
-            <div class="mock-body">
-
-                <div class="chat-panel" id="mockChatPanel">
-                    <div class="chat-box" id="mockChatBox">
-                        <div class="message patient">
-                            Hello, I am your patient today.
-                            Please go ahead and ask me about my symptoms.
-                        </div>
-                    </div>
-                    <div class="input-area" id="mockInputArea">
-                        <input type="text" id="mockUserInput"
-                               placeholder="Type your question or use the mic..."
-                               onkeypress="handleMockEnter(event)"/>
-                        <button class="btn-mic" id="mockMicBtn"
-                                onclick="toggleMockMic()">🎤</button>
-                        <button class="btn-send"
-                                onclick="sendMockMessage()">Send</button>
+            <!-- Topbar — FIXED with tabs -->
+            <header class="dashboard-topbar">
+                <div class="topbar-left">
+                    <div class="breadcrumb">
+                        <a href="/dashboard">Home</a>
+                        <span>/</span>
+                        <span class="breadcrumb-active">Mock OSCE Exam</span>
                     </div>
                 </div>
-
-                <div class="right-panel">
-                    <div class="info-card">
-                        <h3>👤 Patient Info</h3>
-                        <div class="info-row">
-                            <span class="info-label">Name</span>
-                            <span class="info-value" id="mockInfoName">—</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Age</span>
-                            <span class="info-value" id="mockInfoAge">—</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Location</span>
-                            <span class="info-value" id="mockInfoLocation">—</span>
-                        </div>
-                        <div class="info-row">
-                            <span class="info-label">Complaint</span>
-                            <span class="info-value" id="mockInfoComplaint">—</span>
-                        </div>
-                    </div>
-                    <div class="notes-card">
-                        <h3>📝 Notes</h3>
-                        <textarea id="mockNotes"
-                                  placeholder="Quick notes..."
-                                  rows="8"></textarea>
-                        <button class="btn-clear-notes"
-                                onclick="document.getElementById('mockNotes').value=''">
-                            Clear notes
+                <div class="topbar-right">
+                    <div class="topbar-tabs">
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard'">
+                            Home
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=cases'">
+                            OSCE Cases
+                        </button>
+                        <button class="topbar-tab active">
+                            Mock Exam
+                        </button>
+                        <button class="topbar-tab"
+                                onclick="window.location.href='/dashboard?view=profile'">
+                            Profile
                         </button>
                     </div>
+                    <div class="topbar-user">
+                        <div class="topbar-avatar" id="topbarAvatar">S</div>
+                        <span id="topbarName">Student</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="dashboard-content">
+
+                <!-- Setup Screen -->
+                <div id="mockSetup">
+                    <div class="view-header">
+                        <h1>🏥 Mock OSCE Exam</h1>
+                        <p>Simulate a real OSCE exam with timed cases
+                        and automatic progression</p>
+                    </div>
+
+                    <div class="mock-setup-grid">
+
+                        <div class="mock-info-card">
+                            <h3>📋 Exam Rules</h3>
+                            <div class="mock-rules">
+                                <div class="rule-item">
+                                    <span class="rule-icon">⏱️</span>
+                                    <div><strong>2 minutes</strong> reading
+                                    candidate instructions</div>
+                                </div>
+                                <div class="rule-item">
+                                    <span class="rule-icon">🗣️</span>
+                                    <div><strong>8 minutes</strong> for
+                                    history taking</div>
+                                </div>
+                                <div class="rule-item">
+                                    <span class="rule-icon">📋</span>
+                                    <div><strong>3 minutes</strong> for
+                                    viva questions</div>
+                                </div>
+                                <div class="rule-item">
+                                    <span class="rule-icon">⏸️</span>
+                                    <div><strong>20 seconds</strong> break
+                                    between cases</div>
+                                </div>
+                                <div class="rule-item">
+                                    <span class="rule-icon">🔀</span>
+                                    <div>Cases selected
+                                    <strong>randomly</strong></div>
+                                </div>
+                                <div class="rule-item">
+                                    <span class="rule-icon">📊</span>
+                                    <div><strong>Full results</strong> shown
+                                    at end</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mock-info-card">
+                            <h3>🎯 How many cases?</h3>
+                            <div class="case-count-grid">
+                                <button class="case-count-btn"
+                                        onclick="selectCaseCount(1, this)">
+                                    <div class="case-count-number">1</div>
+                                    <div class="case-count-label">Case</div>
+                                    <div class="case-count-time">~11 mins</div>
+                                </button>
+                                <button class="case-count-btn"
+                                        onclick="selectCaseCount(3, this)">
+                                    <div class="case-count-number">3</div>
+                                    <div class="case-count-label">Cases</div>
+                                    <div class="case-count-time">~35 mins</div>
+                                </button>
+                                <button class="case-count-btn"
+                                        onclick="selectCaseCount(5, this)">
+                                    <div class="case-count-number">5</div>
+                                    <div class="case-count-label">Cases</div>
+                                    <div class="case-count-time">~58 mins</div>
+                                </button>
+                                <button class="case-count-btn"
+                                        onclick="selectCaseCount(9, this)">
+                                    <div class="case-count-number">9</div>
+                                    <div class="case-count-label">All Cases</div>
+                                    <div class="case-count-time">~105 mins</div>
+                                </button>
+                            </div>
+
+                            <button class="btn" id="startMockBtn"
+                                    onclick="startMockExam()" disabled
+                                    style="width:100%; margin-top:20px;
+                                    padding:16px; font-size:16px;">
+                                Start Mock Exam →
+                            </button>
+                            <a href="/dashboard" class="btn-secondary"
+                               style="display:block; text-align:center;
+                               margin-top:12px; padding:14px;">
+                                ← Back to Dashboard
+                            </a>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Candidate Instructions Screen -->
+                <div id="mockInstructions" style="display:none;">
+                    <div class="view-header">
+                        <div class="mock-phase-header">
+                            <span class="mock-badge">📖 Reading Time</span>
+                            <span id="instructionsCaseCounter"
+                                  class="mock-case-counter">
+                                Case 1 of 3
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="instructions-layout">
+                        <div class="instructions-left">
+                            <div class="candidate-title">
+                                <h2>Candidate Instructions</h2>
+                                <span class="candidate-case-badge"
+                                      id="instructionsCaseBadge"></span>
+                            </div>
+                            <div class="candidate-instructions-card"
+                                 style="margin-top:16px;">
+                                <ul class="candidate-list"
+                                    id="instructionsList">
+                                    <li>Loading...</li>
+                                </ul>
+                            </div>
+                            <div class="instructions-note"
+                                 style="margin-top:16px;">
+                                ⏱️ The simulation will start automatically
+                                when the timer reaches zero
+                            </div>
+                        </div>
+
+                        <div class="instructions-right">
+                            <div class="mock-info-card"
+                                 style="text-align:center;">
+                                <h3>Reading Time</h3>
+                                <div class="instructions-timer-display"
+                                     id="instructionsTimer">02:00</div>
+                                <p class="instructions-timer-label">
+                                    Time remaining to read
+                                </p>
+                                <button class="btn"
+                                        onclick="skipInstructions()"
+                                        style="width:100%; margin-top:16px;">
+                                    Skip → Start Now
+                                </button>
+                                <button class="btn-quit-mock"
+                                        onclick="confirmQuit()"
+                                        style="width:100%; margin-top:10px;
+                                        display:block; text-align:center;">
+                                    ✕ Quit Exam
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exam Screen -->
+                <div id="mockExam" style="display:none;">
+                    <div class="mock-exam-header">
+                        <div class="mock-exam-header-left">
+                            <span class="mock-badge">🏥 Mock OSCE</span>
+                            <span id="mockCaseCounter"
+                                  class="mock-case-counter">
+                                Case 1 of 3
+                            </span>
+                        </div>
+                        <div class="mock-exam-timer">
+                            <div class="mock-timer-display"
+                                 id="mockTimerDisplay">08:00</div>
+                            <div class="mock-timer-sub"
+                                 id="mockPhaseLabel">History Taking</div>
+                        </div>
+                        <div class="mock-exam-header-right">
+                            <button class="btn-secondary"
+                                    onclick="skipMockHistory()">
+                                Skip History
+                            </button>
+                            <button class="btn-quit-mock"
+                                    onclick="confirmQuit()">
+                                ✕ Quit Exam
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mock-timer-bar-bg">
+                        <div class="mock-timer-bar-fill"
+                             id="mockTimerBarFill"></div>
+                    </div>
+
+                    <div id="mockModeTabs" class="sim-tabs mock-mode-tabs">
+                        <button class="sim-tab active" id="mockTabChat"
+                                onclick="switchMockMode('chat')">
+                            ðŸ’¬ Chat Mode
+                        </button>
+                        <button class="sim-tab" id="mockTabAvatar"
+                                onclick="switchMockMode('avatar')">
+                            ðŸŽ­ Avatar Mode
+                        </button>
+                    </div>
+
+                    <div class="mock-exam-body">
+                        <div class="chat-panel" id="mockChatPanel">
+                            <div class="chat-box" id="mockChatBox">
+                                <div class="message patient">
+                                    Hello, I am your patient today.
+                                    Please go ahead and ask me about
+                                    my symptoms.
+                                </div>
+                            </div>
+                            <div class="input-area">
+                                <input type="text" id="mockUserInput"
+                                       placeholder="Type your question
+                                       or use the mic..."
+                                       onkeypress="handleMockEnter(event)"/>
+                                <button class="btn-mic" id="mockMicBtn"
+                                        onclick="toggleMockMic()">🎤</button>
+                                <button class="btn-send"
+                                        onclick="sendMockMessage()">
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="avatar-panel" id="mockAvatarPanel"
+                             style="display:none;">
+                            <div class="avatar-container">
+                                <div class="avatar-wrapper"
+                                     id="mockAvatarWrapper">
+                                    <img id="mockAvatarImg" src=""
+                                         alt="Patient avatar"/>
+                                </div>
+                                <div class="avatar-name-tag"
+                                     id="mockAvatarNameTag">
+                                    Patient
+                                </div>
+                                <div class="avatar-speech-bubble"
+                                     id="mockAvatarSpeech">
+                                    Hello! Please go ahead and ask me about
+                                    my symptoms.
+                                </div>
+                                <div class="avatar-status"
+                                     id="mockAvatarStatus">
+                                    Waiting for your question...
+                                </div>
+                            </div>
+                            <div class="avatar-input-area">
+                                <div class="input-area">
+                                    <input type="text" id="mockAvatarInput"
+                                           placeholder="Type your question or use the mic..."
+                                           onkeypress="handleMockAvatarEnter(event)"/>
+                                    <button class="btn-mic"
+                                            id="mockAvatarMicBtn"
+                                            onclick="toggleMockAvatarMic()">
+                                        ðŸŽ¤
+                                    </button>
+                                    <button class="btn-send"
+                                            onclick="sendMockAvatarMessage()">
+                                        Send
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="right-panel">
+                            <div class="info-card">
+                                <h3>👤 Patient Info</h3>
+                                <div class="info-row">
+                                    <span class="info-label">Name</span>
+                                    <span class="info-value"
+                                          id="mockInfoName">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Age</span>
+                                    <span class="info-value"
+                                          id="mockInfoAge">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Location</span>
+                                    <span class="info-value"
+                                          id="mockInfoLocation">—</span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Complaint</span>
+                                    <span class="info-value"
+                                          id="mockInfoComplaint">—</span>
+                                </div>
+                            </div>
+                            <div class="notes-card">
+                                <h3>📝 Notes</h3>
+                                <textarea id="mockNotes"
+                                          placeholder="Quick notes..."
+                                          rows="8"></textarea>
+                                <button class="btn-clear-notes"
+                                        onclick="document.getElementById('mockNotes').value=''">
+                                    Clear notes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transition Screen -->
+                <div id="mockTransition" style="display:none;">
+                    <div class="transition-layout">
+                        <div class="transition-card-new">
+                            <div class="transition-icon"
+                                 id="transitionIcon">⏸️</div>
+                            <h2 id="transitionTitle">
+                                History Taking Complete!
+                            </h2>
+                            <p id="transitionMessage">
+                                Moving to viva questions in...
+                            </p>
+                            <div class="transition-countdown"
+                                 id="transitionCountdown">5</div>
+                            <button class="btn-secondary"
+                                    onclick="skipTransitionWait()">
+                                Skip Wait
+                            </button>
+                            <button class="btn-quit-mock"
+                                    onclick="confirmQuit()"
+                                    style="margin-top:24px;">
+                                ✕ Quit Exam
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Viva Screen -->
+                <div id="mockViva" style="display:none;">
+                    <div class="mock-exam-header">
+                        <div class="mock-exam-header-left">
+                            <span class="mock-badge viva-badge">
+                                🎓 Viva
+                            </span>
+                            <span id="mockVivaCaseCounter"
+                                  class="mock-case-counter">
+                                Case 1 of 3
+                            </span>
+                        </div>
+                        <div class="mock-exam-timer">
+                            <div class="mock-timer-display"
+                                 id="mockVivaTimer">03:00</div>
+                            <div class="mock-timer-sub">Viva Questions</div>
+                        </div>
+                        <div class="mock-exam-header-right">
+                            <button class="btn-secondary"
+                                    onclick="skipMockViva()">
+                                Skip Viva
+                            </button>
+                            <button class="btn-quit-mock"
+                                    onclick="confirmQuit()">
+                                ✕ Quit Exam
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mock-timer-bar-bg">
+                        <div class="mock-timer-bar-fill viva"
+                             id="mockVivaBarFill"></div>
+                    </div>
+
+                    <div class="mock-viva-layout">
+                        <div class="question-panel">
+                            <div class="question-number"
+                                 id="mockVivaQNum">
+                                Question 1 of 5
+                            </div>
+                            <div class="question-text"
+                                 id="mockVivaQuestion">
+                                Loading...
+                            </div>
+                            <div class="answer-input-area">
+                                <textarea id="mockVivaAnswer"
+                                          placeholder="Type your answer
+                                          or use the mic..."
+                                          rows="5"></textarea>
+                                <div class="answer-controls">
+                                    <button class="btn-mic-exam"
+                                            id="mockVivaMicBtn"
+                                            onclick="toggleMockVivaMic()">
+                                        🎤 Speak Answer
+                                    </button>
+                                    <span id="mockVivaMicStatus"
+                                          class="mic-status"></span>
+                                </div>
+                            </div>
+                            <button class="btn"
+                                    onclick="submitMockVivaAnswer()">
+                                Submit Answer →
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
         </div>
+    </div>
 
-        <!-- Transition Screen -->
-        <div id="mockTransition" style="display:none;"
-             class="mock-transition">
-            <div class="transition-card">
-                <div class="transition-icon" id="transitionIcon">⏸️</div>
-                <h2 id="transitionTitle">History Taking Complete</h2>
-                <p id="transitionMessage">
-                    Moving to viva questions in...
-                </p>
-                <div class="transition-countdown" id="transitionCountdown">
-                    5
-                </div>
-                <button class="btn-quit-mock"
-                        style="margin-top:24px;"
-                        onclick="confirmQuit()">
-                    ✕ Quit Exam
+    <!-- Quit Modal -->
+    <div id="quitModal" class="quit-modal" style="display:none;">
+        <div class="quit-modal-card">
+            <div class="quit-modal-icon">⚠️</div>
+            <h2>Are you sure you want to quit?</h2>
+            <p>Your current exam progress will be lost and you will
+            not receive results for this session.</p>
+            <div class="quit-modal-buttons">
+                <button class="btn-quit-confirm" onclick="quitExam()">
+                    Yes, quit exam
+                </button>
+                <button class="btn-quit-cancel"
+                        onclick="closeQuitModal()">
+                    No, continue exam
                 </button>
             </div>
         </div>
-
-        <!-- Viva Screen -->
-        <div id="mockViva" style="display:none;">
-
-            <div class="mock-header">
-                <div class="mock-header-left">
-                    <span class="mock-badge">🎓 Viva</span>
-                    <span id="mockVivaCaseCounter" class="mock-case-counter">
-                        Case 1 of 3
-                    </span>
-                </div>
-                <div class="mock-timer-display" id="mockVivaTimer">
-                    03:00
-                </div>
-                <div class="mock-header-right">
-                    <span class="mock-phase-label viva">
-                        Viva Questions
-                    </span>
-                    <button class="btn-quit-mock" onclick="confirmQuit()">
-                        ✕ Quit Exam
-                    </button>
-                </div>
-            </div>
-
-            <div class="mock-timer-bar-bg">
-                <div class="mock-timer-bar-fill viva"
-                     id="mockVivaBarFill"></div>
-            </div>
-
-            <div class="mock-viva-body">
-                <div class="question-panel">
-                    <div class="question-number" id="mockVivaQNum">
-                        Question 1 of 5
-                    </div>
-                    <div class="question-text" id="mockVivaQuestion">
-                        Loading...
-                    </div>
-                    <div class="answer-input-area">
-                        <textarea id="mockVivaAnswer"
-                                  placeholder="Type your answer or use the mic..."
-                                  rows="5"></textarea>
-                        <div class="answer-controls">
-                            <button class="btn-mic-exam"
-                                    id="mockVivaMicBtn"
-                                    onclick="toggleMockVivaMic()">
-                                🎤 Speak Answer
-                            </button>
-                            <span id="mockVivaMicStatus"
-                                  class="mic-status"></span>
-                        </div>
-                    </div>
-                    <button class="btn" onclick="submitMockVivaAnswer()">
-                        Submit Answer →
-                    </button>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Quit Confirmation Modal -->
-        <div id="quitModal" class="quit-modal" style="display:none;">
-            <div class="quit-modal-card">
-                <div class="quit-modal-icon">⚠️</div>
-                <h2>Are you sure you want to quit?</h2>
-                <p>Your current exam progress will be lost and you
-                will not receive results for this session.</p>
-                <div class="quit-modal-buttons">
-                    <button class="btn-quit-confirm" onclick="quitExam()">
-                        Yes, quit exam
-                    </button>
-                    <button class="btn-quit-cancel"
-                            onclick="closeQuitModal()">
-                        No, continue exam
-                    </button>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>
@@ -245,25 +500,73 @@
             "cough_1", "cough_2", "cough_3"
         ];
 
+        const CASE_NAMES = {
+            "abdominal_1": "Abdominal pain 01",
+            "abdominal_2": "Abdominal pain 02",
+            "abdominal_3": "Abdominal pain 03",
+            "chest_1": "Chest pain 01",
+            "chest_2": "Chest pain 02",
+            "chest_3": "Chest pain 03",
+            "cough_1": "Cough 01",
+            "cough_2": "Cough 02",
+            "cough_3": "Cough 03"
+        };
+
         let selectedCount = 0;
         let mockCases = [];
         let currentCaseIndex = 0;
         let mockConversation = [];
         let mockTimerInterval = null;
-        let mockTimerSeconds = 0;
+        let mockTimerSeconds = 480;
         let mockVivaInterval = null;
-        let mockVivaSeconds = 0;
+        let mockVivaSeconds = 180;
         let mockVivaQuestions = [];
         let mockVivaIndex = 0;
         let mockVivaAnswers = [];
         let mockVivaResults = [];
         let allCaseResults = [];
-        let mockVivaMicRecognition = null;
-        let mockVivaMicRecording = false;
+        let isTransitioning = false;
+        let transitionInterval = null;
+        let transitionFrom = null;
+        let transitionCaseId = null;
+        let instructionsTimerInterval = null;
+        let instructionsSeconds = 120;
         let mockMicRecognition = null;
         let mockMicRecording = false;
-        let isTransitioning = false;
+        let mockAvatarMicRecognition = null;
+        let mockAvatarMicRecording = false;
+        let mockMode = "chat";
+        let mockPatientAge = 30;
+        let mockPatientGender = "female";
+        let mockVivaMicRecognition = null;
+        let mockVivaMicRecording = false;
 
+        // ── Load topbar user ──
+        async function loadTopbarUser() {
+            try {
+                const res = await fetch("/get_current_user");
+                const data = await res.json();
+                const name = data.name || "Student";
+                const initial = name.charAt(0).toUpperCase();
+                document.getElementById("topbarName").textContent = name;
+                document.getElementById("topbarAvatar").textContent = initial;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        loadTopbarUser();
+
+        // ── Hide all screens ──
+        function hideAll() {
+            document.getElementById("mockSetup").style.display = "none";
+            document.getElementById("mockInstructions").style.display = "none";
+            document.getElementById("mockExam").style.display = "none";
+            document.getElementById("mockTransition").style.display = "none";
+            document.getElementById("mockViva").style.display = "none";
+        }
+
+        // ── Select case count ──
         function selectCaseCount(count, btn) {
             selectedCount = count;
             document.querySelectorAll(".case-count-btn").forEach(b => {
@@ -273,6 +576,7 @@
             document.getElementById("startMockBtn").disabled = false;
         }
 
+        // ── Shuffle array ──
         function shuffleArray(arr) {
             const a = [...arr];
             for (let i = a.length - 1; i > 0; i--) {
@@ -282,23 +586,94 @@
             return a;
         }
 
+        // ── Start mock exam ──
         async function startMockExam() {
             mockCases = shuffleArray(ALL_CASES).slice(0, selectedCount);
             currentCaseIndex = 0;
             allCaseResults = [];
-            document.getElementById("mockSetup").style.display = "none";
             await startCase(mockCases[0]);
         }
 
+        // ── Start a case (shows instructions first) ──
         async function startCase(caseId) {
+            clearInterval(mockTimerInterval);
+            clearInterval(mockVivaInterval);
+            clearInterval(instructionsTimerInterval);
+
             mockConversation = [];
-            mockTimerSeconds = 480;
             isTransitioning = false;
 
+            hideAll();
+            document.getElementById("mockInstructions").style.display = "block";
+            document.getElementById("instructionsCaseCounter").textContent =
+                `Case ${currentCaseIndex + 1} of ${mockCases.length}`;
+
+            await loadMockInstructions(caseId);
+            startInstructionsTimer(caseId);
+        }
+
+        // ── Load candidate instructions ──
+        async function loadMockInstructions(caseId) {
+            try {
+                const res = await fetch(
+                    `/get_candidate_instructions?case_id=${caseId}`
+                );
+                const data = await res.json();
+                document.getElementById("instructionsCaseBadge").textContent =
+                    CASE_NAMES[caseId] || caseId;
+                document.getElementById("instructionsList").innerHTML = `
+                    <li>You are a <strong>${data.role}</strong></li>
+                    <li>${data.patient}</li>
+                    ${data.complaint ?
+                        `<li>Their presenting complaint is
+                        <strong>${data.complaint}</strong></li>` : ""}
+                    <li>${data.task}</li>
+                    <li>${data.note}</li>
+                `;
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // ── Instructions timer ──
+        function startInstructionsTimer(caseId) {
+            instructionsSeconds = 120;
+            updateInstructionsTimerDisplay();
+            instructionsTimerInterval = setInterval(() => {
+                instructionsSeconds--;
+                updateInstructionsTimerDisplay();
+                if (instructionsSeconds <= 0) {
+                    clearInterval(instructionsTimerInterval);
+                    beginActualCase(caseId);
+                }
+            }, 1000);
+        }
+
+        function updateInstructionsTimerDisplay() {
+            const mins = Math.floor(instructionsSeconds / 60);
+            const secs = instructionsSeconds % 60;
+            const el = document.getElementById("instructionsTimer");
+            if (!el) return;
+            el.textContent =
+                `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
+            if (instructionsSeconds <= 30) {
+                el.style.color = "#e74c3c";
+            } else if (instructionsSeconds <= 60) {
+                el.style.color = "#f6a623";
+            } else {
+                el.style.color = "#2c7be5";
+            }
+        }
+
+        function skipInstructions() {
+            clearInterval(instructionsTimerInterval);
+            beginActualCase(mockCases[currentCaseIndex]);
+        }
+
+        // ── Begin actual history taking ──
+        async function beginActualCase(caseId) {
+            hideAll();
             document.getElementById("mockExam").style.display = "block";
-            document.getElementById("mockTransition").style.display = "none";
-            document.getElementById("mockViva").style.display = "none";
-            document.getElementById("quitModal").style.display = "none";
 
             document.getElementById("mockCaseCounter").textContent =
                 `Case ${currentCaseIndex + 1} of ${mockCases.length}`;
@@ -316,13 +691,16 @@
                     Hello, I am your patient today.
                     Please go ahead and ask me about my symptoms.
                 </div>`;
-
             document.getElementById("mockNotes").value = "";
+            resetMockAvatar();
+            switchMockMode(mockMode);
 
             await loadMockPatientInfo(caseId);
+            await loadMockAvatar(caseId);
             startMockTimer(caseId);
         }
 
+        // ── Load patient info ──
         async function loadMockPatientInfo(caseId) {
             try {
                 const res = await fetch(
@@ -333,6 +711,8 @@
                     data.patient_name || "—";
                 document.getElementById("mockInfoAge").textContent =
                     data.age || "—";
+                mockPatientAge = data.age || 30;
+                mockPatientGender = data.gender || "female";
                 document.getElementById("mockInfoLocation").textContent =
                     data.location || "—";
                 document.getElementById("mockInfoComplaint").textContent =
@@ -342,14 +722,14 @@
             }
         }
 
+        // ── History taking timer ──
         function startMockTimer(caseId) {
             clearInterval(mockTimerInterval);
             mockTimerSeconds = 480;
-
             mockTimerInterval = setInterval(() => {
                 if (isTransitioning) return;
                 mockTimerSeconds--;
-                updateMockTimer();
+                updateMockTimerDisplay();
                 if (mockTimerSeconds <= 0) {
                     clearInterval(mockTimerInterval);
                     showTransition("history", caseId);
@@ -357,58 +737,59 @@
             }, 1000);
         }
 
-        function updateMockTimer() {
+        function updateMockTimerDisplay() {
             const mins = Math.floor(mockTimerSeconds / 60);
             const secs = mockTimerSeconds % 60;
-            const display =
+            const el = document.getElementById("mockTimerDisplay");
+            if (!el) return;
+            el.textContent =
                 `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
-            document.getElementById("mockTimerDisplay").textContent = display;
-
-            const pct = (mockTimerSeconds / 480) * 100;
             const fill = document.getElementById("mockTimerBarFill");
-            fill.style.width = pct + "%";
-
-            const timerEl = document.getElementById("mockTimerDisplay");
+            const pct = (mockTimerSeconds / 480) * 100;
+            if (fill) fill.style.width = pct + "%";
             if (mockTimerSeconds > 240) {
-                fill.style.background = "#2c7be5";
-                timerEl.style.color = "#2c7be5";
+                el.style.color = "#2c7be5";
+                if (fill) fill.style.background = "#2c7be5";
             } else if (mockTimerSeconds > 120) {
-                fill.style.background = "#f6a623";
-                timerEl.style.color = "#f6a623";
+                el.style.color = "#f6a623";
+                if (fill) fill.style.background = "#f6a623";
             } else {
-                fill.style.background = "#e74c3c";
-                timerEl.style.color = "#e74c3c";
+                el.style.color = "#e74c3c";
+                if (fill) fill.style.background = "#e74c3c";
             }
+        }
+
+        // ── Transition screen ──
+        function skipMockHistory() {
+            clearInterval(mockTimerInterval);
+            showTransition("history", mockCases[currentCaseIndex]);
         }
 
         function showTransition(from, caseId) {
             isTransitioning = true;
             clearInterval(mockTimerInterval);
             clearInterval(mockVivaInterval);
+            clearInterval(transitionInterval);
+            transitionFrom = from;
+            transitionCaseId = caseId;
+            hideAll();
+            document.getElementById("mockTransition").style.display = "block";
 
-            document.getElementById("mockExam").style.display = "none";
-            document.getElementById("mockViva").style.display = "none";
-            document.getElementById("mockTransition").style.display = "flex";
-
-            let countdown;
-            let title, message, icon;
+            let countdown, title, message, icon;
 
             if (from === "history") {
-                icon = "📋";
+                icon = "📋"; countdown = 5;
                 title = "History Taking Complete!";
                 message = "Moving to viva questions in...";
-                countdown = 5;
-            } else if (from === "viva") {
+            } else {
                 if (currentCaseIndex + 1 < mockCases.length) {
-                    icon = "⏸️";
+                    icon = "⏸️"; countdown = 20;
                     title = "Case Complete!";
                     message = "Next case starting in...";
-                    countdown = 20;
                 } else {
-                    icon = "🏆";
+                    icon = "🏆"; countdown = 5;
                     title = "All Cases Complete!";
                     message = "Loading your results in...";
-                    countdown = 5;
                 }
             }
 
@@ -418,33 +799,42 @@
             document.getElementById("transitionCountdown").textContent =
                 countdown;
 
-            const countdownInterval = setInterval(() => {
-                if (isTransitioning === false) {
-                    clearInterval(countdownInterval);
+            transitionInterval = setInterval(() => {
+                if (!isTransitioning) {
+                    clearInterval(transitionInterval);
                     return;
                 }
                 countdown--;
                 document.getElementById("transitionCountdown").textContent =
                     countdown;
                 if (countdown <= 0) {
-                    clearInterval(countdownInterval);
-                    if (from === "history") {
-                        startMockViva(caseId);
-                    } else if (from === "viva") {
-                        currentCaseIndex++;
-                        if (currentCaseIndex < mockCases.length) {
-                            startCase(mockCases[currentCaseIndex]);
-                        } else {
-                            showMockResults();
-                        }
-                    }
+                    finishTransitionWait();
                 }
             }, 1000);
         }
 
+        function skipTransitionWait() {
+            finishTransitionWait();
+        }
+
+        function finishTransitionWait() {
+            clearInterval(transitionInterval);
+            if (transitionFrom === "history") {
+                startMockViva(transitionCaseId);
+                return;
+            }
+            currentCaseIndex++;
+            if (currentCaseIndex < mockCases.length) {
+                startCase(mockCases[currentCaseIndex]);
+            } else {
+                showMockResults();
+            }
+        }
+
+        // ── Viva session ──
         async function startMockViva(caseId) {
             isTransitioning = false;
-            document.getElementById("mockTransition").style.display = "none";
+            hideAll();
             document.getElementById("mockViva").style.display = "block";
 
             mockVivaAnswers = [];
@@ -471,7 +861,7 @@
 
             mockVivaInterval = setInterval(() => {
                 mockVivaSeconds--;
-                updateMockVivaTimer();
+                updateMockVivaTimerDisplay();
                 if (mockVivaSeconds <= 0) {
                     clearInterval(mockVivaInterval);
                     finishMockViva(caseId);
@@ -479,22 +869,27 @@
             }, 1000);
         }
 
-        function updateMockVivaTimer() {
+        function updateMockVivaTimerDisplay() {
             const mins = Math.floor(mockVivaSeconds / 60);
             const secs = mockVivaSeconds % 60;
-            document.getElementById("mockVivaTimer").textContent =
+            const el = document.getElementById("mockVivaTimer");
+            const fill = document.getElementById("mockVivaBarFill");
+            if (!el) return;
+            el.textContent =
                 `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
             const pct = (mockVivaSeconds / 180) * 100;
-            const fill = document.getElementById("mockVivaBarFill");
-            fill.style.width = pct + "%";
-            const timerEl = document.getElementById("mockVivaTimer");
+            if (fill) fill.style.width = pct + "%";
             if (mockVivaSeconds < 60) {
-                fill.style.background = "#e74c3c";
-                timerEl.style.color = "#e74c3c";
+                el.style.color = "#e74c3c";
+                if (fill) fill.style.background = "#e74c3c";
             } else if (mockVivaSeconds < 120) {
-                fill.style.background = "#f6a623";
-                timerEl.style.color = "#f6a623";
+                el.style.color = "#f6a623";
+                if (fill) fill.style.background = "#f6a623";
             }
+        }
+
+        function skipMockViva() {
+            finishMockViva(mockCases[currentCaseIndex]);
         }
 
         function showMockVivaQuestion() {
@@ -518,16 +913,14 @@
                 alert("Please type or speak your answer first!");
                 return;
             }
-
             const caseId = mockCases[currentCaseIndex];
             mockVivaAnswers.push(answer);
-
             try {
                 const res = await fetch("/evaluate_viva", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        answer: answer,
+                        answer,
                         question_index: mockVivaIndex,
                         case_id: caseId
                     })
@@ -536,18 +929,15 @@
                 mockVivaResults.push(data);
             } catch (err) {
                 mockVivaResults.push({
-                    marks_achieved: 0,
-                    point_results: []
+                    marks_achieved: 0, point_results: []
                 });
             }
-
             mockVivaIndex++;
             showMockVivaQuestion();
         }
 
         async function finishMockViva(caseId) {
             clearInterval(mockVivaInterval);
-
             try {
                 const checkRes = await fetch("/evaluate_checklist", {
                     method: "POST",
@@ -558,14 +948,11 @@
                     })
                 });
                 const checkData = await checkRes.json();
-
                 allCaseResults.push({
                     case_id: caseId,
                     checklist: checkData,
                     viva_scores: mockVivaResults.map(r => r.marks_achieved),
-                    viva_point_results: mockVivaResults.map(
-                        r => r.point_results
-                    ),
+                    viva_point_results: mockVivaResults.map(r => r.point_results),
                     viva_questions: mockVivaQuestions,
                     viva_answers: mockVivaAnswers
                 });
@@ -580,7 +967,6 @@
                     viva_answers: mockVivaAnswers
                 });
             }
-
             showTransition("viva", caseId);
         }
 
@@ -592,16 +978,103 @@
             window.location.href = "/mock_results";
         }
 
-        function sendMockMessage() {
-            const input = document.getElementById("mockUserInput");
+        // ── Chat ──
+        function switchMockMode(mode) {
+            mockMode = mode;
+            const chatPanel = document.getElementById("mockChatPanel");
+            const avatarPanel = document.getElementById("mockAvatarPanel");
+            const chatTab = document.getElementById("mockTabChat");
+            const avatarTab = document.getElementById("mockTabAvatar");
+
+            if (mode === "avatar") {
+                if (chatPanel) chatPanel.style.display = "none";
+                if (avatarPanel) avatarPanel.style.display = "flex";
+                if (chatTab) chatTab.classList.remove("active");
+                if (avatarTab) avatarTab.classList.add("active");
+                loadMockAvatar(mockCases[currentCaseIndex]);
+            } else {
+                if (chatPanel) chatPanel.style.display = "block";
+                if (avatarPanel) avatarPanel.style.display = "none";
+                if (chatTab) chatTab.classList.add("active");
+                if (avatarTab) avatarTab.classList.remove("active");
+            }
+        }
+
+        async function loadMockAvatar(caseId) {
+            if (!caseId) return;
+            try {
+                const res = await fetch(`/get_case_info?case_id=${caseId}`);
+                const data = await res.json();
+                const img = document.getElementById("mockAvatarImg");
+                const nameTag = document.getElementById("mockAvatarNameTag");
+                if (img) img.src = `/static/images/avatars/${caseId}.svg`;
+                if (nameTag) {
+                    nameTag.textContent =
+                        `${data.patient_name}, ${data.age}`;
+                }
+                mockPatientAge = data.age || mockPatientAge;
+                mockPatientGender = data.gender || mockPatientGender;
+            } catch (err) {
+                console.error("Could not load mock avatar:", err);
+            }
+        }
+
+        function resetMockAvatar() {
+            const speech = document.getElementById("mockAvatarSpeech");
+            const status = document.getElementById("mockAvatarStatus");
+            const input = document.getElementById("mockAvatarInput");
+            const wrapper = document.getElementById("mockAvatarWrapper");
+            if (speech) {
+                speech.textContent =
+                    "Hello! Please go ahead and ask me about my symptoms.";
+            }
+            if (status) {
+                status.textContent = "Waiting for your question...";
+                status.className = "avatar-status";
+            }
+            if (input) input.value = "";
+            if (wrapper) wrapper.classList.remove("avatar-talking");
+        }
+
+        function getMockVoiceSettings() {
+            if (mockPatientGender === "female") {
+                if (mockPatientAge < 30) return { rate: 1.05, pitch: 1.3 };
+                if (mockPatientAge <= 50) return { rate: 0.92, pitch: 1.1 };
+                return { rate: 0.78, pitch: 0.95 };
+            }
+            if (mockPatientAge < 30) return { rate: 1.0, pitch: 1.0 };
+            if (mockPatientAge <= 50) return { rate: 0.88, pitch: 0.85 };
+            return { rate: 0.75, pitch: 0.75 };
+        }
+
+        function speakMockResponse(text) {
+            if (!window.speechSynthesis) return;
+            window.speechSynthesis.cancel();
+            const settings = getMockVoiceSettings();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = settings.rate;
+            utterance.pitch = settings.pitch;
+            utterance.lang = "en-GB";
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function sendMockAvatarMessage() {
+            const input = document.getElementById("mockAvatarInput");
             const message = input.value.trim();
             if (!message) return;
-
             const caseId = mockCases[currentCaseIndex];
-            input.value = "";
+            const speech = document.getElementById("mockAvatarSpeech");
+            const status = document.getElementById("mockAvatarStatus");
+            const wrapper = document.getElementById("mockAvatarWrapper");
 
+            input.value = "";
             addMockMessage(message, "student");
             mockConversation.push({ role: "user", content: message });
+            if (speech) speech.textContent = "...";
+            if (status) {
+                status.textContent = "Thinking...";
+                status.className = "avatar-status";
+            }
 
             fetch("/chat", {
                 method: "POST",
@@ -612,8 +1085,88 @@
             .then(data => {
                 addMockMessage(data.response, "patient");
                 mockConversation.push({
-                    role: "assistant",
-                    content: data.response
+                    role: "assistant", content: data.response
+                });
+                if (speech) speech.textContent = data.response;
+                if (status) {
+                    status.textContent = "Speaking...";
+                    status.className = "avatar-status talking";
+                }
+                if (wrapper) wrapper.classList.add("avatar-talking");
+                speakMockResponse(data.response);
+                setTimeout(() => {
+                    if (wrapper) wrapper.classList.remove("avatar-talking");
+                    if (status) {
+                        status.textContent = "Waiting for your question...";
+                        status.className = "avatar-status";
+                    }
+                }, Math.max(1500, data.response.length * 60));
+            })
+            .catch(err => {
+                console.error(err);
+                if (speech) {
+                    speech.textContent =
+                        "Something went wrong. Please try again.";
+                }
+                if (status) status.textContent = "Error - please try again";
+            });
+        }
+
+        function handleMockAvatarEnter(event) {
+            if (event.key === "Enter") sendMockAvatarMessage();
+        }
+
+        function toggleMockAvatarMic() {
+            if (!('webkitSpeechRecognition' in window ||
+                  'SpeechRecognition' in window)) {
+                alert("Please use Chrome for voice input.");
+                return;
+            }
+            if (mockAvatarMicRecording) {
+                mockAvatarMicRecognition.stop();
+                mockAvatarMicRecording = false;
+                document.getElementById("mockAvatarMicBtn")
+                    .classList.remove("recording");
+            } else {
+                mockAvatarMicRecognition = new (window.SpeechRecognition ||
+                                  window.webkitSpeechRecognition)();
+                mockAvatarMicRecognition.lang = "en-US";
+                mockAvatarMicRecognition.continuous = false;
+                mockAvatarMicRecognition.interimResults = false;
+                mockAvatarMicRecognition.onresult = function(event) {
+                    document.getElementById("mockAvatarInput").value =
+                        event.results[0][0].transcript;
+                };
+                mockAvatarMicRecognition.onend = function() {
+                    mockAvatarMicRecording = false;
+                    document.getElementById("mockAvatarMicBtn")
+                        .classList.remove("recording");
+                };
+                mockAvatarMicRecognition.start();
+                mockAvatarMicRecording = true;
+                document.getElementById("mockAvatarMicBtn")
+                    .classList.add("recording");
+            }
+        }
+
+        function sendMockMessage() {
+            const input = document.getElementById("mockUserInput");
+            const message = input.value.trim();
+            if (!message) return;
+            const caseId = mockCases[currentCaseIndex];
+            input.value = "";
+            addMockMessage(message, "student");
+            mockConversation.push({ role: "user", content: message });
+            fetch("/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message, case_id: caseId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                addMockMessage(data.response, "patient");
+                mockConversation.push({
+                    role: "assistant", content: data.response
                 });
             })
             .catch(err => console.error(err));
@@ -621,6 +1174,7 @@
 
         function addMockMessage(text, sender) {
             const chatBox = document.getElementById("mockChatBox");
+            if (!chatBox) return;
             const div = document.createElement("div");
             div.className = `message ${sender}`;
             div.textContent = text;
@@ -632,6 +1186,7 @@
             if (event.key === "Enter") sendMockMessage();
         }
 
+        // ── Mic ──
         function toggleMockMic() {
             if (!('webkitSpeechRecognition' in window ||
                   'SpeechRecognition' in window)) {
@@ -647,8 +1202,6 @@
                 mockMicRecognition = new (window.SpeechRecognition ||
                                           window.webkitSpeechRecognition)();
                 mockMicRecognition.lang = "en-US";
-                mockMicRecognition.continuous = false;
-                mockMicRecognition.interimResults = false;
                 mockMicRecognition.onresult = function(event) {
                     document.getElementById("mockUserInput").value =
                         event.results[0][0].transcript;
@@ -678,7 +1231,6 @@
                     "🎤 Speak Answer";
                 document.getElementById("mockVivaMicBtn")
                     .classList.remove("recording");
-                document.getElementById("mockVivaMicStatus").textContent = "";
             } else {
                 mockVivaMicRecognition = new (window.SpeechRecognition ||
                                    window.webkitSpeechRecognition)();
@@ -686,12 +1238,11 @@
                 mockVivaMicRecognition.continuous = true;
                 mockVivaMicRecognition.interimResults = true;
                 mockVivaMicRecognition.onresult = function(event) {
-                    let transcript = "";
+                    let t = "";
                     for (let i = 0; i < event.results.length; i++) {
-                        transcript += event.results[i][0].transcript;
+                        t += event.results[i][0].transcript;
                     }
-                    document.getElementById("mockVivaAnswer").value =
-                        transcript;
+                    document.getElementById("mockVivaAnswer").value = t;
                 };
                 mockVivaMicRecognition.onend = function() {
                     mockVivaMicRecording = false;
@@ -713,9 +1264,12 @@
             }
         }
 
+        // ── Quit ──
         function confirmQuit() {
             clearInterval(mockTimerInterval);
             clearInterval(mockVivaInterval);
+            clearInterval(instructionsTimerInterval);
+            clearInterval(transitionInterval);
             isTransitioning = false;
             document.getElementById("quitModal").style.display = "flex";
         }
@@ -730,6 +1284,8 @@
         function quitExam() {
             clearInterval(mockTimerInterval);
             clearInterval(mockVivaInterval);
+            clearInterval(instructionsTimerInterval);
+            clearInterval(transitionInterval);
             window.location.href = "/dashboard";
         }
     </script>

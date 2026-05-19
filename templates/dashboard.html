@@ -13,9 +13,8 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">OsceAI</div>
-
             <nav class="sidebar-nav">
-                <button class="sidebar-item active" id="nav-home"
+                <button class="sidebar-item" id="nav-home"
                         onclick="showView('home')">
                     <span class="sidebar-icon">🏠</span>
                     <span class="sidebar-label">Home</span>
@@ -36,7 +35,6 @@
                     <span class="sidebar-label">Profile</span>
                 </button>
             </nav>
-
             <div class="sidebar-footer">
                 <a href="/logout" class="sidebar-logout">
                     <span>⬅️</span>
@@ -60,7 +58,7 @@
                 </div>
                 <div class="topbar-right">
                     <div class="topbar-tabs">
-                        <button class="topbar-tab active" id="tab-home"
+                        <button class="topbar-tab" id="tab-home"
                                 onclick="showView('home')">
                             Home
                         </button>
@@ -78,7 +76,7 @@
                         </button>
                     </div>
                     <div class="topbar-user">
-                        <div class="topbar-avatar" id="topbarAvatar">H</div>
+                        <div class="topbar-avatar" id="topbarAvatar">S</div>
                         <span id="topbarName">Student</span>
                     </div>
                 </div>
@@ -88,14 +86,12 @@
             <div class="dashboard-content">
 
                 <!-- HOME VIEW -->
-                <div id="view-home" class="view">
-
+                <div id="view-home" class="view" style="display:none;">
                     <div class="view-header">
                         <h1 id="welcomeMsg">Welcome back! 👋</h1>
                         <p>What would you like to practice today?</p>
                     </div>
 
-                    <!-- Two Main Cards -->
                     <div class="home-cards-grid">
                         <div class="home-card osce-home-card"
                              onclick="showView('cases')">
@@ -128,7 +124,6 @@
                         </div>
                     </div>
 
-                    <!-- Stats Row -->
                     <div class="stats-row">
                         <div class="stat-box">
                             <div class="stat-box-icon">📋</div>
@@ -160,7 +155,6 @@
                         </div>
                     </div>
 
-                    <!-- Recent Attempts -->
                     <div class="recent-section">
                         <div class="recent-header">
                             <h3>Recent Attempts</h3>
@@ -181,12 +175,10 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <!-- CASES VIEW -->
                 <div id="view-cases" class="view" style="display:none;">
-
                     <div class="view-header">
                         <h1>OSCE Cases</h1>
                         <p>Select a case to begin your simulation</p>
@@ -407,20 +399,18 @@
 
                 <!-- PROFILE VIEW -->
                 <div id="view-profile" class="view" style="display:none;">
-
                     <div class="view-header">
                         <h1>My Profile</h1>
                         <p>Your account details and performance history</p>
                     </div>
 
-                    <!-- Personal Info -->
                     <div class="profile-section">
                         <h3 class="profile-section-title">
                             👤 Personal Information
                         </h3>
                         <div class="profile-info-card">
                             <div class="profile-avatar-large"
-                                 id="profileAvatarLarge">H</div>
+                                 id="profileAvatarLarge">S</div>
                             <div class="profile-details">
                                 <div class="profile-detail-row">
                                     <span class="profile-label">Full Name</span>
@@ -441,36 +431,30 @@
                         </div>
                     </div>
 
-                    <!-- Performance Summary -->
                     <div class="profile-section">
                         <h3 class="profile-section-title">
                             📊 Performance Summary
                         </h3>
                         <div class="performance-grid">
                             <div class="perf-card">
-                                <div class="perf-number"
-                                     id="perfTotal">0</div>
+                                <div class="perf-number" id="perfTotal">0</div>
                                 <div class="perf-label">Total Attempts</div>
                             </div>
                             <div class="perf-card">
-                                <div class="perf-number"
-                                     id="perfAvg">—</div>
+                                <div class="perf-number" id="perfAvg">—</div>
                                 <div class="perf-label">Average Score</div>
                             </div>
                             <div class="perf-card">
-                                <div class="perf-number"
-                                     id="perfBest">—</div>
+                                <div class="perf-number" id="perfBest">—</div>
                                 <div class="perf-label">Best Score</div>
                             </div>
                             <div class="perf-card">
-                                <div class="perf-number"
-                                     id="perfLast">—</div>
-                                <div class="perf-label">Last Attempt</div>
+                                <div class="perf-number" id="perfLast">—</div>
+                                <div class="perf-label">Last Grade</div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Case History -->
                     <div class="profile-section">
                         <div class="history-header">
                             <h3 class="profile-section-title">
@@ -488,7 +472,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
             </div>
@@ -503,12 +486,10 @@
             <p>This will permanently delete all your past attempts
             and scores. This cannot be undone.</p>
             <div class="quit-modal-buttons">
-                <button class="btn-quit-confirm"
-                        onclick="clearHistory()">
+                <button class="btn-quit-confirm" onclick="clearHistory()">
                     Yes, clear everything
                 </button>
-                <button class="btn-quit-cancel"
-                        onclick="closeClearModal()">
+                <button class="btn-quit-cancel" onclick="closeClearModal()">
                     Cancel
                 </button>
             </div>
@@ -526,28 +507,66 @@
             "Fail": "#e74c3c"
         };
 
+        // ── Show a view and remember it ──
+        function showView(view) {
+            // hide all views
+            document.querySelectorAll(".view").forEach(v => {
+                v.style.display = "none";
+            });
+
+            // show selected view
+            const viewEl = document.getElementById(`view-${view}`);
+            if (viewEl) viewEl.style.display = "block";
+
+            // remove active from all sidebar and tab items
+            document.querySelectorAll(".sidebar-item").forEach(i => {
+                i.classList.remove("active");
+            });
+            document.querySelectorAll(".topbar-tab").forEach(t => {
+                t.classList.remove("active");
+            });
+
+            // set active on correct sidebar and tab
+            const sideEl = document.getElementById(`nav-${view}`);
+            const tabEl = document.getElementById(`tab-${view}`);
+            if (sideEl) sideEl.classList.add("active");
+            if (tabEl) tabEl.classList.add("active");
+
+            // save to sessionStorage so it persists
+            sessionStorage.setItem("currentView", view);
+        }
+
+        // ── On page load ──
         window.onload = async function() {
             await loadUserData();
             await loadUserResults();
+
+            // check URL param first e.g. /dashboard?view=cases
+            const params = new URLSearchParams(window.location.search);
+            const viewParam = params.get("view");
+
+            if (viewParam) {
+                showView(viewParam);
+            } else {
+                showView("home");
+            }
         };
 
+        // ── Load user data ──
         async function loadUserData() {
             try {
                 const res = await fetch("/get_current_user");
                 const data = await res.json();
                 userData = data;
 
-                const firstName = data.name
-                    ? data.name.split(" ")[0] : "Student";
-                const initial = data.name
-                    ? data.name.charAt(0).toUpperCase() : "S";
+                const name = data.name || "Student";
+                const firstName = name.split(" ")[0];
+                const initial = name.charAt(0).toUpperCase();
 
                 document.getElementById("welcomeMsg").textContent =
                     `Welcome back, ${firstName}! 👋`;
-                document.getElementById("topbarName").textContent =
-                    data.name || "Student";
-                document.getElementById("topbarAvatar").textContent =
-                    initial;
+                document.getElementById("topbarName").textContent = name;
+                document.getElementById("topbarAvatar").textContent = initial;
                 document.getElementById("profileAvatarLarge").textContent =
                     initial;
                 document.getElementById("profileName").textContent =
@@ -557,10 +576,11 @@
                 document.getElementById("profileUniversity").textContent =
                     data.university || "—";
             } catch (err) {
-                console.error(err);
+                console.error("loadUserData error:", err);
             }
         }
 
+        // ── Load user results ──
         async function loadUserResults() {
             try {
                 const res = await fetch("/get_user_results");
@@ -570,35 +590,43 @@
                 renderRecentAttempts();
                 renderCaseHistory();
             } catch (err) {
-                console.error(err);
+                console.error("loadUserResults error:", err);
             }
         }
 
+        // ── Render stats ──
         function renderStats() {
             const total = userResults.length;
-            document.getElementById("statAttempts").textContent = total;
-            document.getElementById("perfTotal").textContent = total;
+            const statAttempts = document.getElementById("statAttempts");
+            const perfTotal = document.getElementById("perfTotal");
+            if (statAttempts) statAttempts.textContent = total;
+            if (perfTotal) perfTotal.textContent = total;
 
             if (total > 0) {
                 const avg = Math.round(
-                    userResults.reduce((s, r) => s + r.total_score, 0) /
-                    total
+                    userResults.reduce((s, r) => s + r.total_score, 0) / total
                 );
-                const best = Math.max(
-                    ...userResults.map(r => r.total_score)
-                );
+                const best = Math.max(...userResults.map(r => r.total_score));
                 const last = userResults[0];
 
-                document.getElementById("statAvg").textContent = avg;
-                document.getElementById("perfAvg").textContent = avg;
-                document.getElementById("perfBest").textContent = best;
-                document.getElementById("perfLast").textContent =
+                const statAvg = document.getElementById("statAvg");
+                const perfAvg = document.getElementById("perfAvg");
+                const perfBest = document.getElementById("perfBest");
+                const perfLast = document.getElementById("perfLast");
+
+                if (statAvg) statAvg.textContent = avg;
+                if (perfAvg) perfAvg.textContent = avg;
+                if (perfBest) perfBest.textContent = best;
+                if (perfLast) perfLast.textContent =
                     last ? last.global_impression : "—";
             }
         }
 
+        // ── Render recent attempts ──
         function renderRecentAttempts() {
             const container = document.getElementById("recentAttempts");
+            if (!container) return;
+
             if (userResults.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -617,24 +645,26 @@
                 <div class="attempt-row">
                     <div class="attempt-info">
                         <div class="attempt-case">${r.case_label}</div>
-                        <div class="attempt-date">${
-                            new Date(r.created_at).toLocaleDateString()
-                        }</div>
+                        <div class="attempt-date">
+                            ${new Date(r.created_at).toLocaleDateString()}
+                        </div>
                     </div>
                     <div class="attempt-score">
                         ${r.total_score}/${r.total_possible}
                     </div>
                     <div class="attempt-grade"
-                         style="color:${gradeColors[r.global_impression]
-                         || '#888'}">
+                         style="color:${gradeColors[r.global_impression] || '#888'}">
                         ${r.global_impression}
                     </div>
                 </div>
             `).join("");
         }
 
+        // ── Render case history ──
         function renderCaseHistory() {
             const container = document.getElementById("caseHistory");
+            if (!container) return;
+
             if (userResults.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
@@ -659,7 +689,9 @@
                             <span class="history-case-name">
                                 ${r.case_label}
                             </span>
-                            <span>${r.checklist_score}/${r.checklist_possible}</span>
+                            <span>
+                                ${r.checklist_score}/${r.checklist_possible}
+                            </span>
                             <span>${r.viva_score}/${r.viva_possible}</span>
                             <span class="history-total">
                                 ${r.total_score}/${r.total_possible}
@@ -669,39 +701,22 @@
                                 ${r.global_impression}
                             </span>
                             <span class="history-date">
-                                ${new Date(r.created_at)
-                                    .toLocaleDateString()}
+                                ${new Date(r.created_at).toLocaleDateString()}
                             </span>
                         </div>
                     `).join("")}
                 </div>`;
         }
 
-        function showView(view) {
-            document.querySelectorAll(".view").forEach(v => {
-                v.style.display = "none";
-            });
-            document.getElementById(`view-${view}`).style.display = "block";
-
-            document.querySelectorAll(".sidebar-item").forEach(i => {
-                i.classList.remove("active");
-            });
-            document.querySelectorAll(".topbar-tab").forEach(t => {
-                t.classList.remove("active");
-            });
-
-            const sideEl = document.getElementById(`nav-${view}`);
-            const tabEl = document.getElementById(`tab-${view}`);
-            if (sideEl) sideEl.classList.add("active");
-            if (tabEl) tabEl.classList.add("active");
-        }
-
+        // ── Go to case ──
         function goToCase(caseId, caseLabel) {
+            sessionStorage.setItem("currentView", "cases");
             const encodedLabel = encodeURIComponent(caseLabel);
             window.location.href =
                 `/candidate_instructions?case_id=${caseId}&case_label=${encodedLabel}`;
         }
 
+        // ── Filter cases ──
         function filterCases(category, btn) {
             document.querySelectorAll(".filter-tab").forEach(b => {
                 b.classList.remove("active");
@@ -717,26 +732,30 @@
             });
         }
 
+        // ── Search cases ──
         function handleSearch(query) {
             const q = query.toLowerCase().trim();
-            if (q.length > 0) {
+            if (q.length === 0) {
                 showView("cases");
-                document.querySelectorAll(".filter-tab").forEach(b =>
-                    b.classList.remove("active"));
-                document.querySelector(".filter-tab")
-                    .classList.add("active");
-                document.querySelectorAll(".case-dashboard-card")
-                    .forEach(card => {
-                        const text = card.textContent.toLowerCase();
-                        const title = (card.getAttribute("title") || "")
-                            .toLowerCase();
-                        card.style.display =
-                            (text.includes(q) || title.includes(q))
-                            ? "block" : "none";
-                    });
+                document.querySelectorAll(".case-dashboard-card").forEach(c => {
+                    c.style.display = "block";
+                });
+                return;
             }
+            showView("cases");
+            document.querySelectorAll(".filter-tab").forEach(b =>
+                b.classList.remove("active"));
+            document.querySelector(".filter-tab").classList.add("active");
+            document.querySelectorAll(".case-dashboard-card").forEach(card => {
+                const text = card.textContent.toLowerCase();
+                const title = (card.getAttribute("title") || "").toLowerCase();
+                card.style.display =
+                    (text.includes(q) || title.includes(q))
+                    ? "block" : "none";
+            });
         }
 
+        // ── Clear history ──
         function confirmClearHistory() {
             document.getElementById("clearModal").style.display = "flex";
         }
@@ -754,7 +773,7 @@
                 renderCaseHistory();
                 closeClearModal();
             } catch (err) {
-                console.error(err);
+                console.error("clearHistory error:", err);
             }
         }
     </script>
