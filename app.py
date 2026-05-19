@@ -26,6 +26,29 @@ def load_user(user_id):
 with app.app_context():
     db.create_all()
 
+    # Auto create admin if not exists
+    from models import User
+    from werkzeug.security import generate_password_hash
+    admin_email = os.getenv("ADMIN_EMAIL", "admin@osceai.com")
+    admin_password = os.getenv("ADMIN_PASSWORD", "admin123")
+
+    existing_admin = User.query.filter_by(
+        email=admin_email
+    ).first()
+
+    if not existing_admin:
+        admin = User(
+            full_name="Admin",
+            email=admin_email,
+            password=generate_password_hash(admin_password),
+            university="APU",
+            is_admin=True
+        )
+        db.session.add(admin)
+        db.session.commit()
+        print(f"Admin account created: {admin_email}")
+    else:
+        print("Admin account already exists")
 def load_case(case_id):
     with open("cases/cases.json", "r") as f:
         cases = json.load(f)
