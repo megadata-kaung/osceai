@@ -450,6 +450,52 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Feedback Section -->
+                        <div class="profile-section">
+                            <h3 class="profile-section-title">
+                                💬 Suggestions & Comments
+                            </h3>
+                            <p style="font-size:14px; color:#888; margin-bottom:16px;">
+                                Have a suggestion or found a bug? Let us know!
+                            </p>
+
+                            <div class="feedback-form">
+                                <div class="form-group">
+                                    <label>Category</label>
+                                    <select id="feedbackCategory"
+                                            style="width:100%; padding:12px;
+                                            border:1px solid #ddd; border-radius:8px;
+                                            font-size:14px; outline:none;">
+                                        <option value="General">General</option>
+                                        <option value="Bug Report">🐛 Bug Report</option>
+                                        <option value="Feature Request">✨ Feature Request</option>
+                                        <option value="Case Feedback">📋 Case Feedback</option>
+                                        <option value="UI Feedback">🎨 UI Feedback</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Your message</label>
+                                    <textarea id="feedbackMessage"
+                                              placeholder="Type your suggestion or comment here..."
+                                              rows="4"
+                                              style="width:100%; padding:12px;
+                                              border:1px solid #ddd; border-radius:8px;
+                                              font-size:14px; resize:vertical;
+                                              font-family:Arial,sans-serif;
+                                              box-sizing:border-box;"></textarea>
+                                </div>
+                                <button class="btn" onclick="submitFeedback()"
+                                        id="feedbackBtn"
+                                        style="padding:12px 32px;">
+                                    Send Feedback →
+                                </button>
+                                <div id="feedbackSuccess"
+                                     style="display:none; margin-top:12px;
+                                     color:#1e8449; font-size:14px; font-weight:bold;">
+                                    ✅ Thank you! Your feedback has been sent.
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="profile-section">
@@ -523,6 +569,7 @@
         </div>
     </div>
 
+
     <script>
         let userData = {};
         let userResults = [];
@@ -555,6 +602,44 @@
             if (tabEl) tabEl.classList.add("active");
 
             sessionStorage.setItem("currentView", view);
+        }
+        async function submitFeedback() {
+            const message = document.getElementById("feedbackMessage")
+                .value.trim();
+            const category = document.getElementById("feedbackCategory")
+                .value;
+            const btn = document.getElementById("feedbackBtn");
+
+            if (!message) {
+                alert("Please write a message before sending!");
+                return;
+            }
+
+            btn.textContent = "Sending...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch("/submit_feedback", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message, category })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById("feedbackMessage").value = "";
+                    document.getElementById("feedbackSuccess")
+                        .style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("feedbackSuccess")
+                            .style.display = "none";
+                    }, 3000);
+                }
+            } catch (err) {
+                alert("Error sending feedback. Please try again.");
+            }
+
+            btn.textContent = "Send Feedback →";
+            btn.disabled = false;
         }
 
         // ── On page load ──

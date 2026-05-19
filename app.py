@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
-from models import db, User, Result
+from models import db, User, Result, Feedback
 import os
 import json
 
@@ -481,6 +481,55 @@ def get_user_results():
             } for r in results]
         })
     return jsonify({"results": []})
+@app.route("/submit_feedback", methods=["POST"])
+def submit_feedback():
+    data = request.get_json()
+    message = data.get("message", "").strip()
+    category = data.get("category", "General")
+
+    if not message:
+        return jsonify({"error": "Message is required"})
+
+    name = "Guest"
+    email = "—"
+    user_id = None
+
+    if current_user.is_authenticated:
+        name = current_user.full_name
+        email = current_user.email
+        user_id = current_user.id
+
+    feedback = Feedback(
+        user_id=user_id,
+        user_name=name,
+        user_email=email,
+        message=message,
+        category=category
+    )
+    db.session.add(feedback)
+    db.session.commit()
+
+    return jsonify({"success": True})
+
+@app.route("/get_feedback")
+def get_feedback():
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return jsonify({"error": "Unauthorized"})
+
+    feedbacks = Feedback.query.order_by(
+        Feedback.created_at.desc()
+    ).all()
+
+    return jsonify({
+        "feedbacks": [{
+            "id": f.id,
+            "user_name": f.user_name,
+            "user_email": f.user_email,
+            "message": f.message,
+            "category": f.category,
+            "created_at": f.created_at.strftime("%d %b %Y %H:%M")
+        } for f in feedbacks]
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

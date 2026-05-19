@@ -14,6 +14,15 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     results = db.relationship("Result", backref="user", lazy=True)
 
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=True)
+    user_name = db.Column(db.String(100), nullable=False, default="Guest")
+    user_email = db.Column(db.String(120), nullable=False, default="—")
+    message = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String(50), default="General")
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 class Result(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"),
