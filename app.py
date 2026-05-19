@@ -548,6 +548,13 @@ def delete_user(user_id):
     db.session.commit()
 
     return jsonify({"success": True})
+@app.route("/test_ai")
+def test_ai():
+    from services.ai_service import call_ai
+    result = call_ai([
+        {"role": "user", "content": "Say hello in one sentence"}
+    ], max_tokens=50, temperature=0.3)
+    return jsonify({"result": result})
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

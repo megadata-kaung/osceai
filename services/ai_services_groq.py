@@ -35,6 +35,11 @@ def get_symptom_image(response_text):
     return None
 
 
+def get_groq_client():
+    from groq import Groq
+    return Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+
 def clean_patient_response(text):
     """
     Clean and normalise AI response to ensure
@@ -84,17 +89,31 @@ def clean_patient_response(text):
     return cleaned.strip()
 
 
-# ── Core AI call — Cohere only ──
+# ── Core AI call — Groq primary, Cohere fallback ──
 def call_ai(messages, max_tokens=150, temperature=0.4):
     """
-    Uses Cohere command-r-plus-08-2024
+    Groq (primary) → Cohere (fallback)
     """
+
+    # ── Attempt 1: Groq ──
+    try:
+        response = get_groq_client().chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=messages,
+            max_tokens=max_tokens,
+            temperature=temperature
+        )
+        print("[AI] Groq responded successfully")
+        return response.choices[0].message.content
+    except Exception as e:
+        print(f"[AI] Groq failed: {e} — switching to Cohere")
+
+    # ── Attempt 2: Cohere ──
     try:
         cohere_key = os.getenv("COHERE_API_KEY")
         if not cohere_key:
             raise Exception("COHERE_API_KEY not set")
 
-        # Parse messages into Cohere format
         system_content = ""
         chat_history = []
         last_user_message = ""
@@ -115,13 +134,10 @@ def call_ai(messages, max_tokens=150, temperature=0.4):
                     "message": msg["content"]
                 })
 
-        # Remove last user message from history
-        # since it goes in the message field separately
         if chat_history and chat_history[-1]["role"] == "USER":
             last_user_message = chat_history[-1]["message"]
             chat_history = chat_history[:-1]
 
-        # Reinforce system prompt for Cohere
         if system_content:
             system_content += (
                 "\n\nCRITICAL REMINDER: You are the patient. "
@@ -150,15 +166,13 @@ def call_ai(messages, max_tokens=150, temperature=0.4):
         )
 
         data = response.json()
-
         if "text" not in data:
             raise Exception(f"Unexpected response: {data}")
-
         print("[AI] Cohere responded successfully")
         return data["text"]
 
     except Exception as e:
-        print(f"[AI] Cohere failed: {e}")
+        print(f"[AI] Cohere also failed: {e}")
         return (
             "I am sorry, I am having some difficulty. "
             "Please try again in a moment."
