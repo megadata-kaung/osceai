@@ -40,11 +40,11 @@ def get_groq_client():
     return Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 
-# ── Core AI call with Groq → OpenRouter fallback ──
+# ── Core AI call with full fallback chain ──
 def call_ai(messages, max_tokens=150, temperature=0.4):
     """
-    Try Groq first.
-    If Groq fails for any reason, fall back to OpenRouter.
+    Groq → OpenRouter → Gemini → Cohere
+    Falls back automatically if any provider fails
     """
 
     # ── Attempt 1: Groq ──
@@ -55,10 +55,10 @@ def call_ai(messages, max_tokens=150, temperature=0.4):
             max_tokens=max_tokens,
             temperature=temperature
         )
+        print("[AI] Groq responded successfully")
         return response.choices[0].message.content
-
-    except Exception as groq_error:
-        print(f"[AI] Groq failed: {groq_error} — switching to OpenRouter")
+    except Exception as e:
+        print(f"[AI] Groq failed: {e} — trying OpenRouter")
 
     # ── Attempt 2: OpenRouter ──
     try:
@@ -82,17 +82,120 @@ def call_ai(messages, max_tokens=150, temperature=0.4):
             },
             timeout=30
         )
-
         data = response.json()
-
         if "choices" not in data:
             raise Exception(f"Unexpected response: {data}")
-
         print("[AI] OpenRouter responded successfully")
         return data["choices"][0]["message"]["content"]
+    except Exception as e:
+        print(f"[AI] OpenRouter failed: {e} — trying Gemini")
 
-    except Exception as openrouter_error:
-        print(f"[AI] OpenRouter also failed: {openrouter_error}")
+    # ── Attempt 3: Google Gemini ──
+    try:
+        gemini_key = os.getenv("GEMINI_API_KEY")
+        if not gemini_key:
+            raise Exception("GEMINI_API_KEY not set")
+
+        # Gemini doesn't support system role
+        # Merge system prompt into first user message
+        gemini_messages = []
+        system_content = ""
+
+        for msg in messages:
+            if msg["role"] == "system":
+                system_content = msg["content"]
+            elif msg["role"] == "user":
+                content = msg["content"]
+                if system_content:
+                    content = f"{system_content}\n\n{content}"
+                    system_content = ""
+                gemini_messages.append({
+                    "role": "user",
+                    "parts": [{"text": content}]
+                })
+            elif msg["role"] == "assistant":
+                gemini_messages.append({
+                    "role": "model",
+                    "parts": [{"text": msg["content"]}]
+                })
+
+        response = requests.post(
+            f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}",
+            headers={"Content-Type": "application/json"},
+            json={
+                "contents": gemini_messages,
+                "generationConfig": {
+                    "maxOutputTokens": max_tokens,
+                    "temperature": temperature
+                }
+            },
+            timeout=30
+        )
+        data = response.json()
+        if "candidates" not in data:
+            raise Exception(f"Unexpected response: {data}")
+        print("[AI] Gemini responded successfully")
+        return data["candidates"][0]["content"]["parts"][0]["text"]
+    except Exception as e:
+        print(f"[AI] Gemini failed: {e} — trying Cohere")
+
+    # ── Attempt 4: Cohere ──
+    try:
+        cohere_key = os.getenv("COHERE_API_KEY")
+        if not cohere_key:
+            raise Exception("COHERE_API_KEY not set")
+
+        # Cohere uses different message format
+        system_content = ""
+        chat_history = []
+        last_user_message = ""
+
+        for msg in messages:
+            if msg["role"] == "system":
+                system_content = msg["content"]
+            elif msg["role"] == "user":
+                last_user_message = msg["content"]
+                if chat_history:
+                    chat_history.append({
+                        "role": "USER",
+                        "message": msg["content"]
+                    })
+            elif msg["role"] == "assistant":
+                chat_history.append({
+                    "role": "CHATBOT",
+                    "message": msg["content"]
+                })
+
+        # Remove last user message from history
+        # since it goes in the message field separately
+        if chat_history and chat_history[-1]["role"] == "USER":
+            last_user_message = chat_history[-1]["message"]
+            chat_history = chat_history[:-1]
+
+        response = requests.post(
+            "https://api.cohere.com/v1/chat",
+            headers={
+                "Authorization": f"Bearer {cohere_key}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "command-r",
+                "message": last_user_message,
+                "preamble": system_content,
+                "chat_history": chat_history,
+                "max_tokens": max_tokens,
+                "temperature": temperature
+            },
+            timeout=30
+        )
+        data = response.json()
+        if "text" not in data:
+            raise Exception(f"Unexpected response: {data}")
+        print("[AI] Cohere responded successfully")
+        return data["text"]
+
+    except Exception as e:
+        print(f"[AI] Cohere also failed: {e}")
         return "I am sorry, I am having some difficulty right now. Please try again in a moment."
 
 
