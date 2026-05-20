@@ -556,6 +556,76 @@ def test_ai():
     ], max_tokens=50, temperature=0.3)
     return jsonify({"result": result})
 
+# ── Update profile ──
+@app.route("/update_profile", methods=["POST"])
+def update_profile():
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Unauthorized"})
+
+    data = request.get_json()
+    full_name = data.get("full_name", "").strip()
+    university = data.get("university", "").strip()
+
+    if not full_name:
+        return jsonify({"error": "Name cannot be empty"})
+
+    current_user.full_name = full_name
+    current_user.university = university
+    db.session.commit()
+
+    return jsonify({"success": True})
+
+
+# ── Change password ──
+@app.route("/change_password", methods=["POST"])
+def change_password():
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Unauthorized"})
+
+    data = request.get_json()
+    current_password = data.get("current_password", "")
+    new_password = data.get("new_password", "")
+    confirm_password = data.get("confirm_password", "")
+
+    if not check_password_hash(
+        current_user.password, current_password
+    ):
+        return jsonify({"error": "Current password is incorrect"})
+
+    if len(new_password) < 6:
+        return jsonify({
+            "error": "New password must be at least 6 characters"
+        })
+
+    if new_password != confirm_password:
+        return jsonify({"error": "New passwords do not match"})
+
+    current_user.password = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({"success": True})
+
+
+# ── Admin update student profile ──
+@app.route("/admin/update_user/<int:user_id>", methods=["POST"])
+def admin_update_user(user_id):
+    if not current_user.is_authenticated or not current_user.is_admin:
+        return jsonify({"error": "Unauthorized"})
+
+    data = request.get_json()
+    full_name = data.get("full_name", "").strip()
+    university = data.get("university", "").strip()
+
+    if not full_name:
+        return jsonify({"error": "Name cannot be empty"})
+
+    user = User.query.get_or_404(user_id)
+    user.full_name = full_name
+    user.university = university
+    db.session.commit()
+
+    return jsonify({"success": True})
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=False)

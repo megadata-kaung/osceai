@@ -129,18 +129,14 @@
                             <div class="stat-box-icon">📋</div>
                             <div class="stat-box-info">
                                 <div class="stat-box-number">9</div>
-                                <div class="stat-box-label">
-                                    Cases Available
-                                </div>
+                                <div class="stat-box-label">Cases Available</div>
                             </div>
                         </div>
                         <div class="stat-box">
                             <div class="stat-box-icon">⏱️</div>
                             <div class="stat-box-info">
                                 <div class="stat-box-number">8</div>
-                                <div class="stat-box-label">
-                                    Mins Per Case
-                                </div>
+                                <div class="stat-box-label">Mins Per Case</div>
                             </div>
                         </div>
                         <div class="stat-box">
@@ -148,9 +144,7 @@
                             <div class="stat-box-info">
                                 <div class="stat-box-number"
                                      id="statAttempts">0</div>
-                                <div class="stat-box-label">
-                                    Your Attempts
-                                </div>
+                                <div class="stat-box-label">Your Attempts</div>
                             </div>
                         </div>
                         <div class="stat-box">
@@ -421,83 +415,152 @@
                         <p>Your account details and performance history</p>
                     </div>
 
+                    <!-- Personal Information -->
                     <div class="profile-section">
-                        <h3 class="profile-section-title">
-                            👤 Personal Information
-                        </h3>
-                        <div class="profile-info-card">
-                            <div class="profile-avatar-large"
-                                 id="profileAvatarLarge">S</div>
-                            <div class="profile-details">
-                                <div class="profile-detail-row">
-                                    <span class="profile-label">
-                                        Full Name
-                                    </span>
-                                    <span class="profile-value"
-                                          id="profileName">—</span>
-                                </div>
-                                <div class="profile-detail-row">
-                                    <span class="profile-label">Email</span>
-                                    <span class="profile-value"
-                                          id="profileEmail">—</span>
-                                </div>
-                                <div class="profile-detail-row">
-                                    <span class="profile-label">
-                                        University
-                                    </span>
-                                    <span class="profile-value"
-                                          id="profileUniversity">—</span>
+                        <div class="history-header">
+                            <h3 class="profile-section-title">
+                                👤 Personal Information
+                            </h3>
+                            <button class="btn-view-details"
+                                    onclick="toggleEditProfile()">
+                                ✏️ Edit Profile
+                            </button>
+                        </div>
+
+                        <!-- View Mode -->
+                        <div id="profileViewMode">
+                            <div class="profile-info-card">
+                                <div class="profile-avatar-large"
+                                     id="profileAvatarLarge">S</div>
+                                <div class="profile-details">
+                                    <div class="profile-detail-row">
+                                        <span class="profile-label">Full Name</span>
+                                        <span class="profile-value"
+                                              id="profileName">—</span>
+                                    </div>
+                                    <div class="profile-detail-row">
+                                        <span class="profile-label">Email</span>
+                                        <span class="profile-value"
+                                              id="profileEmail">—</span>
+                                    </div>
+                                    <div class="profile-detail-row">
+                                        <span class="profile-label">University</span>
+                                        <span class="profile-value"
+                                              id="profileUniversity">—</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Feedback Section -->
-                        <div class="profile-section">
-                            <h3 class="profile-section-title">
-                                💬 Suggestions & Comments
-                            </h3>
-                            <p style="font-size:14px; color:#888; margin-bottom:16px;">
-                                Have a suggestion or found a bug? Let us know!
-                            </p>
 
-                            <div class="feedback-form">
+                        <!-- Edit Mode -->
+                        <div id="profileEditMode" style="display:none;">
+                            <div style="max-width:500px; margin-top:16px;">
                                 <div class="form-group">
-                                    <label>Category</label>
-                                    <select id="feedbackCategory"
-                                            style="width:100%; padding:12px;
-                                            border:1px solid #ddd; border-radius:8px;
-                                            font-size:14px; outline:none;">
-                                        <option value="General">General</option>
-                                        <option value="Bug Report">🐛 Bug Report</option>
-                                        <option value="Feature Request">✨ Feature Request</option>
-                                        <option value="Case Feedback">📋 Case Feedback</option>
-                                        <option value="UI Feedback">🎨 UI Feedback</option>
-                                    </select>
+                                    <label>Full Name</label>
+                                    <input type="text" id="editName"
+                                           placeholder="Your full name"
+                                           style="width:100%; padding:12px;
+                                           border:1px solid #ddd;
+                                           border-radius:8px; font-size:15px;
+                                           outline:none; box-sizing:border-box;"/>
                                 </div>
-                                <div class="form-group">
-                                    <label>Your message</label>
-                                    <textarea id="feedbackMessage"
-                                              placeholder="Type your suggestion or comment here..."
-                                              rows="4"
-                                              style="width:100%; padding:12px;
-                                              border:1px solid #ddd; border-radius:8px;
-                                              font-size:14px; resize:vertical;
-                                              font-family:Arial,sans-serif;
-                                              box-sizing:border-box;"></textarea>
+                                <div class="form-group"
+                                     style="margin-top:12px;">
+                                    <label>University</label>
+                                    <input type="text" id="editUniversity"
+                                           placeholder="Your university"
+                                           style="width:100%; padding:12px;
+                                           border:1px solid #ddd;
+                                           border-radius:8px; font-size:15px;
+                                           outline:none; box-sizing:border-box;"/>
                                 </div>
-                                <button class="btn" onclick="submitFeedback()"
-                                        id="feedbackBtn"
-                                        style="padding:12px 32px;">
-                                    Send Feedback →
-                                </button>
-                                <div id="feedbackSuccess"
+                                <div style="display:flex; gap:10px;
+                                            margin-top:16px;">
+                                    <button class="btn"
+                                            onclick="saveProfile()"
+                                            id="saveProfileBtn">
+                                        Save Changes
+                                    </button>
+                                    <button class="btn-secondary"
+                                            onclick="toggleEditProfile()">
+                                        Cancel
+                                    </button>
+                                </div>
+                                <div id="profileSaveMsg"
                                      style="display:none; margin-top:12px;
-                                     color:#1e8449; font-size:14px; font-weight:bold;">
-                                    ✅ Thank you! Your feedback has been sent.
+                                     font-size:14px; font-weight:bold;">
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Change Password -->
+                    <div class="profile-section">
+                        <div class="history-header">
+                            <h3 class="profile-section-title">
+                                🔒 Change Password
+                            </h3>
+                            <button class="btn-view-details"
+                                    onclick="toggleChangePassword()">
+                                🔑 Change Password
+                            </button>
+                        </div>
+
+                        <div id="passwordChangeForm" style="display:none;">
+                            <div style="max-width:500px; margin-top:16px;">
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password"
+                                           id="currentPassword"
+                                           placeholder="Enter current password"
+                                           style="width:100%; padding:12px;
+                                           border:1px solid #ddd;
+                                           border-radius:8px; font-size:15px;
+                                           outline:none; box-sizing:border-box;"/>
+                                </div>
+                                <div class="form-group"
+                                     style="margin-top:12px;">
+                                    <label>New Password</label>
+                                    <input type="password"
+                                           id="newPassword"
+                                           placeholder="Enter new password (min 6 characters)"
+                                           style="width:100%; padding:12px;
+                                           border:1px solid #ddd;
+                                           border-radius:8px; font-size:15px;
+                                           outline:none; box-sizing:border-box;"/>
+                                </div>
+                                <div class="form-group"
+                                     style="margin-top:12px;">
+                                    <label>Confirm New Password</label>
+                                    <input type="password"
+                                           id="confirmPassword"
+                                           placeholder="Confirm new password"
+                                           style="width:100%; padding:12px;
+                                           border:1px solid #ddd;
+                                           border-radius:8px; font-size:15px;
+                                           outline:none; box-sizing:border-box;"/>
+                                </div>
+                                <div style="display:flex; gap:10px;
+                                            margin-top:16px;">
+                                    <button class="btn"
+                                            onclick="savePassword()"
+                                            id="savePasswordBtn">
+                                        Update Password
+                                    </button>
+                                    <button class="btn-secondary"
+                                            onclick="toggleChangePassword()">
+                                        Cancel
+                                    </button>
+                                </div>
+                                <div id="passwordSaveMsg"
+                                     style="display:none; margin-top:12px;
+                                     font-size:14px; font-weight:bold;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Summary -->
                     <div class="profile-section">
                         <h3 class="profile-section-title">
                             📊 Performance Summary
@@ -526,6 +589,7 @@
                         </div>
                     </div>
 
+                    <!-- Case History -->
                     <div class="profile-section">
                         <div class="history-header">
                             <h3 class="profile-section-title">
@@ -543,6 +607,57 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Feedback Section -->
+                    <div class="profile-section">
+                        <h3 class="profile-section-title">
+                            💬 Suggestions & Comments
+                        </h3>
+                        <p style="font-size:14px; color:#888;
+                                  margin-bottom:16px;">
+                            Have a suggestion or found a bug? Let us know!
+                        </p>
+                        <div class="feedback-form">
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select id="feedbackCategory"
+                                        style="width:100%; padding:12px;
+                                        border:1px solid #ddd;
+                                        border-radius:8px; font-size:14px;
+                                        outline:none;">
+                                    <option value="General">General</option>
+                                    <option value="Bug Report">🐛 Bug Report</option>
+                                    <option value="Feature Request">✨ Feature Request</option>
+                                    <option value="Case Feedback">📋 Case Feedback</option>
+                                    <option value="UI Feedback">🎨 UI Feedback</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-top:12px;">
+                                <label>Your message</label>
+                                <textarea id="feedbackMessage"
+                                          placeholder="Type your suggestion or comment here..."
+                                          rows="4"
+                                          style="width:100%; padding:12px;
+                                          border:1px solid #ddd;
+                                          border-radius:8px; font-size:14px;
+                                          resize:vertical;
+                                          font-family:Arial,sans-serif;
+                                          box-sizing:border-box;"></textarea>
+                            </div>
+                            <button class="btn" onclick="submitFeedback()"
+                                    id="feedbackBtn"
+                                    style="padding:12px 32px;">
+                                Send Feedback →
+                            </button>
+                            <div id="feedbackSuccess"
+                                 style="display:none; margin-top:12px;
+                                 color:#1e8449; font-size:14px;
+                                 font-weight:bold;">
+                                ✅ Thank you! Your feedback has been sent.
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>
@@ -568,7 +683,6 @@
             </div>
         </div>
     </div>
-
 
     <script>
         let userData = {};
@@ -602,44 +716,6 @@
             if (tabEl) tabEl.classList.add("active");
 
             sessionStorage.setItem("currentView", view);
-        }
-        async function submitFeedback() {
-            const message = document.getElementById("feedbackMessage")
-                .value.trim();
-            const category = document.getElementById("feedbackCategory")
-                .value;
-            const btn = document.getElementById("feedbackBtn");
-
-            if (!message) {
-                alert("Please write a message before sending!");
-                return;
-            }
-
-            btn.textContent = "Sending...";
-            btn.disabled = true;
-
-            try {
-                const res = await fetch("/submit_feedback", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ message, category })
-                });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById("feedbackMessage").value = "";
-                    document.getElementById("feedbackSuccess")
-                        .style.display = "block";
-                    setTimeout(() => {
-                        document.getElementById("feedbackSuccess")
-                            .style.display = "none";
-                    }, 3000);
-                }
-            } catch (err) {
-                alert("Error sending feedback. Please try again.");
-            }
-
-            btn.textContent = "Send Feedback →";
-            btn.disabled = false;
         }
 
         // ── On page load ──
@@ -684,6 +760,13 @@
                     data.email || "—";
                 document.getElementById("profileUniversity").textContent =
                     data.university || "—";
+
+                // Pre-fill edit fields
+                const editName = document.getElementById("editName");
+                const editUni = document.getElementById("editUniversity");
+                if (editName) editName.value = data.name || "";
+                if (editUni) editUni.value = data.university || "";
+
             } catch (err) {
                 console.error("loadUserData error:", err);
             }
@@ -826,6 +909,227 @@
                         </div>
                     `).join("")}
                 </div>`;
+        }
+
+        // ── Toggle edit profile ──
+        function toggleEditProfile() {
+            const viewMode = document.getElementById("profileViewMode");
+            const editMode = document.getElementById("profileEditMode");
+            const isEditing = editMode.style.display !== "none";
+
+            if (isEditing) {
+                editMode.style.display = "none";
+                viewMode.style.display = "block";
+            } else {
+                // Pre-fill with current values
+                document.getElementById("editName").value =
+                    userData.name || "";
+                document.getElementById("editUniversity").value =
+                    userData.university || "";
+                editMode.style.display = "block";
+                viewMode.style.display = "none";
+                document.getElementById("profileSaveMsg").style.display =
+                    "none";
+            }
+        }
+
+        // ── Save profile ──
+        async function saveProfile() {
+            const fullName = document.getElementById("editName")
+                .value.trim();
+            const university = document.getElementById("editUniversity")
+                .value.trim();
+            const btn = document.getElementById("saveProfileBtn");
+            const msg = document.getElementById("profileSaveMsg");
+
+            if (!fullName) {
+                msg.textContent = "❌ Name cannot be empty";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+                return;
+            }
+
+            btn.textContent = "Saving...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch("/update_profile", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ full_name: fullName, university })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    // Update display
+                    document.getElementById("profileName").textContent =
+                        fullName;
+                    document.getElementById("profileUniversity").textContent =
+                        university || "—";
+                    document.getElementById("topbarName").textContent =
+                        fullName;
+                    document.getElementById("topbarAvatar").textContent =
+                        fullName.charAt(0).toUpperCase();
+                    document.getElementById("profileAvatarLarge").textContent =
+                        fullName.charAt(0).toUpperCase();
+                    document.getElementById("welcomeMsg").textContent =
+                        `Welcome back, ${fullName.split(" ")[0]}! 👋`;
+
+                    // Update local userData
+                    userData.name = fullName;
+                    userData.university = university;
+
+                    msg.textContent = "✅ Profile updated successfully!";
+                    msg.style.color = "#1e8449";
+                    msg.style.display = "block";
+
+                    setTimeout(() => {
+                        toggleEditProfile();
+                    }, 1500);
+                } else {
+                    msg.textContent = `❌ ${data.error}`;
+                    msg.style.color = "#e74c3c";
+                    msg.style.display = "block";
+                }
+            } catch (err) {
+                msg.textContent = "❌ Error saving profile. Please try again.";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+            }
+
+            btn.textContent = "Save Changes";
+            btn.disabled = false;
+        }
+
+        // ── Toggle change password ──
+        function toggleChangePassword() {
+            const form = document.getElementById("passwordChangeForm");
+            const isShowing = form.style.display !== "none";
+
+            if (isShowing) {
+                form.style.display = "none";
+                document.getElementById("currentPassword").value = "";
+                document.getElementById("newPassword").value = "";
+                document.getElementById("confirmPassword").value = "";
+                document.getElementById("passwordSaveMsg").style.display =
+                    "none";
+            } else {
+                form.style.display = "block";
+            }
+        }
+
+        // ── Save password ──
+        async function savePassword() {
+            const currentPassword =
+                document.getElementById("currentPassword").value;
+            const newPassword =
+                document.getElementById("newPassword").value;
+            const confirmPassword =
+                document.getElementById("confirmPassword").value;
+            const btn = document.getElementById("savePasswordBtn");
+            const msg = document.getElementById("passwordSaveMsg");
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                msg.textContent = "❌ Please fill in all fields";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                msg.textContent = "❌ New passwords do not match";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                msg.textContent =
+                    "❌ New password must be at least 6 characters";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+                return;
+            }
+
+            btn.textContent = "Updating...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch("/change_password", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword,
+                        confirm_password: confirmPassword
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    msg.textContent = "✅ Password updated successfully!";
+                    msg.style.color = "#1e8449";
+                    msg.style.display = "block";
+                    document.getElementById("currentPassword").value = "";
+                    document.getElementById("newPassword").value = "";
+                    document.getElementById("confirmPassword").value = "";
+                    setTimeout(() => {
+                        toggleChangePassword();
+                    }, 1500);
+                } else {
+                    msg.textContent = `❌ ${data.error}`;
+                    msg.style.color = "#e74c3c";
+                    msg.style.display = "block";
+                }
+            } catch (err) {
+                msg.textContent =
+                    "❌ Error updating password. Please try again.";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+            }
+
+            btn.textContent = "Update Password";
+            btn.disabled = false;
+        }
+
+        // ── Feedback ──
+        async function submitFeedback() {
+            const message = document.getElementById("feedbackMessage")
+                .value.trim();
+            const category = document.getElementById("feedbackCategory")
+                .value;
+            const btn = document.getElementById("feedbackBtn");
+
+            if (!message) {
+                alert("Please write a message before sending!");
+                return;
+            }
+
+            btn.textContent = "Sending...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch("/submit_feedback", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message, category })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById("feedbackMessage").value = "";
+                    document.getElementById("feedbackSuccess")
+                        .style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("feedbackSuccess")
+                            .style.display = "none";
+                    }, 3000);
+                }
+            } catch (err) {
+                alert("Error sending feedback. Please try again.");
+            }
+
+            btn.textContent = "Send Feedback →";
+            btn.disabled = false;
         }
 
         // ── Go to case ──

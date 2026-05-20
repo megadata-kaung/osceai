@@ -43,7 +43,8 @@
                     <div class="breadcrumb">
                         <a href="/admin">Admin Panel</a>
                         <span>/</span>
-                        <span class="breadcrumb-active">
+                        <span class="breadcrumb-active"
+                              id="breadcrumbName">
                             {{ user.full_name }}
                         </span>
                     </div>
@@ -66,54 +67,121 @@
                               font-size:14px;">
                         ← Back to all students
                     </a>
-                    <h1 style="margin-top:8px;">
+                    <h1 style="margin-top:8px;" id="pageTitle">
                         {{ user.full_name }}
                     </h1>
-                    <p>{{ user.email }} · {{ user.university or "—" }}</p>
+                    <p id="pageSubtitle">
+                        {{ user.email }} · {{ user.university or "—" }}
+                    </p>
                 </div>
 
                 <!-- Student Info -->
                 <div class="profile-section">
-                    <h3 class="profile-section-title">
-                        👤 Student Information
-                    </h3>
-                    <div class="profile-info-card">
-                        <div class="profile-avatar-large">
-                            {{ user.full_name[0].upper() }}
-                        </div>
-                        <div class="profile-details">
-                            <div class="profile-detail-row">
-                                <span class="profile-label">
-                                    Full Name
-                                </span>
-                                <span class="profile-value">
-                                    {{ user.full_name }}
-                                </span>
+                    <div class="history-header">
+                        <h3 class="profile-section-title">
+                            👤 Student Information
+                        </h3>
+                        <button class="btn-view-details"
+                                onclick="toggleEditStudent()">
+                            ✏️ Edit Profile
+                        </button>
+                    </div>
+
+                    <!-- View Mode -->
+                    <div id="studentViewMode">
+                        <div class="profile-info-card">
+                            <div class="profile-avatar-large"
+                                 id="studentAvatar">
+                                {{ user.full_name[0].upper() }}
                             </div>
-                            <div class="profile-detail-row">
-                                <span class="profile-label">Email</span>
-                                <span class="profile-value">
-                                    {{ user.email }}
-                                </span>
-                            </div>
-                            <div class="profile-detail-row">
-                                <span class="profile-label">
-                                    University
-                                </span>
-                                <span class="profile-value">
-                                    {{ user.university or "—" }}
-                                </span>
-                            </div>
-                            <div class="profile-detail-row">
-                                <span class="profile-label">
-                                    Registered
-                                </span>
-                                <span class="profile-value">
-                                    {{ user.created_at.strftime("%d %b %Y") }}
-                                </span>
+                            <div class="profile-details">
+                                <div class="profile-detail-row">
+                                    <span class="profile-label">
+                                        Full Name
+                                    </span>
+                                    <span class="profile-value"
+                                          id="displayName">
+                                        {{ user.full_name }}
+                                    </span>
+                                </div>
+                                <div class="profile-detail-row">
+                                    <span class="profile-label">
+                                        Email
+                                    </span>
+                                    <span class="profile-value">
+                                        {{ user.email }}
+                                    </span>
+                                </div>
+                                <div class="profile-detail-row">
+                                    <span class="profile-label">
+                                        University
+                                    </span>
+                                    <span class="profile-value"
+                                          id="displayUniversity">
+                                        {{ user.university or "—" }}
+                                    </span>
+                                </div>
+                                <div class="profile-detail-row">
+                                    <span class="profile-label">
+                                        Registered
+                                    </span>
+                                    <span class="profile-value">
+                                        {{ user.created_at.strftime("%d %b %Y") }}
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Edit Mode -->
+                    <div id="studentEditMode" style="display:none;">
+                        <div style="max-width:500px; margin-top:16px;">
+                            <div class="form-group">
+                                <label style="display:block; font-size:14px;
+                                              font-weight:bold; color:#555;
+                                              margin-bottom:6px;">
+                                    Full Name
+                                </label>
+                                <input type="text" id="editStudentName"
+                                       value="{{ user.full_name }}"
+                                       style="width:100%; padding:12px;
+                                       border:1px solid #ddd;
+                                       border-radius:8px; font-size:15px;
+                                       outline:none; box-sizing:border-box;"/>
+                            </div>
+                            <div class="form-group"
+                                 style="margin-top:12px;">
+                                <label style="display:block; font-size:14px;
+                                              font-weight:bold; color:#555;
+                                              margin-bottom:6px;">
+                                    University
+                                </label>
+                                <input type="text" id="editStudentUniversity"
+                                       value="{{ user.university or '' }}"
+                                       style="width:100%; padding:12px;
+                                       border:1px solid #ddd;
+                                       border-radius:8px; font-size:15px;
+                                       outline:none; box-sizing:border-box;"/>
+                            </div>
+                            <div style="display:flex; gap:10px;
+                                        margin-top:16px;">
+                                <button class="btn"
+                                        onclick="saveStudentProfile()"
+                                        id="saveStudentBtn">
+                                    Save Changes
+                                </button>
+                                <button class="btn-secondary"
+                                        onclick="toggleEditStudent()">
+                                    Cancel
+                                </button>
+                            </div>
+                            <div id="studentSaveMsg"
+                                 style="display:none; margin-top:12px;
+                                 font-size:14px; font-weight:bold;">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
                 <!-- Performance Summary -->
@@ -219,6 +287,97 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const userId = {{ user.id }};
+
+        function toggleEditStudent() {
+            const viewMode = document.getElementById("studentViewMode");
+            const editMode = document.getElementById("studentEditMode");
+            const isEditing = editMode.style.display !== "none";
+
+            if (isEditing) {
+                editMode.style.display = "none";
+                viewMode.style.display = "block";
+            } else {
+                editMode.style.display = "block";
+                viewMode.style.display = "none";
+                document.getElementById("studentSaveMsg").style.display =
+                    "none";
+            }
+        }
+
+        async function saveStudentProfile() {
+            const fullName = document.getElementById("editStudentName")
+                .value.trim();
+            const university =
+                document.getElementById("editStudentUniversity")
+                .value.trim();
+            const btn = document.getElementById("saveStudentBtn");
+            const msg = document.getElementById("studentSaveMsg");
+
+            if (!fullName) {
+                msg.textContent = "❌ Name cannot be empty";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+                return;
+            }
+
+            btn.textContent = "Saving...";
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(
+                    `/admin/update_user/${userId}`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            full_name: fullName,
+                            university: university
+                        })
+                    }
+                );
+                const data = await res.json();
+
+                if (data.success) {
+                    // Update display values
+                    document.getElementById("displayName").textContent =
+                        fullName;
+                    document.getElementById("displayUniversity").textContent =
+                        university || "—";
+                    document.getElementById("studentAvatar").textContent =
+                        fullName.charAt(0).toUpperCase();
+                    document.getElementById("pageTitle").textContent =
+                        fullName;
+                    document.getElementById("breadcrumbName").textContent =
+                        fullName;
+                    document.getElementById("pageSubtitle").textContent =
+                        `{{ user.email }} · ${university || "—"}`;
+
+                    msg.textContent = "✅ Profile updated successfully!";
+                    msg.style.color = "#1e8449";
+                    msg.style.display = "block";
+
+                    setTimeout(() => {
+                        toggleEditStudent();
+                    }, 1500);
+                } else {
+                    msg.textContent = `❌ ${data.error}`;
+                    msg.style.color = "#e74c3c";
+                    msg.style.display = "block";
+                }
+            } catch (err) {
+                msg.textContent =
+                    "❌ Error saving profile. Please try again.";
+                msg.style.color = "#e74c3c";
+                msg.style.display = "block";
+            }
+
+            btn.textContent = "Save Changes";
+            btn.disabled = false;
+        }
+    </script>
 
 </body>
 </html>
