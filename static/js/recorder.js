@@ -11,6 +11,7 @@ let practiceTimerInterval = null;
 let practiceTimerSeconds = 0;
 let practiceTimerRunning = false;
 let voiceSpeedMultiplier = 1.0;
+let isSpeaking = false;
 
 const osceProgressKey = "osceCaseProgress";
 
@@ -29,7 +30,8 @@ function saveOsceProgress() {
         tab: currentTab
     }));
 
-    sessionStorage.setItem("conversation", JSON.stringify(conversationHistory));
+    sessionStorage.setItem("conversation",
+        JSON.stringify(conversationHistory));
     sessionStorage.setItem("caseId", selectedCaseId);
 }
 
@@ -69,7 +71,9 @@ function restoreOsceProgress() {
 async function loadPatientVoiceProfile() {
     if (!selectedCaseId) return;
     try {
-        const res = await fetch(`/get_case_info?case_id=${selectedCaseId}`);
+        const res = await fetch(
+            `/get_case_info?case_id=${selectedCaseId}`
+        );
         const data = await res.json();
         patientAge = data.age || 30;
         patientGender = data.gender || "female";
@@ -92,13 +96,14 @@ async function loadPatientInfo() {
         const location = document.getElementById("infoLocation");
         const complaint = document.getElementById("infoComplaint");
 
-        if (name) name.textContent = data.patient_name || "-";
-        if (age) age.textContent = data.age || "-";
+        if (name) name.textContent = data.patient_name || "—";
+        if (age) age.textContent = data.age || "—";
         if (gender) {
-            gender.textContent = data.gender === "female" ? "Female" : "Male";
+            gender.textContent =
+                data.gender === "female" ? "Female" : "Male";
         }
-        if (location) location.textContent = data.location || "-";
-        if (complaint) complaint.textContent = data.complaint || "-";
+        if (location) location.textContent = data.location || "—";
+        if (complaint) complaint.textContent = data.complaint || "—";
     } catch (err) {
         console.error("Could not load patient info:", err);
     }
@@ -115,7 +120,6 @@ function sendMessage() {
     const message = input.value.trim();
 
     if (!message) return;
-
     if (!selectedCaseId) {
         alert("Please select a case first!");
         return;
@@ -182,31 +186,16 @@ function addMessage(text, sender) {
 }
 
 function getVoiceSettings() {
-    let rate;
-    let pitch;
+    let rate, pitch;
 
     if (patientGender === "female") {
-        if (patientAge < 30) {
-            rate = 1.1;
-            pitch = 1.2;
-        } else if (patientAge <= 50) {
-            rate = 1.0;
-            pitch = 1.05;
-        } else {
-            rate = 0.9;
-            pitch = 0.95;
-        }
+        if (patientAge < 30) { rate = 1.1; pitch = 1.2; }
+        else if (patientAge <= 50) { rate = 1.0; pitch = 1.05; }
+        else { rate = 0.9; pitch = 0.95; }
     } else {
-        if (patientAge < 30) {
-            rate = 1.05;
-            pitch = 1.0;
-        } else if (patientAge <= 50) {
-            rate = 0.95;
-            pitch = 0.9;
-        } else {
-            rate = 0.88;
-            pitch = 0.82;
-        }
+        if (patientAge < 30) { rate = 1.05; pitch = 1.0; }
+        else if (patientAge <= 50) { rate = 0.95; pitch = 0.9; }
+        else { rate = 0.88; pitch = 0.82; }
     }
 
     rate = Math.max(0.5, Math.min(1.8, rate * voiceSpeedMultiplier));
@@ -240,14 +229,17 @@ function getBestVoice(gender) {
     }
 
     if (!bestVoice) {
-        bestVoice = voices.find(v => v.lang.startsWith("en")) || voices[0];
+        bestVoice =
+            voices.find(v => v.lang.startsWith("en")) || voices[0];
     }
 
     return bestVoice;
 }
 
+// ── Fixed speakResponse — no double speech ──
 function speakResponse(text) {
     window.speechSynthesis.cancel();
+    isSpeaking = false;
 
     const settings = getVoiceSettings();
     const utterance = new SpeechSynthesisUtterance(text);
@@ -256,12 +248,23 @@ function speakResponse(text) {
     utterance.pitch = settings.pitch;
     utterance.lang = "en-GB";
 
+    utterance.onstart = function() { isSpeaking = true; };
+    utterance.onend = function() { isSpeaking = false; };
+
+    // Clear any previous listener
+    window.speechSynthesis.onvoiceschanged = null;
+
     const voices = window.speechSynthesis.getVoices();
 
     if (voices.length === 0) {
+        let voiceLoaded = false;
         window.speechSynthesis.onvoiceschanged = function() {
+            if (voiceLoaded) return;
+            voiceLoaded = true;
+            window.speechSynthesis.onvoiceschanged = null;
             const voice = getBestVoice(patientGender);
             if (voice) utterance.voice = voice;
+            window.speechSynthesis.cancel();
             window.speechSynthesis.speak(utterance);
         };
     } else {
@@ -278,7 +281,6 @@ function setVoiceSpeed(speed, btn) {
 
     document.querySelectorAll(".voice-speed-pill, .voice-speed-btn")
         .forEach(b => b.classList.remove("active"));
-
     btn.classList.add("active");
 
     const hint = document.getElementById("voiceSpeedHint");
@@ -341,13 +343,15 @@ function toggleMic() {
 
         recognition.onend = function() {
             isRecording = false;
-            document.getElementById("micBtn").classList.remove("recording");
+            document.getElementById("micBtn")
+                .classList.remove("recording");
         };
 
         recognition.onerror = function(event) {
             console.error("Mic error:", event.error);
             isRecording = false;
-            document.getElementById("micBtn").classList.remove("recording");
+            document.getElementById("micBtn")
+                .classList.remove("recording");
         };
 
         recognition.start();
@@ -404,7 +408,9 @@ async function loadAvatar() {
     if (!selectedCaseId) return;
 
     try {
-        const res = await fetch(`/get_case_info?case_id=${selectedCaseId}`);
+        const res = await fetch(
+            `/get_case_info?case_id=${selectedCaseId}`
+        );
         const data = await res.json();
 
         const img = document.getElementById("avatarImg");
@@ -413,7 +419,6 @@ async function loadAvatar() {
         if (img) {
             img.src = `/static/images/avatars/${selectedCaseId}.svg`;
         }
-
         if (nameTag) {
             nameTag.textContent = `${data.patient_name}, ${data.age}`;
         }
@@ -436,7 +441,6 @@ function sendAvatarMessage() {
     const wrapper = document.getElementById("avatarWrapper");
 
     if (speechBubble) speechBubble.textContent = "...";
-
     if (statusEl) {
         statusEl.textContent = "Thinking...";
         statusEl.className = "avatar-status";
@@ -459,12 +463,10 @@ function sendAvatarMessage() {
         addMessage(data.response, "patient");
 
         if (speechBubble) speechBubble.textContent = data.response;
-
         if (statusEl) {
             statusEl.textContent = "Speaking...";
             statusEl.className = "avatar-status talking";
         }
-
         if (wrapper) wrapper.classList.add("avatar-talking");
 
         conversationHistory.push({
@@ -485,9 +487,7 @@ function sendAvatarMessage() {
     })
     .catch(err => {
         console.error(err);
-
-        if (statusEl) statusEl.textContent = "Error - please try again";
-
+        if (statusEl) statusEl.textContent = "Error — please try again";
         if (speechBubble) {
             speechBubble.textContent =
                 "Something went wrong. Please try again.";
@@ -532,7 +532,8 @@ function toggleAvatarMic() {
 
         avatarRecognition.start();
         avatarRecording = true;
-        document.getElementById("avatarMicBtn").classList.add("recording");
+        document.getElementById("avatarMicBtn")
+            .classList.add("recording");
     }
 }
 
@@ -542,10 +543,10 @@ function togglePracticeTimer() {
     if (practiceTimerRunning) {
         clearInterval(practiceTimerInterval);
         practiceTimerRunning = false;
-        if (btn) btn.textContent = "Start Timer";
+        if (btn) btn.textContent = "▶ Start Timer";
     } else {
         practiceTimerRunning = true;
-        if (btn) btn.textContent = "Pause Timer";
+        if (btn) btn.textContent = "⏸ Pause Timer";
 
         practiceTimerInterval = setInterval(() => {
             practiceTimerSeconds++;
@@ -560,15 +561,16 @@ function togglePracticeTimer() {
 function updatePracticeTimerDisplay() {
     const mins = Math.floor(practiceTimerSeconds / 60);
     const secs = practiceTimerSeconds % 60;
-
     const display =
-        `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+        `${String(mins).padStart(2,"0")}:${String(secs).padStart(2,"0")}`;
 
     const timerEl = document.getElementById("timerDisplay");
     if (timerEl) timerEl.textContent = display;
 
     const maxSeconds = 480;
-    const pct = Math.min((practiceTimerSeconds / maxSeconds) * 100, 100);
+    const pct = Math.min(
+        (practiceTimerSeconds / maxSeconds) * 100, 100
+    );
 
     const fill = document.getElementById("timerBarFill");
     if (!fill) return;
@@ -588,7 +590,7 @@ function updatePracticeTimerDisplay() {
 
     const labelEl = document.getElementById("timerLabel");
     if (practiceTimerSeconds === 480 && labelEl) {
-        labelEl.textContent = "8 minutes - wrap up!";
+        labelEl.textContent = "⚠️ 8 minutes — wrap up!";
     }
 }
 
@@ -612,7 +614,9 @@ window.onload = async function() {
         const labelEl = document.getElementById("caseLabel");
         if (labelEl && caseLabel) {
             labelEl.textContent = decodeURIComponent(caseLabel);
-            sessionStorage.setItem("caseLabel", decodeURIComponent(caseLabel));
+            sessionStorage.setItem(
+                "caseLabel", decodeURIComponent(caseLabel)
+            );
         }
 
         const caseSelection = document.getElementById("caseSelection");
@@ -629,7 +633,6 @@ window.onload = async function() {
 
         switchTab("chat");
         loadVoicePreferences();
-
         restoreOsceProgress();
 
         const notesEl = document.getElementById("studentNotes");
